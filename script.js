@@ -1,494 +1,125 @@
-// Initialize when DOM is loaded
+// Gurfateh Radio - Complete JavaScript
+
+// Wait for DOM to load
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize 3D Scene
-    init3DScene();
-    
-    // Initialize Audio Visualizer
-    initAudioVisualizer();
-    
-    // Initialize Player Controls
-    initPlayerControls();
-    
-    // Initialize 3D Knobs
-    init3DKnobs();
-    
-    // Initialize Theme Toggle
-    initThemeToggle();
-    
-    // Initialize Channel Switching
-    initChannelSwitching();
-    
-    // Initialize Extra Controls
-    initExtraControls();
+    // Initialize the app
+    initializeApp();
 });
 
-// 3D Scene with Three.js
-function init3DScene() {
-    // Check if Three.js is available
-    if (typeof THREE === 'undefined') {
-        console.log('Three.js not loaded');
-        return;
-    }
+function initializeApp() {
+    // Hide loading screen after 2 seconds
+    setTimeout(() => {
+        document.getElementById('loadingScreen').classList.add('fade-out');
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+        }, 500);
+    }, 2000);
     
-    try {
-        // Scene setup
-        const scene = new THREE.Scene();
-        scene.background = null;
-        
-        // Camera
-        const camera = new THREE.PerspectiveCamera(
-            75,
-            window.innerWidth / window.innerHeight,
-            0.1,
-            1000
-        );
-        camera.position.z = 5;
-        
-        // Renderer
-        const renderer = new THREE.WebGLRenderer({ 
-            antialias: true,
-            alpha: true,
-            powerPreference: "high-performance"
-        });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        
-        const container = document.getElementById('three-container');
-        if (container) {
-            container.appendChild(renderer.domElement);
-        }
-        
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
-        scene.add(ambientLight);
-        
-        const directionalLight = new THREE.DirectionalLight(0xff9900, 0.8);
-        directionalLight.position.set(5, 10, 7);
-        directionalLight.castShadow = true;
-        scene.add(directionalLight);
-        
-        const pointLight = new THREE.PointLight(0xff9900, 0.5, 50);
-        pointLight.position.set(-5, 5, 5);
-        scene.add(pointLight);
-        
-        // Create floating geometric shapes
-        const shapes = [];
-        const geometryTypes = [
-            new THREE.SphereGeometry(0.5, 16, 16),
-            new THREE.BoxGeometry(1, 1, 1),
-            new THREE.ConeGeometry(0.5, 1, 16),
-            new THREE.TorusGeometry(0.5, 0.2, 16, 32)
-        ];
-        
-        for (let i = 0; i < 15; i++) {
-            const geometry = geometryTypes[Math.floor(Math.random() * geometryTypes.length)];
-            const material = new THREE.MeshPhongMaterial({
-                color: new THREE.Color(`hsl(${Math.random() * 60 + 20}, 100%, 50%)`),
-                transparent: true,
-                opacity: 0.3,
-                shininess: 100
-            });
-            
-            const shape = new THREE.Mesh(geometry, material);
-            
-            shape.position.set(
-                (Math.random() - 0.5) * 20,
-                (Math.random() - 0.5) * 20,
-                (Math.random() - 0.5) * 20
-            );
-            
-            shape.rotation.set(
-                Math.random() * Math.PI,
-                Math.random() * Math.PI,
-                Math.random() * Math.PI
-            );
-            
-            shape.userData = {
-                speed: Math.random() * 0.02 + 0.01,
-                rotationSpeed: Math.random() * 0.02 + 0.01,
-                amplitude: Math.random() * 2 + 1
-            };
-            
-            scene.add(shape);
-            shapes.push(shape);
-        }
-        
-        // Audio reactive particles
-        const particles = [];
-        const particleCount = 100;
-        
-        for (let i = 0; i < particleCount; i++) {
-            const geometry = new THREE.SphereGeometry(0.1, 8, 8);
-            const material = new THREE.MeshBasicMaterial({
-                color: new THREE.Color(`hsl(${Math.random() * 60 + 20}, 100%, 50%)`),
-                transparent: true,
-                opacity: 0.6
-            });
-            
-            const particle = new THREE.Mesh(geometry, material);
-            
-            particle.position.set(
-                (Math.random() - 0.5) * 20,
-                (Math.random() - 0.5) * 20,
-                (Math.random() - 0.5) * 20
-            );
-            
-            particle.userData = {
-                originalY: particle.position.y,
-                speed: Math.random() * 0.02 + 0.01,
-                amplitude: Math.random() * 2 + 1
-            };
-            
-            scene.add(particle);
-            particles.push(particle);
-        }
-        
-        // Animation loop
-        let time = 0;
-        function animate() {
-            requestAnimationFrame(animate);
-            time += 0.01;
-            
-            // Animate shapes
-            shapes.forEach(shape => {
-                shape.rotation.x += shape.userData.rotationSpeed * 0.5;
-                shape.rotation.y += shape.userData.rotationSpeed;
-                shape.rotation.z += shape.userData.rotationSpeed * 0.3;
-                
-                shape.position.y = shape.position.y + 
-                    Math.sin(time * shape.userData.speed) * 0.05;
-                
-                // Pulsing effect
-                const scale = 1 + Math.sin(time * shape.userData.speed * 2) * 0.1;
-                shape.scale.set(scale, scale, scale);
-            });
-            
-            // Animate particles
-            particles.forEach((particle, index) => {
-                particle.position.y = particle.userData.originalY + 
-                    Math.sin(time * particle.userData.speed) * particle.userData.amplitude;
-                
-                // Color cycling
-                const hue = (index * 10 + time * 20) % 360;
-                particle.material.color.setHSL(hue / 360, 1, 0.5);
-            });
-            
-            // Slow camera rotation
-            camera.position.x = Math.sin(time * 0.1) * 3;
-            camera.position.y = 2 + Math.sin(time * 0.05) * 0.5;
-            camera.lookAt(0, 0, 0);
-            
-            renderer.render(scene, camera);
-        }
-        
-        // Handle resize
-        window.addEventListener('resize', function() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-        
-        // Start animation
-        animate();
-        
-    } catch (error) {
-        console.error('Three.js initialization error:', error);
-    }
+    // Initialize all components
+    initNavigation();
+    initAudioPlayer();
+    initChannels();
+    initSchedule();
+    initEventListeners();
+    updateLiveListeners();
 }
 
-// Audio Visualizer
-function initAudioVisualizer() {
-    const waveformCanvas = document.getElementById('waveform-canvas');
-    const frequencyCanvas = document.getElementById('frequency-canvas');
-    const audioElement = document.getElementById('audioPlayer');
+// Navigation
+function initNavigation() {
+    const menuToggle = document.getElementById('menuToggle');
+    const navMenu = document.querySelector('.nav-menu');
     
-    if (!waveformCanvas || !frequencyCanvas || !audioElement) {
-        console.log('Visualizer elements not found');
-        return;
+    if (menuToggle) {
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
     }
     
-    const waveformCtx = waveformCanvas.getContext('2d');
-    const frequencyCtx = frequencyCanvas.getContext('2d');
+    // Close menu when clicking on a link
+    document.querySelectorAll('.nav-menu a').forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+        });
+    });
     
-    // Set canvas size
-    function setCanvasSize() {
-        const container = waveformCanvas.parentElement;
-        if (!container) return;
-        
-        const width = container.clientWidth;
-        const height = container.clientHeight;
-        
-        waveformCanvas.width = width;
-        waveformCanvas.height = height;
-        frequencyCanvas.width = width;
-        frequencyCanvas.height = height;
-    }
-    
-    setCanvasSize();
-    
-    // Audio context setup
-    let audioContext, analyser, dataArray, frequencyData;
-    let isAudioInitialized = false;
-    
-    function initAudioContext() {
-        if (isAudioInitialized) return;
-        
-        try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const source = audioContext.createMediaElementSource(audioElement);
-            analyser = audioContext.createAnalyser();
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
             
-            analyser.fftSize = 2048;
-            const bufferLength = analyser.frequencyBinCount;
-            dataArray = new Uint8Array(bufferLength);
-            frequencyData = new Uint8Array(bufferLength);
-            
-            source.connect(analyser);
-            analyser.connect(audioContext.destination);
-            
-            isAudioInitialized = true;
-            drawVisualizers();
-        } catch (error) {
-            console.error('Audio context error:', error);
-        }
-    }
-    
-    // Draw visualizers
-    function drawVisualizers() {
-        if (!isAudioInitialized || !analyser || !dataArray) {
-            requestAnimationFrame(drawVisualizers);
-            return;
-        }
-        
-        analyser.getByteTimeDomainData(dataArray);
-        analyser.getByteFrequencyData(frequencyData);
-        
-        // Clear canvases
-        waveformCtx.clearRect(0, 0, waveformCanvas.width, waveformCanvas.height);
-        frequencyCtx.clearRect(0, 0, frequencyCanvas.width, frequencyCanvas.height);
-        
-        // Draw waveform
-        waveformCtx.lineWidth = 2;
-        waveformCtx.strokeStyle = '#FF9800';
-        waveformCtx.beginPath();
-        
-        const sliceWidth = waveformCanvas.width / dataArray.length;
-        let x = 0;
-        
-        for (let i = 0; i < dataArray.length; i++) {
-            const v = dataArray[i] / 128.0;
-            const y = v * waveformCanvas.height / 2;
-            
-            if (i === 0) {
-                waveformCtx.moveTo(x, y);
-            } else {
-                waveformCtx.lineTo(x, y);
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                const offsetTop = targetElement.offsetTop - 80;
+                window.scrollTo({
+                    top: offsetTop,
+                    behavior: 'smooth'
+                });
             }
-            
-            x += sliceWidth;
-        }
-        
-        waveformCtx.stroke();
-        
-        // Draw frequency bars with glow effect
-        const barCount = 64;
-        const barWidth = frequencyCanvas.width / barCount;
-        
-        for (let i = 0; i < barCount; i++) {
-            const barIndex = Math.floor(i * frequencyData.length / barCount);
-            const magnitude = frequencyData[barIndex];
-            const barHeight = (magnitude / 255) * frequencyCanvas.height;
-            
-            // Create gradient for each bar
-            const gradient = frequencyCtx.createLinearGradient(
-                i * barWidth, frequencyCanvas.height - barHeight,
-                i * barWidth, frequencyCanvas.height
-            );
-            gradient.addColorStop(0, '#FF9800');
-            gradient.addColorStop(0.5, '#FFD54F');
-            gradient.addColorStop(1, '#FFF176');
-            
-            // Draw bar with shadow
-            frequencyCtx.shadowColor = '#FF9800';
-            frequencyCtx.shadowBlur = 15;
-            frequencyCtx.fillStyle = gradient;
-            frequencyCtx.fillRect(
-                i * barWidth,
-                frequencyCanvas.height - barHeight,
-                barWidth - 1,
-                barHeight
-            );
-            
-            // Draw bar outline
-            frequencyCtx.shadowBlur = 0;
-            frequencyCtx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-            frequencyCtx.lineWidth = 1;
-            frequencyCtx.strokeRect(
-                i * barWidth,
-                frequencyCanvas.height - barHeight,
-                barWidth - 1,
-                barHeight
-            );
-        }
-        
-        // Draw center circle
-        const centerX = frequencyCanvas.width / 2;
-        const centerY = frequencyCanvas.height / 2;
-        const avgMagnitude = frequencyData.reduce((a, b) => a + b, 0) / frequencyData.length;
-        const radius = 20 + (avgMagnitude / 255 * 80);
-        
-        // Outer glow
-        frequencyCtx.shadowColor = '#FF9800';
-        frequencyCtx.shadowBlur = 30;
-        frequencyCtx.beginPath();
-        frequencyCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        frequencyCtx.fillStyle = 'rgba(255, 152, 0, 0.1)';
-        frequencyCtx.fill();
-        frequencyCtx.shadowBlur = 0;
-        
-        // Inner circle
-        const radialGradient = frequencyCtx.createRadialGradient(
-            centerX, centerY, 0,
-            centerX, centerY, radius
-        );
-        radialGradient.addColorStop(0, 'rgba(255, 152, 0, 0.8)');
-        radialGradient.addColorStop(0.7, 'rgba(255, 152, 0, 0.2)');
-        radialGradient.addColorStop(1, 'rgba(255, 152, 0, 0)');
-        
-        frequencyCtx.beginPath();
-        frequencyCtx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-        frequencyCtx.fillStyle = radialGradient;
-        frequencyCtx.fill();
-        
-        requestAnimationFrame(drawVisualizers);
-    }
-    
-    // Initialize audio on first user interaction
-    document.addEventListener('click', function initAudioOnce() {
-        initAudioContext();
-        document.removeEventListener('click', initAudioOnce);
-    }, { once: true });
-    
-    // Handle resize
-    window.addEventListener('resize', setCanvasSize);
-    
-    // Update rotating disc animation based on play state
-    audioElement.addEventListener('play', function() {
-        const disc = document.querySelector('.rotating-disc');
-        if (disc) {
-            disc.style.animation = 'rotate 10s linear infinite';
-        }
-    });
-    
-    audioElement.addEventListener('pause', function() {
-        const disc = document.querySelector('.rotating-disc');
-        if (disc) {
-            disc.style.animation = 'rotate 20s linear infinite paused';
-        }
+        });
     });
 }
 
-// Player Controls
-function initPlayerControls() {
-    const audioPlayer = document.getElementById('audioPlayer');
+// Audio Player
+let audioPlayer = null;
+let currentChannel = null;
+let isPlaying = false;
+let currentTime = 0;
+let totalTime = 0;
+
+function initAudioPlayer() {
+    audioPlayer = document.getElementById('audioPlayer');
+    
+    // Set initial audio source
+    audioPlayer.src = 'https://stream.gurfatehradio.com/kirtan.mp3';
+    
+    // Player controls
     const playBtn = document.getElementById('playBtn');
     const playIcon = document.getElementById('playIcon');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const volumeIcon = document.getElementById('volumeIcon');
     const progressBar = document.getElementById('progressBar');
     const progressFill = document.getElementById('progressFill');
     const progressThumb = document.getElementById('progressThumb');
-    const currentTimeDisplay = document.getElementById('currentTimeDisplay');
-    const totalTimeDisplay = document.getElementById('totalTimeDisplay');
-    
-    if (!audioPlayer || !playBtn) return;
-    
-    let isPlaying = false;
+    const currentTimeEl = document.getElementById('currentTime');
+    const totalTimeEl = document.getElementById('totalTime');
+    const favoriteBtn = document.getElementById('favoriteBtn');
+    const repeatBtn = document.getElementById('repeatBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const shareBtn = document.getElementById('shareBtn');
     
     // Play/Pause
-    playBtn.addEventListener('click', function() {
-        if (isPlaying) {
-            audioPlayer.pause();
-            playIcon.className = 'fas fa-play';
-            this.classList.remove('playing');
-        } else {
-            audioPlayer.play().catch(e => {
-                console.log('Play failed:', e);
-                // If audio context is suspended, resume it
-                if (audioPlayer.context && audioPlayer.context.state === 'suspended') {
-                    audioPlayer.context.resume();
-                }
-            });
-            playIcon.className = 'fas fa-pause';
-            this.classList.add('playing');
-        }
-        isPlaying = !isPlaying;
-        
-        // Animation
-        gsap.to(this, {
-            scale: 1.2,
-            duration: 0.1,
-            yoyo: true,
-            repeat: 1
-        });
-    });
+    playBtn.addEventListener('click', togglePlayPause);
     
-    // Previous
-    prevBtn.addEventListener('click', function() {
-        gsap.to(this, {
-            rotation: -360,
-            duration: 0.5,
-            ease: "power2.out"
-        });
+    // Previous/Next
+    prevBtn.addEventListener('click', playPrevious);
+    nextBtn.addEventListener('click', playNext);
+    
+    // Volume control
+    volumeSlider.addEventListener('input', function() {
+        const volume = this.value / 100;
+        audioPlayer.volume = volume;
         
-        // Simulate track change
-        const channels = document.querySelectorAll('.channel-card');
-        const currentChannel = document.querySelector('.channel-card.active');
-        let nextChannel;
-        
-        if (currentChannel) {
-            const index = Array.from(channels).indexOf(currentChannel);
-            nextChannel = channels[(index - 1 + channels.length) % channels.length];
+        // Update volume icon
+        if (volume === 0) {
+            volumeIcon.className = 'fas fa-volume-mute';
+        } else if (volume < 0.5) {
+            volumeIcon.className = 'fas fa-volume-down';
         } else {
-            nextChannel = channels[0];
-        }
-        
-        if (nextChannel) {
-            simulateChannelSwitch(nextChannel);
+            volumeIcon.className = 'fas fa-volume-up';
         }
     });
     
-    // Next
-    nextBtn.addEventListener('click', function() {
-        gsap.to(this, {
-            rotation: 360,
-            duration: 0.5,
-            ease: "power2.out"
-        });
-        
-        // Simulate track change
-        const channels = document.querySelectorAll('.channel-card');
-        const currentChannel = document.querySelector('.channel-card.active');
-        let nextChannel;
-        
-        if (currentChannel) {
-            const index = Array.from(channels).indexOf(currentChannel);
-            nextChannel = channels[(index + 1) % channels.length];
-        } else {
-            nextChannel = channels[0];
-        }
-        
-        if (nextChannel) {
-            simulateChannelSwitch(nextChannel);
-        }
-    });
-    
-    // Progress Bar
+    // Progress bar
     let isDragging = false;
     
     progressBar.addEventListener('click', function(e) {
+        if (!audioPlayer.duration) return;
+        
         const rect = this.getBoundingClientRect();
         const percentage = (e.clientX - rect.left) / rect.width;
         audioPlayer.currentTime = percentage * audioPlayer.duration;
@@ -502,26 +133,11 @@ function initPlayerControls() {
         document.addEventListener('mouseup', stopDrag);
     });
     
-    progressThumb.addEventListener('touchstart', function(e) {
-        e.preventDefault();
-        isDragging = true;
-        document.addEventListener('touchmove', handleDrag);
-        document.addEventListener('touchend', stopDrag);
-    });
-    
     function handleDrag(e) {
-        if (!isDragging) return;
+        if (!isDragging || !audioPlayer.duration) return;
         
         const rect = progressBar.getBoundingClientRect();
-        let clientX;
-        
-        if (e.type.includes('mouse')) {
-            clientX = e.clientX;
-        } else {
-            clientX = e.touches[0].clientX;
-        }
-        
-        let percentage = (clientX - rect.left) / rect.width;
+        let percentage = (e.clientX - rect.left) / rect.width;
         percentage = Math.max(0, Math.min(1, percentage));
         
         audioPlayer.currentTime = percentage * audioPlayer.duration;
@@ -532,611 +148,715 @@ function initPlayerControls() {
         isDragging = false;
         document.removeEventListener('mousemove', handleDrag);
         document.removeEventListener('mouseup', stopDrag);
-        document.removeEventListener('touchmove', handleDrag);
-        document.removeEventListener('touchend', stopDrag);
     }
     
-    // Update progress
-    function updateProgress(percentage) {
-        progressFill.style.width = `${percentage * 100}%`;
-        progressThumb.style.left = `${percentage * 100}%`;
-    }
+    // Audio events
+    audioPlayer.addEventListener('loadedmetadata', function() {
+        totalTime = audioPlayer.duration;
+        totalTimeEl.textContent = formatTime(totalTime);
+    });
     
-    // Time updates
     audioPlayer.addEventListener('timeupdate', function() {
         if (isDragging) return;
         
-        const percentage = audioPlayer.currentTime / audioPlayer.duration;
+        currentTime = audioPlayer.currentTime;
+        const percentage = currentTime / audioPlayer.duration;
         updateProgress(percentage);
         
-        // Update time displays
-        currentTimeDisplay.textContent = formatTime(audioPlayer.currentTime);
-        totalTimeDisplay.textContent = formatTime(audioPlayer.duration);
+        currentTimeEl.textContent = formatTime(currentTime);
+        totalTimeEl.textContent = formatTime(audioPlayer.duration);
+    });
+    
+    audioPlayer.addEventListener('play', function() {
+        isPlaying = true;
+        playIcon.className = 'fas fa-pause';
+        playBtn.classList.add('playing');
+        updateSpinningDisc(true);
+    });
+    
+    audioPlayer.addEventListener('pause', function() {
+        isPlaying = false;
+        playIcon.className = 'fas fa-play';
+        playBtn.classList.remove('playing');
+        updateSpinningDisc(false);
+    });
+    
+    audioPlayer.addEventListener('ended', function() {
+        playNext();
+    });
+    
+    // Extra controls
+    let isFavorite = false;
+    favoriteBtn.addEventListener('click', function() {
+        isFavorite = !isFavorite;
+        const heartIcon = this.querySelector('i');
+        heartIcon.className = isFavorite ? 'fas fa-heart' : 'far fa-heart';
+        this.classList.toggle('active', isFavorite);
         
-        // Update visualizer time
-        const currentTimeElement = document.getElementById('currentTime');
-        const totalTimeElement = document.getElementById('totalTime');
-        if (currentTimeElement && totalTimeElement) {
-            currentTimeElement.textContent = formatTime(audioPlayer.currentTime);
-            totalTimeElement.textContent = formatTime(audioPlayer.duration);
+        if (isFavorite) {
+            showNotification('ਤੁਹਾਡੇ ਪਸੰਦੀਦਾ ਵਿੱਚ ਜੋੜਿਆ ਗਿਆ');
         }
     });
     
-    // Format time helper
-    function formatTime(seconds) {
-        if (isNaN(seconds)) return '0:00';
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    }
-    
-    // Simulate channel switch
-    function simulateChannelSwitch(channelElement) {
-        const channel = channelElement.dataset.channel;
-        const channelInfo = {
-            kirtan: {
-                title: 'ਗੁਰਬਾਣੀ ਕੀਰਤਨ',
-                artist: 'ਭਾਈ ਰਕਿਹ੍ਬਰ ਸਿੰਘ',
-                channel: 'ਕੀਰਤਨ ਚੈਨਲ'
-            },
-            katha: {
-                title: 'ਸੁਖਮਨੀ ਸਾਹਿਬ ਕਥਾ',
-                artist: 'ਗਿਆਨੀ ਗੁਰਬਚਨ ਸਿੰਘ',
-                channel: 'ਕਥਾ ਚੈਨਲ'
-            },
-            history: {
-                title: 'ਸਿੱਖ ਇਤਿਹਾਸ',
-                artist: 'ਪ੍ਰੋਫੈਸਰ ਕਿਰਪਾਲ ਸਿੰਘ',
-                channel: 'ਇਤਿਹਾਸ ਚੈਨਲ'
-            },
-            live: {
-                title: 'ਲਾਈਵ ਹਰਿਮੰਦਰ ਸਾਹਿਬ',
-                artist: 'ਅੰਮ੍ਰਿਤਸਰ',
-                channel: 'ਲਾਈਵ ਚੈਨਲ'
-            }
-        };
+    let repeatMode = 'off'; // off, all, one
+    repeatBtn.addEventListener('click', function() {
+        const modes = ['off', 'all', 'one'];
+        const currentIndex = modes.indexOf(repeatMode);
+        repeatMode = modes[(currentIndex + 1) % modes.length];
         
-        if (channelInfo[channel]) {
-            updateTrackInfo(channelInfo[channel]);
-            
-            // Animation
-            gsap.from(channelElement, {
-                scale: 0.8,
-                rotationY: -180,
-                duration: 0.5,
-                ease: "back.out(1.7)"
-            });
-            
-            // Set active channel
-            document.querySelectorAll('.channel-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            channelElement.classList.add('active');
+        this.classList.toggle('active', repeatMode !== 'off');
+        
+        switch (repeatMode) {
+            case 'all':
+                this.title = 'Repeat All';
+                break;
+            case 'one':
+                this.title = 'Repeat One';
+                break;
+            case 'off':
+                this.title = 'Repeat Off';
+                break;
         }
-    }
-    
-    // Update track info with animation
-    function updateTrackInfo(info) {
-        const titleElement = document.getElementById('trackTitle');
-        const artistElement = document.getElementById('trackArtist');
-        const channelElement = document.getElementById('channelName');
-        
-        if (titleElement && artistElement && channelElement) {
-            // Fade out
-            gsap.to([titleElement, artistElement, channelElement], {
-                opacity: 0,
-                y: -10,
-                duration: 0.2,
-                onComplete: function() {
-                    // Update text
-                    titleElement.textContent = info.title;
-                    artistElement.textContent = info.artist;
-                    channelElement.textContent = info.channel;
-                    
-                    // Fade in
-                    gsap.to([titleElement, artistElement, channelElement], {
-                        opacity: 1,
-                        y: 0,
-                        duration: 0.3
-                    });
-                }
-            });
-        }
-    }
-}
-
-// 3D Knobs
-function init3DKnobs() {
-    const knobs = ['volumeKnob', 'bassKnob', 'trebleKnob'];
-    const audioPlayer = document.getElementById('audioPlayer');
-    
-    knobs.forEach(knobId => {
-        const knob = document.getElementById(knobId);
-        if (!knob) return;
-        
-        const knobBase = knob.querySelector('.knob-base');
-        const knobHandle = knob.querySelector('.knob-handle');
-        
-        if (!knobBase || !knobHandle) return;
-        
-        let isDragging = false;
-        let startAngle = 0;
-        let currentAngle = 45; // Start at 45 degrees
-        
-        // Set initial position
-        knobHandle.style.transform = `rotate(${currentAngle}deg)`;
-        
-        knobBase.addEventListener('mousedown', startDrag);
-        knobBase.addEventListener('touchstart', startDrag);
-        
-        function startDrag(e) {
-            e.preventDefault();
-            isDragging = true;
-            
-            const rect = knobBase.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            let clientX, clientY;
-            
-            if (e.type === 'mousedown') {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            } else {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            }
-            
-            const startX = clientX - centerX;
-            const startY = clientY - centerY;
-            startAngle = Math.atan2(startY, startX) * (180 / Math.PI);
-            
-            document.addEventListener('mousemove', drag);
-            document.addEventListener('mouseup', stopDrag);
-            document.addEventListener('touchmove', drag);
-            document.addEventListener('touchend', stopDrag);
-        }
-        
-        function drag(e) {
-            if (!isDragging) return;
-            
-            const rect = knobBase.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            let clientX, clientY;
-            
-            if (e.type === 'mousemove') {
-                clientX = e.clientX;
-                clientY = e.clientY;
-            } else {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            }
-            
-            const currentX = clientX - centerX;
-            const currentY = clientY - centerY;
-            const currentDragAngle = Math.atan2(currentY, currentX) * (180 / Math.PI);
-            
-            let angleDiff = currentDragAngle - startAngle;
-            
-            // Normalize angle difference
-            if (angleDiff > 180) angleDiff -= 360;
-            if (angleDiff < -180) angleDiff += 360;
-            
-            currentAngle += angleDiff;
-            currentAngle = Math.max(0, Math.min(270, currentAngle));
-            
-            knobHandle.style.transform = `rotate(${currentAngle}deg)`;
-            startAngle = currentDragAngle;
-            
-            // Update audio based on knob
-            const value = currentAngle / 270;
-            
-            switch (knobId) {
-                case 'volumeKnob':
-                    if (audioPlayer) {
-                        audioPlayer.volume = value;
-                    }
-                    break;
-                case 'bassKnob':
-                    // Would control bass if we had Web Audio API equalizer
-                    break;
-                case 'trebleKnob':
-                    // Would control treble if we had Web Audio API equalizer
-                    break;
-            }
-            
-            // Visual feedback
-            knobBase.style.boxShadow = `
-                0 15px 40px rgba(255, 152, 0, ${0.2 + value * 0.3}),
-                inset 0 0 20px rgba(0, 0, 0, 0.5)
-            `;
-        }
-        
-        function stopDrag() {
-            isDragging = false;
-            document.removeEventListener('mousemove', drag);
-            document.removeEventListener('mouseup', stopDrag);
-            document.removeEventListener('touchmove', drag);
-            document.removeEventListener('touchend', stopDrag);
-        }
-        
-        // Click to set specific value
-        knobBase.addEventListener('click', function(e) {
-            if (isDragging) return; // Don't trigger if we just dragged
-            
-            const rect = this.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            
-            const clickX = e.clientX - centerX;
-            const clickY = e.clientY - centerY;
-            
-            const targetAngle = Math.atan2(clickY, clickX) * (180 / Math.PI);
-            const normalizedAngle = (targetAngle + 360) % 360;
-            
-            // Animate to clicked position
-            gsap.to(knobHandle, {
-                rotation: normalizedAngle,
-                duration: 0.5,
-                ease: "back.out(1.7)",
-                onUpdate: function() {
-                    currentAngle = normalizedAngle;
-                    const value = currentAngle / 270;
-                    
-                    if (knobId === 'volumeKnob' && audioPlayer) {
-                        audioPlayer.volume = value;
-                    }
-                }
-            });
-        });
     });
-}
-
-// Theme Toggle
-function initThemeToggle() {
-    const themeToggle = document.getElementById('themeToggle');
-    if (!themeToggle) return;
     
-    const icon = themeToggle.querySelector('i');
-    const text = themeToggle.querySelector('.mode-text');
+    let isShuffle = false;
+    shuffleBtn.addEventListener('click', function() {
+        isShuffle = !isShuffle;
+        this.classList.toggle('active', isShuffle);
+        this.title = isShuffle ? 'Shuffle On' : 'Shuffle Off';
+    });
     
-    let isDark = true;
+    downloadBtn.addEventListener('click', function() {
+        showNotification('ਡਾਊਨਲੋਡ ਸ਼ੁਰੂ ਹੋ ਰਿਹਾ ਹੈ...');
+        // In a real app, this would trigger a download
+    });
     
-    themeToggle.addEventListener('click', function() {
-        isDark = !isDark;
-        
-        if (isDark) {
-            document.body.classList.remove('light-theme');
-            icon.className = 'fas fa-moon';
-            text.textContent = 'ਨਾਈਟ ਮੋਡ';
+    shareBtn.addEventListener('click', function() {
+        shareCurrentTrack();
+    });
+    
+    // Live play button
+    document.getElementById('playLiveBtn').addEventListener('click', function() {
+        if (!isPlaying) {
+            playChannel('kirtan');
         } else {
-            document.body.classList.add('light-theme');
-            icon.className = 'fas fa-sun';
-            text.textContent = 'ਡੇ ਮੋਡ';
+            togglePlayPause();
         }
-        
-        // Animation
-        gsap.to(this, {
-            rotation: 360,
-            duration: 0.5,
-            ease: "back.out(1.7)"
-        });
     });
+    
+    // Initial volume
+    audioPlayer.volume = volumeSlider.value / 100;
 }
 
-// Channel Switching
-function initChannelSwitching() {
-    const channelCards = document.querySelectorAll('.channel-card');
+function togglePlayPause() {
+    if (!audioPlayer) return;
     
-    channelCards.forEach(card => {
-        card.addEventListener('click', function() {
-            const channel = this.dataset.channel;
-            
-            // Remove active class from all cards
-            channelCards.forEach(c => {
-                c.classList.remove('active');
-            });
-            
-            // Add active class to clicked card
-            this.classList.add('active');
-            
-            // Animation
-            gsap.fromTo(this,
-                { scale: 0.9, rotationY: -90 },
-                { scale: 1, rotationY: 0, duration: 0.5, ease: "back.out(1.7)" }
-            );
-            
-            // Update player info based on channel
-            const audioPlayer = document.getElementById('audioPlayer');
-            const playBtn = document.getElementById('playBtn');
-            const playIcon = document.getElementById('playIcon');
-            
-            if (audioPlayer && playBtn && playIcon) {
-                // Start playing if not already playing
-                if (audioPlayer.paused) {
-                    audioPlayer.play().then(() => {
-                        playIcon.className = 'fas fa-pause';
-                        playBtn.classList.add('playing');
-                    }).catch(e => {
-                        console.log('Auto-play failed:', e);
-                    });
-                }
-            }
-            
-            // Update track info
-            const channelInfo = {
-                kirtan: {
-                    title: 'ਗੁਰਬਾਣੀ ਕੀਰਤਨ',
-                    artist: 'ਭਾਈ ਰਵਿੰਦਰ ਸਿੰਘ',
-                    channel: 'ਕੀਰਤਨ ਚੈਨਲ'
-                },
-                katha: {
-                    title: 'ਸੁਖਮਨੀ ਸਾਹਿਬ ਕਥਾ',
-                    artist: 'ਗਿਆਨੀ ਗੁਰਬਚਨ ਸਿੰਘ',
-                    channel: 'ਕਥਾ ਚੈਨਲ'
-                },
-                history: {
-                    title: 'ਸਿੱਖ ਇਤਿਹਾਸ',
-                    artist: 'ਪ੍ਰੋਫੈਸਰ ਕਿਰਪਾਲ ਸਿੰਘ',
-                    channel: 'ਇਤਿਹਾਸ ਚੈਨਲ'
-                },
-                live: {
-                    title: 'ਲਾਈਵ ਹਰਿਮੰਦਰ ਸਾਹਿਬ',
-                    artist: 'ਅੰਮ੍ਰਿਤਸਰ',
-                    channel: 'ਲਾਈਵ ਚੈਨਲ'
-                }
-            };
-            
-            if (channelInfo[channel]) {
-                const info = channelInfo[channel];
-                const titleElement = document.getElementById('trackTitle');
-                const artistElement = document.getElementById('trackArtist');
-                const channelElement = document.getElementById('channelName');
-                
-                if (titleElement && artistElement && channelElement) {
-                    // Animate text change
-                    gsap.to([titleElement, artistElement, channelElement], {
-                        opacity: 0,
-                        y: -10,
-                        duration: 0.2,
-                        onComplete: function() {
-                            titleElement.textContent = info.title;
-                            artistElement.textContent = info.artist;
-                            channelElement.textContent = info.channel;
-                            
-                            gsap.to([titleElement, artistElement, channelElement], {
-                                opacity: 1,
-                                y: 0,
-                                duration: 0.3
-                            });
-                        }
-                    });
-                }
-            }
+    if (isPlaying) {
+        audioPlayer.pause();
+    } else {
+        audioPlayer.play().catch(e => {
+            console.log('Play failed:', e);
+            // Show error to user
+            showNotification('ਆਡੀਓ ਪਲੇ ਕਰਨ ਵਿੱਚ ਅਸਫਲ. ਕਿਰਪਾ ਕਰਕੇ ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ.');
         });
-    });
-}
-
-// Extra Controls
-function initExtraControls() {
-    const repeatBtn = document.getElementById('repeatBtn');
-    const shuffleBtn = document.getElementById('shuffleBtn');
-    const favoriteBtn = document.getElementById('favoriteBtn');
-    const shareBtn = document.getElementById('shareBtn');
-    const heartIcon = favoriteBtn?.querySelector('i');
-    
-    // Repeat button
-    if (repeatBtn) {
-        let repeatState = 0; // 0: off, 1: all, 2: one
-        
-        repeatBtn.addEventListener('click', function() {
-            repeatState = (repeatState + 1) % 3;
-            
-            switch (repeatState) {
-                case 0:
-                    this.classList.remove('active');
-                    break;
-                case 1:
-                    this.classList.add('active');
-                    this.title = 'Repeat All';
-                    break;
-                case 2:
-                    this.title = 'Repeat One';
-                    break;
-            }
-            
-            // Animation
-            gsap.to(this, {
-                rotation: 360,
-                duration: 0.5,
-                ease: "back.out(1.7)"
-            });
-        });
-    }
-    
-    // Shuffle button
-    if (shuffleBtn) {
-        let isShuffle = false;
-        
-        shuffleBtn.addEventListener('click', function() {
-            isShuffle = !isShuffle;
-            
-            if (isShuffle) {
-                this.classList.add('active');
-            } else {
-                this.classList.remove('active');
-            }
-            
-            // Animation
-            gsap.to(this, {
-                rotation: 360,
-                duration: 0.5,
-                ease: "back.out(1.7)"
-            });
-        });
-    }
-    
-    // Favorite button
-    if (favoriteBtn && heartIcon) {
-        let isFavorite = false;
-        
-        favoriteBtn.addEventListener('click', function() {
-            isFavorite = !isFavorite;
-            
-            if (isFavorite) {
-                heartIcon.className = 'fas fa-heart';
-                this.classList.add('active');
-                
-                // Particle effect
-                createHeartParticles(this);
-            } else {
-                heartIcon.className = 'far fa-heart';
-                this.classList.remove('active');
-            }
-            
-            // Animation
-            gsap.to(this, {
-                scale: 1.3,
-                duration: 0.2,
-                yoyo: true,
-                repeat: 1
-            });
-        });
-    }
-    
-    // Share button
-    if (shareBtn) {
-        shareBtn.addEventListener('click', function() {
-            // Create share data
-            const trackTitle = document.getElementById('trackTitle')?.textContent || 'Gurbani Radio';
-            const trackArtist = document.getElementById('trackArtist')?.textContent || 'Spiritual Music';
-            
-            const shareData = {
-                title: 'ਗੁਰਬਾਣੀ ਰੇਡੀਓ',
-                text: `ਮੈਂ ਇਹ ਸੁਣ ਰਿਹਾ ਹਾਂ: "${trackTitle}" - ${trackArtist}`,
-                url: window.location.href
-            };
-            
-            // Try Web Share API
-            if (navigator.share) {
-                navigator.share(shareData).catch(console.error);
-            } else {
-                // Fallback: copy to clipboard
-                const textToCopy = `${shareData.text}\n${shareData.url}`;
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    alert('ਲਿੰਕ ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕਾਪੀ ਹੋ ਗਿਆ ਹੈ!');
-                }).catch(console.error);
-            }
-            
-            // Animation
-            gsap.to(this, {
-                rotation: 360,
-                duration: 0.5,
-                ease: "back.out(1.7)"
-            });
-        });
-    }
-    
-    // Create heart particles animation
-    function createHeartParticles(element) {
-        const rect = element.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-        
-        for (let i = 0; i < 10; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'heart-particle';
-            particle.innerHTML = '❤️';
-            particle.style.position = 'fixed';
-            particle.style.left = centerX + 'px';
-            particle.style.top = centerY + 'px';
-            particle.style.fontSize = '20px';
-            particle.style.zIndex = '1000';
-            particle.style.pointerEvents = 'none';
-            
-            document.body.appendChild(particle);
-            
-            // Animate particle
-            gsap.to(particle, {
-                x: (Math.random() - 0.5) * 100,
-                y: -100,
-                opacity: 0,
-                rotation: Math.random() * 360,
-                duration: 1,
-                ease: "power2.out",
-                onComplete: function() {
-                    particle.remove();
-                }
-            });
-        }
     }
 }
 
-// Handle window resize
-window.addEventListener('resize', function() {
-    // Update visualizer canvas sizes
-    const waveformCanvas = document.getElementById('waveform-canvas');
-    const frequencyCanvas = document.getElementById('frequency-canvas');
+function playPrevious() {
+    if (!currentChannel) return;
     
-    if (waveformCanvas && frequencyCanvas) {
-        const container = waveformCanvas.parentElement;
-        if (container) {
-            const width = container.clientWidth;
-            const height = container.clientHeight;
-            
-            waveformCanvas.width = width;
-            waveformCanvas.height = height;
-            frequencyCanvas.width = width;
-            frequencyCanvas.height = height;
-        }
+    const channels = document.querySelectorAll('.channel-card');
+    const currentIndex = Array.from(channels).findIndex(card => 
+        card.dataset.channel === currentChannel
+    );
+    
+    let prevIndex;
+    if (isShuffle) {
+        prevIndex = Math.floor(Math.random() * channels.length);
+    } else {
+        prevIndex = (currentIndex - 1 + channels.length) % channels.length;
     }
-});
+    
+    const prevChannel = channels[prevIndex].dataset.channel;
+    playChannel(prevChannel);
+}
 
-// Initialize on load
-window.addEventListener('load', function() {
-    // Add loaded class for animations
-    document.body.classList.add('loaded');
+function playNext() {
+    if (!currentChannel) return;
     
-    // Initial animation for elements
-    gsap.from('.app-header', {
-        y: -50,
-        opacity: 0,
-        duration: 1,
-        ease: "power2.out"
-    });
+    const channels = document.querySelectorAll('.channel-card');
+    const currentIndex = Array.from(channels).findIndex(card => 
+        card.dataset.channel === currentChannel
+    );
     
-    gsap.from('.visualizer-panel', {
-        x: -50,
-        opacity: 0,
-        duration: 1,
-        delay: 0.2,
-        ease: "power2.out"
-    });
+    let nextIndex;
+    if (isShuffle) {
+        nextIndex = Math.floor(Math.random() * channels.length);
+    } else {
+        nextIndex = (currentIndex + 1) % channels.length;
+    }
     
-    gsap.from('.player-panel', {
-        x: 50,
-        opacity: 0,
-        duration: 1,
-        delay: 0.4,
-        ease: "power2.out"
-    });
+    const nextChannel = channels[nextIndex].dataset.channel;
+    playChannel(nextChannel);
+}
+
+function playChannel(channelId) {
+    if (!audioPlayer) return;
     
-    // Auto-play after a delay (if user interaction occurred)
-    setTimeout(() => {
-        const audioPlayer = document.getElementById('audioPlayer');
-        const playBtn = document.getElementById('playBtn');
-        const playIcon = document.getElementById('playIcon');
-        
-        if (audioPlayer && playBtn && playIcon) {
-            // Try to play automatically
-            audioPlayer.play().then(() => {
-                playIcon.className = 'fas fa-pause';
+    const channelData = channelsData[channelId];
+    if (!channelData) return;
+    
+    // Update current channel
+    currentChannel = channelId;
+    
+    // Update audio source
+    audioPlayer.src = channelData.streamUrl;
+    
+    // Update UI
+    document.getElementById('currentTrack').textContent = channelData.currentTrack;
+    document.getElementById('currentArtist').textContent = channelData.artist;
+    document.getElementById('currentChannel').textContent = channelData.name;
+    
+    // Update channel cards
+    document.querySelectorAll('.channel-card').forEach(card => {
+        const playBtn = card.querySelector('.channel-play');
+        if (card.dataset.channel === channelId) {
+            card.classList.add('active');
+            if (playBtn) {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i> ਲਾਈਵ';
                 playBtn.classList.add('playing');
-            }).catch(e => {
-                console.log('Auto-play failed, waiting for user interaction');
-            });
+            }
+        } else {
+            card.classList.remove('active');
+            if (playBtn) {
+                playBtn.innerHTML = '<i class="fas fa-play"></i> ਸੁਣੋ';
+                playBtn.classList.remove('playing');
+            }
         }
-    }, 1000);
-});
+    });
+    
+    // Play audio
+    audioPlayer.play().catch(e => {
+        console.log('Channel switch play failed:', e);
+    });
+    
+    // Show notification
+    showNotification(`${channelData.name} ਚੈਨਲ ਚਲ ਰਿਹਾ ਹੈ`);
+    
+    // Update live listeners
+    updateLiveListeners();
+}
+
+function updateProgress(percentage) {
+    const progressFill = document.getElementById('progressFill');
+    const progressThumb = document.getElementById('progressThumb');
+    
+    if (progressFill && progressThumb) {
+        progressFill.style.width = `${percentage * 100}%`;
+        progressThumb.style.left = `${percentage * 100}%`;
+    }
+}
+
+function updateSpinningDisc(shouldSpin) {
+    const disc = document.querySelector('.spinning');
+    if (disc) {
+        if (shouldSpin) {
+            disc.style.animation = 'spin 10s linear infinite';
+        } else {
+            disc.style.animation = 'spin 10s linear infinite paused';
+        }
+    }
+}
+
+function formatTime(seconds) {
+    if (isNaN(seconds)) return '0:00';
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+function shareCurrentTrack() {
+    const track = document.getElementById('currentTrack').textContent;
+    const artist = document.getElementById('currentArtist').textContent;
+    const channel = document.getElementById('currentChannel').textContent;
+    
+    const shareText = `ਮੈਂ ਇਹ ਸੁਣ ਰਿਹਾ ਹਾਂ: "${track}" - ${artist} (${channel})`;
+    const shareUrl = window.location.href;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Gurfateh Radio',
+            text: shareText,
+            url: shareUrl
+        }).catch(console.error);
+    } else {
+        // Fallback: copy to clipboard
+        const textToCopy = `${shareText}\n${shareUrl}`;
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            showNotification('ਲਿੰਕ ਕਲਿੱਪਬੋਰਡ ਵਿੱਚ ਕਾਪੀ ਕੀਤਾ ਗਿਆ!');
+        }).catch(console.error);
+    }
+}
+
+// Channels Data
+const channelsData = {
+    kirtan: {
+        id: 'kirtan',
+        name: 'ਕੀਰਤਨ ਚੈਨਲ',
+        description: 'ਸ਼ਾਂਤੀਪੂਰਣ ਗੁਰਬਾਣੀ ਕੀਰਤਨ',
+        icon: 'music',
+        color: '#FF9800',
+        streamUrl: 'https://stream.gurfatehradio.com/kirtan.mp3',
+        currentTrack: 'ਗੁਰਬਾਣੀ ਕੀਰਤਨ',
+        artist: 'ਭਾਈ ਹਰਭਜਨ ਸਿੰਘ',
+        listeners: 1250,
+        tags: ['ਕੀਰਤਨ', 'ਗੁਰਬਾਣੀ', 'ਸ਼ਾਂਤੀ']
+    },
+    katha: {
+        id: 'katha',
+        name: 'ਕਥਾ ਚੈਨਲ',
+        description: 'ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਕਥਾ',
+        icon: 'book-open',
+        color: '#4CAF50',
+        streamUrl: 'https://stream.gurfatehradio.com/katha.mp3',
+        currentTrack: 'ਸੁਖਮਨੀ ਸਾਹਿਬ ਕਥਾ',
+        artist: 'ਗਿਆਨੀ ਗੁਰਬਚਨ ਸਿੰਘ',
+        listeners: 890,
+        tags: ['ਕਥਾ', 'ਵਿਆਖਿਆ', 'ਗਿਆਨ']
+    },
+    simran: {
+        id: 'simran',
+        name: 'ਸਿਮਰਨ ਚੈਨਲ',
+        description: 'ਨਾਮ ਸਿਮਰਨ ਅਤੇ ਭਜਨ',
+        icon: 'pray',
+        color: '#2196F3',
+        streamUrl: 'https://stream.gurfatehradio.com/simran.mp3',
+        currentTrack: 'ਵਾਹਿਗੁਰੂ ਸਿਮਰਨ',
+        artist: 'ਸੰਤ ਸਿੰਘ',
+        listeners: 1050,
+        tags: ['ਸਿਮਰਨ', 'ਭਜਨ', 'ਮੈਡੀਟੇਸ਼ਨ']
+    },
+    history: {
+        id: 'history',
+        name: 'ਇਤਿਹਾਸ ਚੈਨਲ',
+        description: 'ਸਿੱਖ ਇਤਿਹਾਸ ਅਤੇ ਸਾਖੀਆਂ',
+        icon: 'landmark',
+        color: '#9C27B0',
+        streamUrl: 'https://stream.gurfatehradio.com/history.mp3',
+        currentTrack: 'ਸਿੱਖ ਇਤਿਹਾਸ',
+        artist: 'ਪ੍ਰੋਫੈਸਰ ਕਿਰਪਾਲ ਸਿੰਘ',
+        listeners: 750,
+        tags: ['ਇਤਿਹਾਸ', 'ਸਾਖੀ', 'ਗਾਥਾ']
+    },
+    live: {
+        id: 'live',
+        name: 'ਲਾਈਵ ਚੈਨਲ',
+        description: 'ਲਾਈਵ ਹਰਿਮੰਦਰ ਸਾਹਿਬ',
+        icon: 'broadcast-tower',
+        color: '#F44336',
+        streamUrl: 'https://stream.gurfatehradio.com/live.mp3',
+        currentTrack: 'ਲਾਈਵ ਹਰਿਮੰਦਰ ਸਾਹਿਬ',
+        artist: 'ਅੰਮ੍ਰਿਤਸਰ',
+        listeners: 3500,
+        tags: ['ਲਾਈਵ', 'ਅੰਮ੍ਰਿਤਸਰ', 'ਕੀਰਤਨ']
+    },
+    japji: {
+        id: 'japji',
+        name: 'ਜਪੁਜੀ ਚੈਨਲ',
+        description: 'ਮੁੱਖ ਨਿਤਨੇਮ ਪਾਠ',
+        icon: 'praying-hands',
+        color: '#FF5722',
+        streamUrl: 'https://stream.gurfatehradio.com/japji.mp3',
+        currentTrack: 'ਜਪੁਜੀ ਸਾਹਿਬ',
+        artist: 'ਭਾਈ ਜਸਵਿੰਦਰ ਸਿੰਘ',
+        listeners: 2100,
+        tags: ['ਨਿਤਨੇਮ', 'ਜਪੁਜੀ', 'ਪਾਠ']
+    },
+    kids: {
+        id: 'kids',
+        name: 'ਬੱਚਿਆਂ ਲਈ',
+        description: 'ਬੱਚਿਆਂ ਲਈ ਕਹਾਣੀਆਂ ਅਤੇ ਕੀਰਤਨ',
+        icon: 'child',
+        color: '#E91E63',
+        streamUrl: 'https://stream.gurfatehradio.com/kids.mp3',
+        currentTrack: 'ਬੱਚਿਆਂ ਦੀਆਂ ਕਹਾਣੀਆਂ',
+        artist: 'ਭਾਈ ਬਲਜਿੰਦਰ ਸਿੰਘ',
+        listeners: 620,
+        tags: ['ਬੱਚੇ', 'ਕਹਾਣੀ', 'ਸਿੱਖਿਆ']
+    },
+    english: {
+        id: 'english',
+        name: 'ਅੰਗਰੇਜ਼ੀ ਚੈਨਲ',
+        description: 'English Katha & Kirtan',
+        icon: 'language',
+        color: '#3F51B5',
+        streamUrl: 'https://stream.gurfatehradio.com/english.mp3',
+        currentTrack: 'Sikh History in English',
+        artist: 'Dr. Harbans Singh',
+        listeners: 940,
+        tags: ['English', 'ਕਥਾ', 'ਅਨੁਵਾਦ']
+    }
+};
+
+// Initialize Channels
+function initChannels() {
+    const channelsGrid = document.getElementById('channelsGrid');
+    if (!channelsGrid) return;
+    
+    // Clear existing content
+    channelsGrid.innerHTML = '';
+    
+    // Create channel cards
+    Object.values(channelsData).forEach(channel => {
+        const channelCard = document.createElement('div');
+        channelCard.className = 'channel-card';
+        channelCard.dataset.channel = channel.id;
+        
+        channelCard.innerHTML = `
+            <div class="channel-header">
+                <div class="channel-icon">
+                    <i class="fas fa-${channel.icon}"></i>
+                </div>
+                <div class="channel-status">
+                    <span class="live-badge">ਲਾਈਵ</span>
+                    <span class="listeners">${channel.listeners.toLocaleString()} ਸੁਣ ਰਹੇ</span>
+                </div>
+            </div>
+            <h3 class="channel-name">${channel.name}</h3>
+            <p class="channel-desc">${channel.description}</p>
+            <div class="channel-tags">
+                ${channel.tags.map(tag => `<span class="channel-tag">${tag}</span>`).join('')}
+            </div>
+            <button class="channel-play">
+                <i class="fas fa-play"></i>
+                ਸੁਣੋ
+            </button>
+        `;
+        
+        // Add click event to play channel
+        const playBtn = channelCard.querySelector('.channel-play');
+        playBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            playChannel(channel.id);
+        });
+        
+        // Add click event to entire card
+        channelCard.addEventListener('click', (e) => {
+            if (!e.target.closest('.channel-play')) {
+                playChannel(channel.id);
+            }
+        });
+        
+        channelsGrid.appendChild(channelCard);
+    });
+    
+    // View all channels button
+    document.getElementById('viewAllChannels').addEventListener('click', () => {
+        // Scroll to channels section
+        document.getElementById('channels').scrollIntoView({ behavior: 'smooth' });
+    });
+}
+
+// Schedule Data
+const scheduleData = {
+    today: [
+        { time: '4:00 AM', program: 'ਅੰਮ੍ਰਿਤ ਵੇਲਾ', channel: 'ਸਿਮਰਨ' },
+        { time: '5:00 AM', program: 'ਜਪੁਜੀ ਸਾਹਿਬ', channel: 'ਜਪੁਜੀ' },
+        { time: '6:00 AM', program: 'ਸੋਹਿਲਾ ਸਾਹਿਬ', channel: 'ਨਿਤਨੇਮ' },
+        { time: '7:00 AM', program: 'ਕੀਰਤਨ', channel: 'ਕੀਰਤਨ', now: true },
+        { time: '8:00 AM', program: 'ਸੁਖਮਨੀ ਸਾਹਿਬ', channel: 'ਕਥਾ' },
+        { time: '9:00 AM', program: 'ਸਿੱਖ ਇਤਿਹਾਸ', channel: 'ਇਤਿਹਾਸ' },
+        { time: '10:00 AM', program: 'ਕਥਾ', channel: 'ਕਥਾ' },
+        { time: '11:00 AM', program: 'ਲਾਈਵ ਕੀਰਤਨ', channel: 'ਲਾਈਵ' },
+        { time: '12:00 PM', program: 'ਰਹਿਰਾਸ ਸਾਹਿਬ', channel: 'ਨਿਤਨੇਮ' },
+        { time: '1:00 PM', program: 'ਬੱਚਿਆਂ ਲਈ ਕਹਾਣੀਆਂ', channel: 'ਬੱਚੇ' },
+        { time: '2:00 PM', program: 'ਅੰਗਰੇਜ਼ੀ ਕਥਾ', channel: 'ਅੰਗਰੇਜ਼ੀ' },
+        { time: '3:00 PM', program: 'ਕੀਰਤਨ ਦਰਬਾਰ', channel: 'ਕੀਰਤਨ' },
+        { time: '4:00 PM', program: 'ਸੁਖਮਨੀ ਸਾਹਿਬ', channel: 'ਕਥਾ' },
+        { time: '5:00 PM', program: 'ਇਤਿਹਾਸ', channel: 'ਇਤਿਹਾਸ' },
+        { time: '6:00 PM', program: 'ਰਹਿਰਾਸ ਸਾਹਿਬ', channel: 'ਨਿਤਨੇਮ' },
+        { time: '7:00 PM', program: 'ਕੀਰਤਨ', channel: 'ਕੀਰਤਨ' },
+        { time: '8:00 PM', program: 'ਕਥਾ', channel: 'ਕਥਾ' },
+        { time: '9:00 PM', program: 'ਸੋਹਿਲਾ ਸਾਹਿਬ', channel: 'ਨਿਤਨੇਮ' },
+        { time: '10:00 PM', program: 'ਸਿਮਰਨ', channel: 'ਸਿਮਰਨ' }
+    ],
+    tomorrow: [
+        { time: '4:00 AM', program: 'ਅੰਮ੍ਰਿਤ ਵੇਲਾ', channel: 'ਸਿਮਰਨ' },
+        { time: '5:00 AM', program: 'ਜਪੁਜੀ ਸਾਹਿਬ', channel: 'ਜਪੁਜੀ' },
+        { time: '6:00 AM', program: 'ਸੋਹਿਲਾ ਸਾਹਿਬ', channel: 'ਨਿਤਨੇਮ' },
+        { time: '7:00 AM', program: 'ਕੀਰਤਨ', channel: 'ਕੀਰਤਨ' },
+        { time: '8:00 AM', program: 'ਸੁਖਮਨੀ ਸਾਹਿਬ', channel: 'ਕਥਾ' },
+        { time: '9:00 AM', program: 'ਵਿਸ਼ੇਸ਼ ਕਥਾ', channel: 'ਕਥਾ' },
+        { time: '10:00 AM', program: 'ਇਤਿਹਾਸ', channel: 'ਇਤਿਹਾਸ' },
+        { time: '11:00 AM', program: 'ਲਾਈਵ ਕੀਰਤਨ', channel: 'ਲਾਈਵ' },
+        { time: '12:00 PM', program: 'ਰਹਿਰਾਸ ਸਾਹਿਬ', channel: 'ਨਿਤਨੇਮ' },
+        { time: '1:00 PM', program: 'ਬੱਚਿਆਂ ਲਈ ਕਹਾਣੀਆਂ', channel: 'ਬੱਚੇ' },
+        { time: '2:00 PM', program: 'ਅੰਗਰੇਜ਼ੀ ਕਥਾ', channel: 'ਅੰਗਰੇਜ਼ੀ' },
+        { time: '3:00 PM', program: 'ਕੀਰਤਨ ਦਰਬਾਰ', channel: 'ਕੀਰਤਨ' },
+        { time: '4:00 PM', program: 'ਸੁਖਮਨੀ ਸਾਹਿਬ', channel: 'ਕਥਾ' },
+        { time: '5:00 PM', program: 'ਇਤਿਹਾਸ', channel: 'ਇਤਿਹਾਸ' },
+        { time: '6:00 PM', program: 'ਰਹਿਰਾਸ ਸਾਹਿਬ', channel: 'ਨਿਤਨੇਮ' },
+        { time: '7:00 PM', program: 'ਕੀਰਤਨ', channel: 'ਕੀਰਤਨ' },
+        { time: '8:00 PM', program: 'ਕਥਾ', channel: 'ਕਥਾ' },
+        { time: '9:00 PM', program: 'ਸੋਹਿਲਾ ਸਾਹਿਬ', channel: 'ਨਿਤਨੇਮ' },
+        { time: '10:00 PM', program: 'ਸਿਮਰਨ', channel: 'ਸਿਮਰਨ' }
+    ],
+    week: [
+        { time: 'Mon', program: 'ਸਪੈਸ਼ਲ ਕੀਰਤਨ', channel: 'ਕੀਰਤਨ' },
+        { time: 'Tue', program: 'ਸੁਖਮਨੀ ਕਥਾ', channel: 'ਕਥਾ' },
+        { time: 'Wed', program: 'ਇਤਿਹਾਸ ਸਪੈਸ਼ਲ', channel: 'ਇਤਿਹਾਸ' },
+        { time: 'Thu', program: 'ਯੁਵਾ ਕੀਰਤਨ', channel: 'ਕੀਰਤਨ' },
+        { time: 'Fri', program: 'ਲਾਈਵ ਦਰਬਾਰ', channel: 'ਲਾਈਵ' },
+        { time: 'Sat', program: 'ਪਰਿਵਾਰਕ ਕਥਾ', channel: 'ਕਥਾ' },
+        { time: 'Sun', program: 'ਮਹਾਂ ਕੀਰਤਨ', channel: 'ਕੀਰਤਨ' }
+    ]
+};
+
+// Initialize Schedule
+function initSchedule() {
+    const scheduleList = document.getElementById('scheduleList');
+    const scheduleTabs = document.querySelectorAll('.schedule-tab');
+    
+    // Load today's schedule by default
+    loadSchedule('today');
+    
+    // Tab switching
+    scheduleTabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            // Remove active class from all tabs
+            scheduleTabs.forEach(t => t.classList.remove('active'));
+            // Add active class to clicked tab
+            tab.classList.add('active');
+            // Load corresponding schedule
+            loadSchedule(tab.dataset.day);
+        });
+    });
+    
+    function loadSchedule(day) {
+        if (!scheduleList) return;
+        
+        const schedule = scheduleData[day];
+        if (!schedule) return;
+        
+        scheduleList.innerHTML = '';
+        
+        schedule.forEach((item, index) => {
+            const scheduleItem = document.createElement('div');
+            scheduleItem.className = `schedule-item ${item.now ? 'now' : ''}`;
+            
+            scheduleItem.innerHTML = `
+                <span class="schedule-time">${item.time}</span>
+                <span class="schedule-program">${item.program}</span>
+                <span class="schedule-channel">${item.channel}</span>
+            `;
+            
+            // Add click event to play program
+            if (item.channel) {
+                scheduleItem.style.cursor = 'pointer';
+                scheduleItem.addEventListener('click', () => {
+                    const channelId = getChannelIdByName(item.channel);
+                    if (channelId) {
+                        playChannel(channelId);
+                    }
+                });
+            }
+            
+            // Add animation delay
+            scheduleItem.style.animationDelay = `${index * 0.1}s`;
+            
+            scheduleList.appendChild(scheduleItem);
+        });
+    }
+}
+
+function getChannelIdByName(channelName) {
+    const channelMap = {
+        'ਕੀਰਤਨ': 'kirtan',
+        'ਕਥਾ': 'katha',
+        'ਸਿਮਰਨ': 'simran',
+        'ਇਤਿਹਾਸ': 'history',
+        'ਲਾਈਵ': 'live',
+        'ਜਪੁਜੀ': 'japji',
+        'ਨਿਤਨੇਮ': 'japji',
+        'ਬੱਚੇ': 'kids',
+        'ਅੰਗਰੇਜ਼ੀ': 'english'
+    };
+    
+    return channelMap[channelName];
+}
+
+// Update Live Listeners
+function updateLiveListeners() {
+    const liveListenersEl = document.getElementById('liveListeners');
+    if (!liveListenersEl) return;
+    
+    // Simulate live listener count
+    let baseCount = 1250;
+    let channelBonus = 0;
+    
+    if (currentChannel && channelsData[currentChannel]) {
+        channelBonus = channelsData[currentChannel].listeners;
+    }
+    
+    // Random fluctuation
+    const fluctuation = Math.floor(Math.random() * 200) - 100;
+    const total = baseCount + channelBonus + fluctuation;
+    
+    // Animate the number change
+    animateNumber(liveListenersEl, parseInt(liveListenersEl.textContent.replace(/,/g, '')), total);
+}
+
+function animateNumber(element, start, end, duration = 1000) {
+    if (start === end) return;
+    
+    const range = end - start;
+    const startTime = Date.now();
+    
+    function updateNumber() {
+        const elapsed = Date.now() - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // Easing function
+        const eased = progress < 0.5 
+            ? 2 * progress * progress 
+            : -1 + (4 - 2 * progress) * progress;
+        
+        const current = Math.floor(start + range * eased);
+        element.textContent = current.toLocaleString();
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+        } else {
+            element.textContent = end.toLocaleString();
+        }
+    }
+    
+    updateNumber();
+}
+
+// Event Listeners
+function initEventListeners() {
+    // Newsletter subscription
+    const newsletterForm = document.querySelector('.newsletter-form');
+    if (newsletterForm) {
+        newsletterForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletterEmail');
+            const email = emailInput.value.trim();
+            
+            if (email && isValidEmail(email)) {
+                showNotification('ਤੁਹਾਡਾ ਈਮੇਲ ਸਬਸਕ੍ਰਾਈਬ ਕੀਤਾ ਗਿਆ!');
+                emailInput.value = '';
+            } else {
+                showNotification('ਕਿਰਪਾ ਕਰਕੇ ਵੈਧ ਈਮੇਲ ਦਰਜ ਕਰੋ', 'error');
+            }
+        });
+    }
+    
+    // Login button
+    document.querySelector('.btn-login').addEventListener('click', () => {
+        showNotification('ਲਾਗਇਨ ਸਿਸਟਮ ਜਲਦੀ ਹੀ ਉਪਲੱਬਧ ਹੋਵੇਗਾ');
+    });
+    
+    // Download buttons
+    document.querySelectorAll('.btn-download, .btn-app').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const platform = this.textContent.includes('Google') ? 'Android' :
+                           this.textContent.includes('App Store') ? 'iOS' : 'Desktop';
+            showNotification(`${platform} ਐਪ ਡਾਊਨਲੋਡ ਸ਼ੁਰੂ ਹੋ ਰਿਹਾ ਹੈ...`);
+        });
+    });
+    
+    // Social links
+    document.querySelectorAll('.social-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const platform = this.querySelector('i').className.split('-')[1];
+            showNotification(`${platform} ਪੇਜ ਜਲਦੀ ਹੀ ਉਪਲੱਬਧ ਹੋਵੇਗੀ`);
+        });
+    });
+}
+
+// Utility Functions
+function showNotification(message, type = 'success') {
+    // Remove existing notification
+    const existingNotification = document.querySelector('.notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Add styles
+    notification.style.cssText = `
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        background: ${type === 'success' ? '#4CAF50' : '#F44336'};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        z-index: 9999;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        animation: slideIn 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 3000);
+}
+
+// Add animation styles
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+// Auto-refresh live listeners every 30 seconds
+setInterval(updateLiveListeners, 30000);
+
+// Initialize with a channel
+setTimeout(() => {
+    playChannel('kirtan');
+}, 3000);
