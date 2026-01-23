@@ -3,312 +3,422 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ਗੁਰਬਾਣੀ 3D ਰੇਡੀਓ | Gurbani Radio</title>
+    <title>Gurfateh Radio - 24/7 Gurbani Radio</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Gurmukhi+MN:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Gurmukhi+MN:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- 3D Background Container -->
-    <div id="three-container"></div>
-    
-    <!-- Floating Particles -->
-    <div class="floating-particles">
-        <div class="particle" style="--i:1;"></div>
-        <div class="particle" style="--i:2;"></div>
-        <div class="particle" style="--i:3;"></div>
-        <div class="particle" style="--i:4;"></div>
-        <div class="particle" style="--i:5;"></div>
-        <div class="particle" style="--i:6;"></div>
-        <div class="particle" style="--i:7;"></div>
-        <div class="particle" style="--i:8;"></div>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <i class="fas fa-praying-hands"></i>
+                <span>Gurfateh</span>
+            </div>
+            <div class="loading-spinner"></div>
+            <p class="loading-text">ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...</p>
+        </div>
     </div>
-    
-    <!-- Main App Container -->
-    <div class="app-container">
-        <!-- Header -->
-        <header class="app-header">
-            <div class="logo-container">
-                <div class="logo-icon">
-                    <i class="fas fa-praying-hands"></i>
-                    <div class="logo-glow"></div>
-                </div>
-                <h1 class="logo-text">
-                    <span class="gurbani-text">ਗੁਰਬਾਣੀ</span>
-                    <span class="radio-text">3D ਰੇਡੀਓ</span>
-                </h1>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-praying-hands"></i>
+                <span class="logo-text">Gurfateh Radio</span>
             </div>
             
-            <div class="header-controls">
-                <button class="mode-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                    <span class="mode-text">ਨਾਈਟ ਮੋਡ</span>
-                </button>
-                <button class="user-btn">
+            <ul class="nav-menu">
+                <li><a href="#home" class="active"><i class="fas fa-home"></i> ਘਰ</a></li>
+                <li><a href="#channels"><i class="fas fa-broadcast-tower"></i> ਚੈਨਲ</a></li>
+                <li><a href="#schedule"><i class="fas fa-calendar-alt"></i> ਸਮਾਂ ਸਾਰਨੀ</a></li>
+                <li><a href="#downloads"><i class="fas fa-download"></i> ਡਾਊਨਲੋਡ</a></li>
+                <li><a href="#about"><i class="fas fa-info-circle"></i> ਸਾਡੇ ਬਾਰੇ</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <button class="btn-login">
                     <i class="fas fa-user"></i>
+                    <span>ਲਾਗਇਨ</span>
+                </button>
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
                 </button>
             </div>
-        </header>
-        
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Left Panel - Visualizer -->
-            <div class="visualizer-panel">
-                <div class="visualizer-container">
-                    <canvas id="waveform-canvas"></canvas>
-                    <canvas id="frequency-canvas"></canvas>
-                    <div class="visualizer-center">
-                        <div class="rotating-disc">
-                            <div class="disc-inner">
-                                <div class="disc-glow"></div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero-section" id="home">
+            <div class="hero-overlay">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="gurmukhi">ਗੁਰਫਤਹ ਰੇਡੀਓ</span>
+                        <span class="english">Gurfateh Radio</span>
+                    </h1>
+                    <p class="hero-subtitle">24/7 ਗੁਰਬਾਣੀ, ਕੀਰਤਨ ਅਤੇ ਸਿੱਖ ਇਤਿਹਾਸ</p>
+                    
+                    <div class="hero-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-headphones"></i>
+                            <div>
+                                <span class="stat-number" id="liveListeners">1,250</span>
+                                <span class="stat-label">ਲਾਈਵ ਸੁਣ ਰਹੇ</span>
                             </div>
                         </div>
-                        <div class="visualizer-info">
-                            <span class="current-time" id="currentTime">0:00</span>
-                            <span class="total-time" id="totalTime">4:30</span>
+                        <div class="stat-item">
+                            <i class="fas fa-satellite-dish"></i>
+                            <div>
+                                <span class="stat-number">12</span>
+                                <span class="stat-label">ਚੈਨਲ</span>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- 3D Audio Controls -->
-                <div class="audio-controls-3d">
-                    <div class="control-knob" id="volumeKnob">
-                        <div class="knob-base">
-                            <div class="knob-ring"></div>
-                            <div class="knob-handle"></div>
+                        <div class="stat-item">
+                            <i class="fas fa-globe"></i>
+                            <div>
+                                <span class="stat-number">50+</span>
+                                <span class="stat-label">ਦੇਸ਼</span>
+                            </div>
                         </div>
-                        <span class="knob-label">ਵਾਲਿਊਮ</span>
                     </div>
                     
-                    <div class="control-knob" id="bassKnob">
-                        <div class="knob-base">
-                            <div class="knob-ring"></div>
-                            <div class="knob-handle"></div>
-                        </div>
-                        <span class="knob-label">ਬੇਸ</span>
-                    </div>
-                    
-                    <div class="control-knob" id="trebleKnob">
-                        <div class="knob-base">
-                            <div class="knob-ring"></div>
-                            <div class="knob-handle"></div>
-                        </div>
-                        <span class="knob-label">ਟ੍ਰੇਬਲ</span>
-                    </div>
+                    <button class="btn-live" id="playLiveBtn">
+                        <i class="fas fa-play-circle"></i>
+                        <span>ਲਾਈਵ ਸੁਣੋ</span>
+                    </button>
                 </div>
             </div>
-            
-            <!-- Right Panel - Player -->
-            <div class="player-panel">
-                <!-- Now Playing -->
-                <div class="now-playing">
-                    <div class="track-cover">
-                        <div class="cover-image">
-                            <div class="cover-glow"></div>
-                            <i class="fas fa-compact-disc"></i>
+        </section>
+
+        <!-- Main Player -->
+        <section class="player-section">
+            <div class="player-container">
+                <div class="player-main">
+                    <div class="now-playing">
+                        <div class="track-cover">
+                            <div class="cover-image">
+                                <i class="fas fa-compact-disc spinning"></i>
+                            </div>
                         </div>
-                        <div class="cover-ring"></div>
+                        
+                        <div class="track-info">
+                            <h3 class="track-title" id="currentTrack">ਗੁਰਬਾਣੀ ਕੀਰਤਨ</h3>
+                            <p class="track-artist" id="currentArtist">ਭਾਈ ਹਰਭਜਨ ਸਿੰਘ</p>
+                            <div class="track-meta">
+                                <span class="track-channel" id="currentChannel">ਕੀਰਤਨ ਚੈਨਲ</span>
+                                <span class="track-quality">128 kbps</span>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="track-info">
-                        <h2 class="track-title" id="trackTitle">ਗੁਰਬਾਣੀ ਕੀਰਤਨ</h2>
-                        <p class="track-artist" id="trackArtist">ਭਾਈ ਰਵਿੰਦਰ ਸਿੰਘ</p>
-                        <div class="track-channel">
-                            <i class="fas fa-broadcast-tower"></i>
-                            <span id="channelName">ਕੀਰਤਨ ਚੈਨਲ</span>
+                    <div class="player-controls">
+                        <button class="control-btn" id="prevBtn" title="ਪਿਛਲਾ">
+                            <i class="fas fa-step-backward"></i>
+                        </button>
+                        
+                        <button class="control-btn play-btn" id="playBtn" title="ਪਲੇ/ਰੋਕੋ">
+                            <i class="fas fa-play" id="playIcon"></i>
+                        </button>
+                        
+                        <button class="control-btn" id="nextBtn" title="ਅਗਲਾ">
+                            <i class="fas fa-step-forward"></i>
+                        </button>
+                        
+                        <div class="volume-control">
+                            <i class="fas fa-volume-up" id="volumeIcon"></i>
+                            <input type="range" id="volumeSlider" min="0" max="100" value="70">
+                        </div>
+                        
+                        <button class="control-btn" id="favoriteBtn" title="ਪਸੰਦੀਦਾ">
+                            <i class="far fa-heart"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="player-progress">
+                        <div class="progress-bar" id="progressBar">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <div class="progress-thumb" id="progressThumb"></div>
+                        </div>
+                        <div class="time-display">
+                            <span id="currentTime">0:00</span>
+                            <span id="totalTime">4:30</span>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Player Controls -->
-                <div class="player-controls">
-                    <button class="control-btn" id="prevBtn">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                    
-                    <button class="control-btn play-btn" id="playBtn">
-                        <i class="fas fa-play" id="playIcon"></i>
-                        <div class="pulse-effect"></div>
-                    </button>
-                    
-                    <button class="control-btn" id="nextBtn">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
-                </div>
-                
-                <!-- Progress Bar -->
-                <div class="progress-container">
-                    <div class="progress-bar" id="progressBar">
-                        <div class="progress-fill" id="progressFill"></div>
-                        <div class="progress-thumb" id="progressThumb"></div>
-                    </div>
-                    <div class="time-display">
-                        <span id="currentTimeDisplay">0:00</span>
-                        <span id="totalTimeDisplay">4:30</span>
-                    </div>
-                </div>
-                
-                <!-- Extra Controls -->
-                <div class="extra-controls">
-                    <button class="extra-btn" id="repeatBtn">
+                <div class="player-extra">
+                    <button class="extra-btn" id="repeatBtn" title="ਦੁਹਰਾਓ">
                         <i class="fas fa-redo"></i>
                     </button>
-                    <button class="extra-btn" id="shuffleBtn">
+                    <button class="extra-btn" id="shuffleBtn" title="ਮਿਲਾਓ">
                         <i class="fas fa-random"></i>
                     </button>
-                    <button class="extra-btn" id="favoriteBtn">
-                        <i class="far fa-heart"></i>
+                    <button class="extra-btn" id="downloadBtn" title="ਡਾਊਨਲੋਡ">
+                        <i class="fas fa-download"></i>
                     </button>
-                    <button class="extra-btn" id="shareBtn">
+                    <button class="extra-btn" id="shareBtn" title="ਸਾਂਝਾ ਕਰੋ">
                         <i class="fas fa-share-alt"></i>
                     </button>
                 </div>
-                
-                <!-- Channels Grid -->
-                <div class="channels-section">
-                    <h3 class="section-title">
-                        <i class="fas fa-satellite-dish"></i>
-                        ਲਾਈਵ ਚੈਨਲ
-                    </h3>
-                    
-                    <div class="channels-grid">
-                        <!-- Channel 1 -->
-                        <div class="channel-card" data-channel="kirtan">
-                            <div class="channel-icon">
-                                <i class="fas fa-music"></i>
-                                <div class="channel-glow"></div>
-                            </div>
-                            <h4 class="channel-name">ਕੀਰਤਨ</h4>
-                            <p class="channel-desc">ਸ਼ਾਂਤੀਪੂਰਣ ਗੁਰਬਾਣੀ</p>
-                            <div class="channel-status">
-                                <div class="live-indicator"></div>
-                                <span class="listeners">1.2K ਸੁਣ ਰਹੇ</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Channel 2 -->
-                        <div class="channel-card" data-channel="katha">
-                            <div class="channel-icon">
-                                <i class="fas fa-book-open"></i>
-                                <div class="channel-glow"></div>
-                            </div>
-                            <h4 class="channel-name">ਕਥਾ</h4>
-                            <p class="channel-desc">ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ</p>
-                            <div class="channel-status">
-                                <div class="live-indicator"></div>
-                                <span class="listeners">890 ਸੁਣ ਰਹੇ</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Channel 3 -->
-                        <div class="channel-card" data-channel="history">
-                            <div class="channel-icon">
-                                <i class="fas fa-landmark"></i>
-                                <div class="channel-glow"></div>
-                            </div>
-                            <h4 class="channel-name">ਇਤਿਹਾਸ</h4>
-                            <p class="channel-desc">ਸਿੱਖ ਇਤਿਹਾਸ</p>
-                            <div class="channel-status">
-                                <div class="live-indicator"></div>
-                                <span class="listeners">750 ਸੁਣ ਰਹੇ</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Channel 4 -->
-                        <div class="channel-card" data-channel="live">
-                            <div class="channel-icon">
-                                <i class="fas fa-broadcast-tower"></i>
-                                <div class="channel-glow"></div>
-                            </div>
-                            <h4 class="channel-name">ਲਾਈਵ</h4>
-                            <p class="channel-desc">ਹਰਿਮੰਦਰ ਸਾਹਿਬ</p>
-                            <div class="channel-status">
-                                <div class="live-indicator"></div>
-                                <span class="listeners">3.5K ਸੁਣ ਰਹੇ</span>
-                            </div>
-                        </div>
-                    </div>
+            </div>
+        </section>
+
+        <!-- Channels Section -->
+        <section class="channels-section" id="channels">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-satellite-dish"></i>
+                    ਸਾਰੇ ਚੈਨਲ
+                </h2>
+                <p class="section-subtitle">24 ਘੰਟੇ ਗੁਰਬਾਣੀ ਦਾ ਪ੍ਰਸਾਰਨ</p>
+            </div>
+            
+            <div class="channels-grid" id="channelsGrid">
+                <!-- Channels will be populated by JavaScript -->
+            </div>
+            
+            <div class="section-footer">
+                <button class="btn-view-all" id="viewAllChannels">
+                    <span>ਸਾਰੇ ਚੈਨਲ ਦੇਖੋ</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Live Schedule -->
+        <section class="schedule-section" id="schedule">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    ਲਾਈਵ ਸਮਾਂ ਸਾਰਨੀ
+                </h2>
+                <p class="section-subtitle">ਅੱਜ ਦੇ ਪ੍ਰੋਗਰਾਮ (22 ਮਾਰਚ 2024)</p>
+            </div>
+            
+            <div class="schedule-container">
+                <div class="schedule-tabs">
+                    <button class="schedule-tab active" data-day="today">ਅੱਜ</button>
+                    <button class="schedule-tab" data-day="tomorrow">ਕੱਲ</button>
+                    <button class="schedule-tab" data-day="week">ਇਸ ਹਫ਼ਤੇ</button>
                 </div>
                 
-                <!-- Schedule -->
-                <div class="schedule-section">
-                    <h3 class="section-title">
-                        <i class="fas fa-calendar-alt"></i>
-                        ਅੱਜ ਦਾ ਸਮਾਂ
-                    </h3>
-                    
-                    <div class="schedule-list">
-                        <div class="schedule-item">
-                            <span class="schedule-time">6:00 AM</span>
-                            <span class="schedule-program">ਜਪੁਜੀ ਸਾਹਿਬ</span>
-                        </div>
-                        <div class="schedule-item">
-                            <span class="schedule-time">9:00 AM</span>
-                            <span class="schedule-program">ਰਹਿਰਾਸ ਸਾਹਿਬ</span>
-                        </div>
-                        <div class="schedule-item">
-                            <span class="schedule-time">12:00 PM</span>
-                            <span class="schedule-program">ਕੀਰਤਨ ਦਰਬਾਰ</span>
-                        </div>
-                        <div class="schedule-item">
-                            <span class="schedule-time">6:00 PM</span>
-                            <span class="schedule-program">ਸੁਖਮਨੀ ਸਾਹਿਬ</span>
-                        </div>
-                        <div class="schedule-item">
-                            <span class="schedule-time">9:00 PM</span>
-                            <span class="schedule-program">ਸੋਹਿਲਾ ਸਾਹਿਬ</span>
-                        </div>
+                <div class="schedule-content">
+                    <div class="schedule-list" id="scheduleList">
+                        <!-- Schedule items will be populated by JavaScript -->
                     </div>
                 </div>
             </div>
-        </main>
-        
-        <!-- Footer -->
-        <footer class="app-footer">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>ਗੁਰਬਾਣੀ ਰੇਡੀਓ</h4>
-                    <p>24 ਘੰਟੇ ਗੁਰਬਾਣੀ ਦਾ ਪ੍ਰਸਾਰਨ</p>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook"></i></a>
-                        <a href="#"><i class="fab fa-youtube"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+        </section>
+
+        <!-- Downloads Section -->
+        <section class="downloads-section" id="downloads">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-download"></i>
+                    ਡਾਊਨਲੋਡ
+                </h2>
+                <p class="section-subtitle">ਆਫਲਾਈਨ ਸੁਣਨ ਲਈ ਡਾਊਨਲੋਡ ਕਰੋ</p>
+            </div>
+            
+            <div class="downloads-grid">
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>ਮੋਬਾਈਲ ਐਪ</h3>
+                    <p>Android ਅਤੇ iOS ਲਈ</p>
+                    <div class="download-buttons">
+                        <button class="btn-download">
+                            <i class="fab fa-google-play"></i>
+                            Google Play
+                        </button>
+                        <button class="btn-download">
+                            <i class="fab fa-app-store"></i>
+                            App Store
+                        </button>
                     </div>
                 </div>
                 
-                <div class="footer-section">
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-desktop"></i>
+                    </div>
+                    <h3>ਡੈਸਕਟਾਪ ਐਪ</h3>
+                    <p>Windows, Mac, Linux</p>
+                    <button class="btn-download">
+                        <i class="fas fa-download"></i>
+                        ਡਾਊਨਲੋਡ ਕਰੋ
+                    </button>
+                </div>
+                
+                <div class="download-card">
+                    <div class="download-icon">
+                        <i class="fas fa-podcast"></i>
+                    </div>
+                    <h3>ਪੌਡਕਾਸਟ</h3>
+                    <p>RSS ਫੀਡ ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ</p>
+                    <button class="btn-download">
+                        <i class="fas fa-rss"></i>
+                        ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section" id="about">
+            <div class="about-container">
+                <div class="about-content">
+                    <h2 class="about-title">Gurfateh Radio ਬਾਰੇ</h2>
+                    <p class="about-text">
+                        Gurfateh Radio ਇੱਕ ਅਜਿਹਾ ਪਲੇਟਫਾਰਮ ਹੈ ਜੋ ਦੁਨੀਆ ਭਰ ਦੇ ਸ਼ਰਧਾਲੂਆਂ ਨੂੰ 24 ਘੰਟੇ ਗੁਰਬਾਣੀ, 
+                        ਕੀਰਤਨ, ਕਥਾ ਅਤੇ ਸਿੱਖ ਇਤਿਹਾਸ ਤੱਕ ਪਹੁੰਚ ਪ੍ਰਦਾਨ ਕਰਦਾ ਹੈ। ਸਾਡਾ ਉਦੇਸ਼ ਤਕਨੀਕੀ ਦੀ 
+                        ਮਦਦ ਨਾਲ ਗੁਰਬਾਣੀ ਦਾ ਪ੍ਰਸਾਰਨ ਕਰਨਾ ਹੈ।
+                    </p>
+                    
+                    <div class="about-features">
+                        <div class="feature">
+                            <i class="fas fa-broadcast-tower"></i>
+                            <h4>24/7 ਪ੍ਰਸਾਰਨ</h4>
+                            <p>ਹਰ ਸਮੇਂ ਲਾਈਵ ਰੇਡੀਓ</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-music"></i>
+                            <h4>ਮਲਟੀਪਲ ਚੈਨਲ</h4>
+                            <p>12 ਤੋਂ ਵੱਧ ਵਿਸ਼ੇਸ਼ ਚੈਨਲ</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-globe"></i>
+                            <h4>ਗਲੋਬਲ ਪਹੁੰਚ</h4>
+                            <p>50+ ਦੇਸ਼ਾਂ ਵਿੱਚ ਉਪਲੱਬਧ</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-download"></i>
+                            <h4>ਆਫਲਾਈਨ ਸੁਣੋ</h4>
+                            <p>ਡਾਊਨਲੋਡ ਅਤੇ ਸੁਣੋ</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="about-image">
+                    <div class="image-frame">
+                        <i class="fas fa-praying-hands"></i>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section class="contact-section">
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3>ਸੰਪਰਕ ਕਰੋ</h3>
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>contact@gurfatehradio.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <span>+1 234 567 8900</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>ਅੰਮ੍ਰਿਤਸਰ, ਪੰਜਾਬ, ਭਾਰਤ</span>
+                    </div>
+                </div>
+                
+                <div class="newsletter">
+                    <h3>ਨਿਊਜ਼ਲੈਟਰ</h3>
+                    <p>ਤਾਜ਼ਾ ਅੱਪਡੇਟ ਪ੍ਰਾਪਤ ਕਰੋ</p>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="ਤੁਹਾਡਾ ਈਮੇਲ" id="newsletterEmail">
+                        <button class="btn-subscribe">ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-main">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-praying-hands"></i>
+                        <span class="logo-text">Gurfateh Radio</span>
+                    </div>
+                    <p class="footer-description">
+                        24 ਘੰਟੇ ਗੁਰਬਾਣੀ ਦਾ ਪ੍ਰਸਾਰਨ<br>
+                        Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh
+                    </p>
+                    
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
                     <h4>ਲਿੰਕ</h4>
                     <ul>
-                        <li><a href="#"><i class="fas fa-home"></i> ਘਰ</a></li>
-                        <li><a href="#"><i class="fas fa-broadcast-tower"></i> ਚੈਨਲ</a></li>
-                        <li><a href="#"><i class="fas fa-calendar"></i> ਸਮਾਂ ਸਾਰਨੀ</a></li>
-                        <li><a href="#"><i class="fas fa-download"></i> ਡਾਊਨਲੋਡ</a></li>
+                        <li><a href="#home">ਘਰ</a></li>
+                        <li><a href="#channels">ਚੈਨਲ</a></li>
+                        <li><a href="#schedule">ਸਮਾਂ ਸਾਰਨੀ</a></li>
+                        <li><a href="#downloads">ਡਾਊਨਲੋਡ</a></li>
+                        <li><a href="#about">ਸਾਡੇ ਬਾਰੇ</a></li>
                     </ul>
                 </div>
                 
-                <div class="footer-section">
+                <div class="footer-links">
                     <h4>ਸਹਾਇਤਾ</h4>
                     <ul>
-                        <li><a href="#"><i class="fas fa-question-circle"></i> ਸਹਾਇਤਾ</a></li>
-                        <li><a href="#"><i class="fas fa-envelope"></i> ਸੰਪਰਕ</a></li>
-                        <li><a href="#"><i class="fas fa-shield-alt"></i> ਪ੍ਰਾਈਵੇਸੀ</a></li>
-                        <li><a href="#"><i class="fas fa-file-contract"></i> ਸ਼ਰਤਾਂ</a></li>
+                        <li><a href="#">ਸਹਾਇਤਾ ਕੇਂਦਰ</a></li>
+                        <li><a href="#">ਸੰਪਰਕ ਕਰੋ</a></li>
+                        <li><a href="#">ਪ੍ਰਾਈਵੇਸੀ ਨੀਤੀ</a></li>
+                        <li><a href="#">ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ</a></li>
+                        <li><a href="#">ਐਪ ਡਾਊਨਲੋਡ</a></li>
                     </ul>
+                </div>
+                
+                <div class="footer-apps">
+                    <h4>ਐਪ ਡਾਊਨਲੋਡ ਕਰੋ</h4>
+                    <div class="app-buttons">
+                        <button class="btn-app">
+                            <i class="fab fa-google-play"></i>
+                            <div>
+                                <span>Get it on</span>
+                                <strong>Google Play</strong>
+                            </div>
+                        </button>
+                        <button class="btn-app">
+                            <i class="fab fa-app-store"></i>
+                            <div>
+                                <span>Download on</span>
+                                <strong>App Store</strong>
+                            </div>
+                        </button>
+                    </div>
                 </div>
             </div>
             
             <div class="footer-bottom">
-                <p>© 2024 ਗੁਰਬਾਣੀ 3D ਰੇਡੀਓ. ਸਾਰੇ ਅਧਿਕਾਰ ਸੁਰੱਖਿਅਤ।</p>
+                <p>© 2024 Gurfateh Radio. ਸਾਰੇ ਅਧਿਕਾਰ ਸੁਰੱਖਿਅਤ।</p>
+                <p>Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh</p>
             </div>
-        </footer>
-    </div>
-    
-    <!-- Audio Element -->
-    <audio id="audioPlayer" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
-    
+        </div>
+    </footer>
+
+    <!-- Audio Player -->
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <!-- JavaScript Files -->
     <script src="script.js"></script>
 </body>
 </html>
