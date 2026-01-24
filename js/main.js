@@ -1,275 +1,455 @@
-// Main JavaScript File
+// Main JavaScript - Gurbani Radio Website
 
+// DOM Elements
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
+const themeToggle = document.getElementById('theme-toggle');
+const currentDateEl = document.getElementById('currentDate');
+const audioPlayer = document.getElementById('audioPlayer');
+const toast = document.getElementById('toast');
+
+// Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Mobile Navigation Toggle
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
+    // 1. Mobile Navigation
+    setupMobileNav();
+    
+    // 2. Theme Toggle
+    setupThemeToggle();
+    
+    // 3. Set Current Date
+    setCurrentDate();
+    
+    // 4. Initialize Channel Buttons
+    setupChannelButtons();
+    
+    // 5. Initialize Hukamnama Features
+    setupHukamnamaFeatures();
+    
+    // 6. Initialize Raagi Buttons
+    setupRaagiButtons();
+    
+    // 7. Newsletter Subscription
+    setupNewsletter();
+    
+    // 8. Search Functionality
+    setupSearch();
+    
+    // 9. Smooth Scroll for Links
+    setupSmoothScroll();
+    
+    // 10. Initialize Audio Player
+    if (window.AudioPlayer) {
+        window.AudioPlayer.init();
+    }
+    
+    console.log('Gurbani Radio Website initialized successfully');
+});
+
+// 1. Mobile Navigation Setup
+function setupMobileNav() {
+    if (!hamburger || !navMenu) return;
     
     hamburger.addEventListener('click', () => {
         hamburger.classList.toggle('active');
         navMenu.classList.toggle('active');
+        
+        // Toggle body scroll
+        document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
     });
     
-    // Close mobile menu when clicking on a link
+    // Close mobile menu when clicking on links
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             hamburger.classList.remove('active');
             navMenu.classList.remove('active');
+            document.body.style.overflow = '';
         });
     });
     
-    // Theme Toggle
-    const themeToggle = document.getElementById('theme-toggle');
-    const savedTheme = localStorage.getItem('theme') || 'light';
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.nav-menu') && !e.target.closest('.hamburger')) {
+            hamburger.classList.remove('active');
+            navMenu.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    });
+}
+
+// 2. Theme Toggle Setup
+function setupThemeToggle() {
+    if (!themeToggle) return;
     
-    if (savedTheme === 'dark') {
-        themeToggle.checked = true;
+    // Check for saved theme preference or default to light
+    const savedTheme = localStorage.getItem('gurbani-theme') || 'light';
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (savedTheme === 'auto' && prefersDark)) {
         document.body.classList.add('dark-theme');
+        themeToggle.checked = true;
     }
     
     themeToggle.addEventListener('change', function() {
         if (this.checked) {
             document.body.classList.add('dark-theme');
-            localStorage.setItem('theme', 'dark');
+            localStorage.setItem('gurbani-theme', 'dark');
+            showToast('Dark theme enabled', 'success');
         } else {
             document.body.classList.remove('dark-theme');
-            localStorage.setItem('theme', 'light');
+            localStorage.setItem('gurbani-theme', 'light');
+            showToast('Light theme enabled', 'success');
         }
     });
+}
+
+// 3. Set Current Date
+function setCurrentDate() {
+    if (!currentDateEl) return;
     
-    // Current Date Display
-    const currentDateElement = document.getElementById('current-date');
-    if (currentDateElement) {
+    const now = new Date();
+    const options = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
+    
+    currentDateEl.textContent = now.toLocaleDateString('en-IN', options);
+    
+    // Update time every minute
+    setInterval(() => {
         const now = new Date();
-        const options = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-        };
-        currentDateElement.textContent = now.toLocaleDateString('en-IN', options);
-    }
+        currentDateEl.textContent = now.toLocaleDateString('en-IN', options);
+    }, 60000);
+}
+
+// 4. Channel Buttons Setup
+function setupChannelButtons() {
+    const channelButtons = document.querySelectorAll('.btn-stream');
     
-    // Channel Stream Buttons
-    document.querySelectorAll('.btn-stream').forEach(button => {
+    channelButtons.forEach(button => {
         button.addEventListener('click', function() {
-            const channel = this.getAttribute('data-channel');
-            playChannel(channel);
+            const channel = this.dataset.channel;
+            const channelName = this.parentElement.querySelector('h3').textContent;
+            const listeners = this.parentElement.querySelector('.listeners').textContent;
             
-            // Update all buttons
-            document.querySelectorAll('.btn-stream').forEach(btn => {
+            // Update button state
+            channelButtons.forEach(btn => {
+                const icon = btn.querySelector('i');
                 btn.innerHTML = '<i class="fas fa-play"></i> Play Now';
-                btn.style.backgroundColor = '';
+                btn.classList.remove('playing');
             });
             
-            // Update clicked button
             this.innerHTML = '<i class="fas fa-pause"></i> Playing';
-            this.style.backgroundColor = '#28a745';
+            this.classList.add('playing');
+            
+            // Simulate playing the channel
+            playChannel(channel, channelName);
             
             // Show notification
-            showNotification(`Now playing ${channel} channel`);
+            showToast(`Now playing: ${channelName} (${listeners})`, 'success');
         });
     });
-    
-    // Hukamnama Audio
-    document.querySelector('.btn-audio')?.addEventListener('click', function() {
-        const audio = new Audio('https://example.com/hukamnama-audio.mp3');
-        audio.play();
-        this.innerHTML = '<i class="fas fa-volume-up"></i> Listening...';
-        
-        audio.onended = () => {
-            this.innerHTML = '<i class="fas fa-volume-up"></i> Listen';
-        };
-    });
+}
+
+// 5. Hukamnama Features Setup
+function setupHukamnamaFeatures() {
+    // Play Hukamnama Audio
+    const playHukamnamaBtn = document.getElementById('playHukamnama');
+    if (playHukamnamaBtn) {
+        playHukamnamaBtn.addEventListener('click', function() {
+            // In a real implementation, this would play actual Hukamnama audio
+            const hukamnamaText = document.querySelector('.gurbani-text h3').textContent;
+            const raag = document.querySelector('.raag-badge').textContent;
+            
+            if (window.AudioPlayer) {
+                window.AudioPlayer.playTrack({
+                    title: `Hukamnama - ${raag}`,
+                    artist: 'Sri Harmandir Sahib',
+                    duration: '2:45'
+                });
+            }
+            
+            this.innerHTML = '<i class="fas fa-volume-up"></i> Listening...';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-volume-up"></i> Listen Audio';
+            }, 3000);
+            
+            showToast('Playing Hukamnama audio', 'success');
+        });
+    }
     
     // Save Hukamnama
-    document.querySelector('.btn-save')?.addEventListener('click', function() {
-        this.innerHTML = '<i class="fas fa-check"></i> Saved';
-        this.style.backgroundColor = '#28a745';
-        this.style.color = 'white';
-        
-        // Save to localStorage
-        const hukamnama = {
-            date: new Date().toISOString(),
-            text: document.querySelector('.gurmukhi-text h3').textContent,
-            translation: document.querySelector('.translation p').textContent
-        };
-        
-        localStorage.setItem('savedHukamnama', JSON.stringify(hukamnama));
-        showNotification('Hukamnama saved to favorites');
-    });
+    const saveHukamnamaBtn = document.getElementById('saveHukamnama');
+    if (saveHukamnamaBtn) {
+        saveHukamnamaBtn.addEventListener('click', function() {
+            const hukamnama = {
+                date: new Date().toISOString(),
+                text: document.querySelector('.gurbani-text h3').textContent,
+                translation: document.querySelector('.translation p').textContent,
+                raag: document.querySelector('.raag-badge').textContent,
+                ang: document.querySelector('.ang-badge').textContent
+            };
+            
+            // Save to localStorage
+            let savedHukamnamas = JSON.parse(localStorage.getItem('savedHukamnamas') || '[]');
+            savedHukamnamas.push(hukamnama);
+            localStorage.setItem('savedHukamnamas', JSON.stringify(savedHukamnamas));
+            
+            this.innerHTML = '<i class="fas fa-check"></i> Saved';
+            this.style.background = 'var(--success)';
+            
+            showToast('Hukamnama saved to favorites', 'success');
+            
+            // Reset after 3 seconds
+            setTimeout(() => {
+                this.innerHTML = '<i class="far fa-bookmark"></i> Save';
+                this.style.background = '';
+            }, 3000);
+        });
+    }
     
-    // Share Functionality
-    document.querySelector('.btn-share')?.addEventListener('click', async function() {
-        const shareData = {
-            title: "Today's Hukamnama",
-            text: document.querySelector('.gurmukhi-text h3').textContent,
-            url: window.location.href
-        };
-        
-        try {
-            await navigator.share(shareData);
-            showNotification('Shared successfully!');
-        } catch (err) {
-            // Fallback: Copy to clipboard
-            const textToCopy = `${shareData.text}\n\n${shareData.url}`;
-            await navigator.clipboard.writeText(textToCopy);
-            showNotification('Link copied to clipboard!');
-        }
-    });
+    // Share Hukamnama
+    const shareHukamnamaBtn = document.getElementById('shareHukamnama');
+    if (shareHukamnamaBtn) {
+        shareHukamnamaBtn.addEventListener('click', async function() {
+            const shareData = {
+                title: "Today's Hukamnama",
+                text: document.querySelector('.gurbani-text h3').textContent + '\n' +
+                      document.querySelector('.translation p').textContent,
+                url: window.location.href
+            };
+            
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                    showToast('Shared successfully!', 'success');
+                } else {
+                    // Fallback: Copy to clipboard
+                    await navigator.clipboard.writeText(
+                        `${shareData.text}\n\n${shareData.url}`
+                    );
+                    showToast('Link copied to clipboard!', 'success');
+                }
+            } catch (err) {
+                console.error('Error sharing:', err);
+                showToast('Failed to share', 'error');
+            }
+        });
+    }
+}
+
+// 6. Raagi Buttons Setup
+function setupRaagiButtons() {
+    const raagiButtons = document.querySelectorAll('[data-raagi]');
     
-    // Notification System
-    function showNotification(message) {
-        // Remove existing notification
-        const existingNotification = document.querySelector('.notification');
-        if (existingNotification) {
-            existingNotification.remove();
-        }
-        
-        // Create notification
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.innerHTML = `
-            <span>${message}</span>
-            <button class="notification-close"><i class="fas fa-times"></i></button>
-        `;
-        
-        // Add styles
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--kesri-primary);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: var(--radius-md);
-            box-shadow: var(--shadow-lg);
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            animation: slideIn 0.3s ease;
-        `;
-        
-        document.body.appendChild(notification);
-        
-        // Add close button event
-        notification.querySelector('.notification-close').addEventListener('click', () => {
-            notification.style.animation = 'slideOut 0.3s ease';
-            setTimeout(() => notification.remove(), 300);
+    raagiButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const raagiName = this.parentElement.querySelector('h3').textContent;
+            const raags = Array.from(this.parentElement.querySelectorAll('.raag-tags span'))
+                .map(span => span.textContent)
+                .join(', ');
+            
+            // Add tracks to playlist
+            if (window.AudioPlayer) {
+                const tracks = [
+                    {
+                        title: `${raagiName} - Shabad 1`,
+                        artist: raags,
+                        duration: '4:32'
+                    },
+                    {
+                        title: `${raagiName} - Shabad 2`,
+                        artist: raags,
+                        duration: '5:15'
+                    },
+                    {
+                        title: `${raagiName} - Shabad 3`,
+                        artist: raags,
+                        duration: '3:45'
+                    }
+                ];
+                
+                window.AudioPlayer.addToPlaylist(tracks);
+            }
+            
+            showToast(`Added ${raagiName}'s shabads to playlist`, 'success');
+        });
+    });
+}
+
+// 7. Newsletter Subscription
+function setupNewsletter() {
+    const newsletterEmail = document.getElementById('newsletterEmail');
+    const subscribeBtn = document.getElementById('subscribeBtn');
+    
+    if (subscribeBtn && newsletterEmail) {
+        subscribeBtn.addEventListener('click', function() {
+            const email = newsletterEmail.value.trim();
+            
+            if (!email || !isValidEmail(email)) {
+                showToast('Please enter a valid email address', 'error');
+                newsletterEmail.focus();
+                return;
+            }
+            
+            // Simulate subscription
+            newsletterEmail.value = '';
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-check"></i>';
+                
+                // Save subscription
+                let subscriptions = JSON.parse(localStorage.getItem('newsletterSubscriptions') || '[]');
+                subscriptions.push({
+                    email: email,
+                    date: new Date().toISOString()
+                });
+                localStorage.setItem('newsletterSubscriptions', JSON.stringify(subscriptions));
+                
+                showToast('Successfully subscribed to newsletter!', 'success');
+                
+                // Reset button
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                }, 2000);
+            }, 1500);
         });
         
-        // Auto-remove after 5 seconds
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => notification.remove(), 300);
+        // Allow Enter key to submit
+        newsletterEmail.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                subscribeBtn.click();
             }
-        }, 5000);
+        });
     }
-    
-    // Add CSS animations for notifications
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes slideOut {
-            from {
-                transform: translateX(0);
-                opacity: 1;
-            }
-            to {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-        }
-        
-        .notification-close {
-            background: transparent;
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 0;
-            font-size: 1rem;
-        }
-        
-        .dark-theme {
-            --white-pure: #1a1a1a;
-            --white-off: #2d2d2d;
-            --gray-light: #404040;
-            --gray-medium: #8a8a8a;
-            --gray-dark: #e0e0e0;
-            --gray-charcoal: #333333;
-        }
-        
-        .dark-theme .navbar,
-        .dark-theme .channel-card,
-        .dark-theme .hukamnama-card,
-        .dark-theme .raagi-card {
-            background-color: #2d2d2d;
-            color: #e0e0e0;
-        }
-        
-        .dark-theme h1,
-        .dark-theme h2,
-        .dark-theme h3,
-        .dark-theme h4,
-        .dark-theme .track-title {
-            color: #e0e0e0;
-        }
-        
-        .dark-theme p,
-        .dark-theme .track-artist {
-            color: #8a8a8a;
-        }
-        
-        .dark-theme .footer {
-            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
-        }
-    `;
-    document.head.appendChild(style);
-    
-    // Sample channel player function
-    function playChannel(channel) {
-        // In a real implementation, this would connect to actual radio streams
-        const channels = {
-            kirtan: 'https://stream.sikhnet.com/radio/800/kirtan.mp3',
-            katha: 'https://stream.sikhnet.com/radio/800/katha.mp3',
-            simran: 'https://stream.sikhnet.com/radio/800/simran.mp3',
-            international: 'https://stream.sikhnet.com/radio/800/international.mp3'
-        };
-        
-        // Update audio player
-        const audioPlayer = window.audioPlayer;
-        if (audioPlayer) {
-            audioPlayer.playStream(channels[channel], `Gurbani ${channel.charAt(0).toUpperCase() + channel.slice(1)}`);
-        }
-        
-        console.log(`Playing ${channel} channel: ${channels[channel]}`);
-    }
-    
-    // Initialize other features
-    initializeAudioPlayer();
-    initializeSearch();
-});
-
-// Initialize Audio Player
-function initializeAudioPlayer() {
-    // This will be implemented in audio-player.js
-    console.log('Audio player initialized');
 }
 
-// Initialize Search
-function initializeSearch() {
-    // This will be implemented in search.js
-    console.log('Search functionality initialized');
+// 8. Search Functionality
+function setupSearch() {
+    const searchInput = document.querySelector('.search-input');
+    const searchBtn = document.querySelector('.search-btn');
+    
+    if (!searchInput || !searchBtn) return;
+    
+    const searchData = [
+        { title: "Japji Sahib", type: "Bani", category: "Nitnem", duration: "20:00" },
+        { title: "Asa Di Var", type: "Bani", category: "Morning Prayer", duration: "45:00" },
+        { title: "Sukhmani Sahib", type: "Bani", category: "Psalm of Peace", duration: "60:00" },
+        { title: "Bhai Harvinder Singh", type: "Ragi", category: "Classical Kirtan", shabads: "125" },
+        { title: "Raag Asa", type: "Raag", category: "Morning Raag", time: "4-7 AM" },
+        { title: "Anand Sahib", type: "Bani", category: "Song of Bliss", duration: "15:00" }
+    ];
+    
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') performSearch();
+    });
+    
+    function performSearch() {
+        const query = searchInput.value.trim().toLowerCase();
+        
+        if (!query) {
+            showToast('Please enter search terms', 'warning');
+            return;
+        }
+        
+        const results = searchData.filter(item => 
+            item.title.toLowerCase().includes(query) ||
+            item.type.toLowerCase().includes(query) ||
+            item.category.toLowerCase().includes(query)
+        );
+        
+        if (results.length > 0) {
+            const resultText = results.map(r => r.title).join(', ');
+            showToast(`Found ${results.length} results: ${resultText}`, 'success');
+            
+            // In a real implementation, you would show these in a dropdown
+            // For now, we'll just log them
+            console.log('Search Results:', results);
+        } else {
+            showToast('No results found. Try different keywords.', 'error');
+        }
+    }
 }
+
+// 9. Smooth Scroll
+function setupSmoothScroll() {
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const href = this.getAttribute('href');
+            
+            if (href === '#') return;
+            
+            const target = document.querySelector(href);
+            if (target) {
+                e.preventDefault();
+                
+                // Close mobile menu if open
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.style.overflow = '';
+                
+                window.scrollTo({
+                    top: target.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+}
+
+// Helper Functions
+function isValidEmail(email) {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+}
+
+function showToast(message, type = 'info') {
+    if (!toast) return;
+    
+    toast.textContent = message;
+    toast.className = 'toast show';
+    toast.classList.add(type);
+    
+    // Add icon based on type
+    let icon = 'info-circle';
+    if (type === 'success') icon = 'check-circle';
+    if (type === 'error') icon = 'exclamation-circle';
+    if (type === 'warning') icon = 'exclamation-triangle';
+    
+    toast.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+    
+    // Auto hide after 5 seconds
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 5000);
+}
+
+function playChannel(channelId, channelName) {
+    // This is a simulation - in real implementation, connect to actual radio streams
+    console.log(`Playing channel: ${channelId} - ${channelName}`);
+    
+    // Update audio player
+    if (window.AudioPlayer) {
+        window.AudioPlayer.playStream(channelName);
+    }
+    
+    // Update listeners count (simulation)
+    setTimeout(() => {
+        const listenersEl = document.querySelector(`[data-channel="${channelId}"]`).parentElement.querySelector('.listeners');
+        if (listenersEl) {
+            const current = parseInt(listenersEl.textContent.match(/\d+/)[0]);
+            listenersEl.innerHTML = `<i class="fas fa-headphones"></i> ${current + 1} listening`;
+        }
+    }, 1000);
+}
+
+// Export functions for use in other modules
+window.GurbaniRadio = {
+    showToast,
+    playChannel,
+    setupMobileNav,
+    setupThemeToggle
+};
