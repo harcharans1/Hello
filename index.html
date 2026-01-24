@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-pa">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gurmukhi:wght@400;500;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gurmukhi:wght@400;500;600&display=swap">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🕊️</text></svg>">
 </head>
 <body>
     <!-- Navigation -->
@@ -16,7 +17,7 @@
         <div class="nav-container">
             <div class="logo">
                 <a href="index.html">
-                    <i class="fas fa-pray"></i>
+                    <i class="fas fa-praying-hands"></i>
                     <span>Gurbani</span>Radio
                 </a>
             </div>
@@ -26,16 +27,19 @@
                     <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
                     <li><a href="live-radio.html"><i class="fas fa-broadcast-tower"></i> Live Radio</a></li>
                     <li><a href="shabad-library.html"><i class="fas fa-music"></i> Shabad Library</a></li>
-                    <li><a href="raag-mala.html"><i class="fas fa-book"></i> Raag Mala</a></li>
+                    <li><a href="raag-mala.html"><i class="fas fa-book-open"></i> Raag Mala</a></li>
                     <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
                     <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
                 </ul>
                 
                 <div class="nav-actions">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search...">
+                        <button class="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
                     <button class="btn-login"><i class="fas fa-user"></i> Login</button>
-                    <button class="btn-register">Register</button>
                     <div class="theme-switch">
-                        <input type="checkbox" id="theme-toggle">
+                        <input type="checkbox" id="theme-toggle" checked>
                         <label for="theme-toggle">
                             <i class="fas fa-sun"></i>
                             <i class="fas fa-moon"></i>
@@ -53,299 +57,346 @@
         </div>
     </nav>
 
-    <!-- Audio Player (Fixed) -->
-    <div class="audio-player-container">
-        <div class="player-controls">
-            <button class="player-btn prev-btn"><i class="fas fa-step-backward"></i></button>
-            <button class="player-btn play-btn"><i class="fas fa-play"></i></button>
-            <button class="player-btn next-btn"><i class="fas fa-step-forward"></i></button>
-            <div class="track-info">
-                <h4 class="track-title">Loading...</h4>
-                <p class="track-artist">Gurbani Radio</p>
-            </div>
-            <div class="progress-container">
-                <span class="current-time">0:00</span>
-                <div class="progress-bar">
-                    <div class="progress"></div>
+    <!-- Floating Audio Player -->
+    <div class="floating-audio-player" id="audioPlayer">
+        <div class="player-content">
+            <div class="now-playing">
+                <div class="track-thumbnail">
+                    <i class="fas fa-music"></i>
                 </div>
-                <span class="duration">0:00</span>
+                <div class="track-info">
+                    <h4 class="track-title">Select a track</h4>
+                    <p class="track-artist">Gurbani Radio</p>
+                </div>
             </div>
-            <div class="volume-container">
-                <i class="fas fa-volume-up"></i>
-                <input type="range" class="volume-slider" min="0" max="100" value="80">
+            
+            <div class="player-controls">
+                <button class="player-btn" id="prevBtn">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="player-btn play-btn" id="playBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="player-btn" id="nextBtn">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+                
+                <div class="progress-container">
+                    <span class="current-time" id="currentTime">0:00</span>
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <span class="duration" id="duration">0:00</span>
+                </div>
+                
+                <div class="volume-container">
+                    <i class="fas fa-volume-up" id="volumeIcon"></i>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="80">
+                </div>
+                
+                <button class="player-btn playlist-toggle" id="playlistToggle">
+                    <i class="fas fa-list"></i>
+                </button>
             </div>
-            <button class="player-btn playlist-toggle">
-                <i class="fas fa-list"></i>
-            </button>
         </div>
         
-        <div class="playlist-sidebar">
+        <!-- Playlist Sidebar -->
+        <div class="playlist-sidebar" id="playlistSidebar">
             <h3><i class="fas fa-stream"></i> Current Playlist</h3>
-            <ul class="playlist-items">
-                <!-- Dynamic playlist items -->
+            <ul class="playlist-items" id="playlistItems">
+                <!-- Will be populated by JavaScript -->
             </ul>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main>
-        <!-- Hero Section -->
-        <section class="hero-section">
-            <div class="hero-overlay"></div>
-            <div class="hero-content">
-                <h1 class="gurmukhi-font">ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ</h1>
-                <h2>Experience Divine Gurbani 24/7</h2>
-                <p>Live streaming of Kirtan, Katha, and spiritual discourses from around the world</p>
-                <div class="hero-buttons">
-                    <a href="live-radio.html" class="btn-primary">
-                        <i class="fas fa-play-circle"></i> Listen Live
-                    </a>
-                    <a href="shabad-library.html" class="btn-secondary">
-                        <i class="fas fa-music"></i> Explore Shabads
-                    </a>
-                </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1 class="gurmukhi">ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ</h1>
+            <h2>Experience Divine Gurbani 24/7</h2>
+            <p>Live streaming of Kirtan, Katha, and spiritual discourses from around the world</p>
+            <div class="hero-buttons">
+                <a href="live-radio.html" class="btn btn-primary">
+                    <i class="fas fa-play-circle"></i> Listen Live
+                </a>
+                <a href="shabad-library.html" class="btn btn-secondary">
+                    <i class="fas fa-music"></i> Explore Shabads
+                </a>
             </div>
-            <div class="wave-divider">
-                <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
-                </svg>
-            </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Live Channels -->
-        <section class="section-container">
-            <div class="section-header">
-                <h2><i class="fas fa-satellite-dish"></i> Live Channels</h2>
-                <p>Choose from our spiritual streams</p>
-            </div>
+    <!-- Live Channels Section -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title"><i class="fas fa-satellite-dish"></i> Live Channels</h2>
+            <p class="section-subtitle">Choose from our spiritual streams</p>
             
             <div class="channels-grid">
                 <div class="channel-card">
-                    <div class="channel-icon kesri-bg">
+                    <div class="channel-icon kesri">
                         <i class="fas fa-heart"></i>
                     </div>
                     <h3>Kirtan Live</h3>
                     <p>Traditional Shabad Kirtan from Harmandir Sahib</p>
-                    <button class="btn-stream" data-channel="kirtan">
+                    <button class="btn btn-stream" data-channel="kirtan">
                         <i class="fas fa-play"></i> Play Now
                     </button>
                     <span class="live-badge">LIVE</span>
+                    <div class="listeners">
+                        <i class="fas fa-headphones"></i> 1,245 listening
+                    </div>
                 </div>
                 
                 <div class="channel-card">
-                    <div class="channel-icon blue-bg">
-                        <i class="fas fa-book-open"></i>
+                    <div class="channel-icon blue">
+                        <i class="fas fa-book"></i>
                     </div>
                     <h3>Katha Channel</h3>
                     <p>Spiritual discourses and explanations</p>
-                    <button class="btn-stream" data-channel="katha">
+                    <button class="btn btn-stream" data-channel="katha">
                         <i class="fas fa-play"></i> Play Now
                     </button>
                     <span class="live-badge">LIVE</span>
+                    <div class="listeners">
+                        <i class="fas fa-headphones"></i> 890 listening
+                    </div>
                 </div>
                 
                 <div class="channel-card">
-                    <div class="channel-icon white-bg">
+                    <div class="channel-icon white">
                         <i class="fas fa-om"></i>
                     </div>
                     <h3>Simran Stream</h3>
                     <p>Continuous Naam Simran and meditation</p>
-                    <button class="btn-stream" data-channel="simran">
+                    <button class="btn btn-stream" data-channel="simran">
                         <i class="fas fa-play"></i> Play Now
                     </button>
                     <span class="live-badge">LIVE</span>
+                    <div class="listeners">
+                        <i class="fas fa-headphones"></i> 1,567 listening
+                    </div>
                 </div>
                 
                 <div class="channel-card">
-                    <div class="channel-icon dark-bg">
-                        <i class="fas fa-globe-asia"></i>
+                    <div class="channel-icon dark">
+                        <i class="fas fa-globe"></i>
                     </div>
                     <h3>International</h3>
                     <p>Gurbani from Gurdwaras worldwide</p>
-                    <button class="btn-stream" data-channel="international">
+                    <button class="btn btn-stream" data-channel="international">
                         <i class="fas fa-play"></i> Play Now
                     </button>
                     <span class="live-badge">LIVE</span>
+                    <div class="listeners">
+                        <i class="fas fa-headphones"></i> 2,345 listening
+                    </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Daily Hukamnama -->
-        <section class="hukamnama-section">
-            <div class="section-container">
-                <div class="section-header">
-                    <h2><i class="fas fa-star-of-david"></i> Today's Hukamnama</h2>
-                    <p>From Sri Harmandir Sahib, Amritsar</p>
+    <!-- Today's Hukamnama -->
+    <section class="section hukamnama-section">
+        <div class="container">
+            <h2 class="section-title"><i class="fas fa-star-of-david"></i> Today's Hukamnama</h2>
+            <p class="section-subtitle">From Sri Harmandir Sahib, Amritsar</p>
+            
+            <div class="hukamnama-card">
+                <div class="hukamnama-header">
+                    <div class="date-display">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span id="currentDate">Loading date...</span>
+                    </div>
+                    <div class="ang-info">
+                        <span class="ang-badge">Ang 305</span>
+                        <span class="raag-badge">Raag Asa</span>
+                    </div>
                 </div>
                 
-                <div class="hukamnama-card">
-                    <div class="hukamnama-header">
-                        <div class="date-display">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span id="current-date">Loading...</span>
-                        </div>
-                        <div class="ang-info">
-                            <span class="ang-number">Ang 305</span>
-                            <span class="raag-name">Raag Asa</span>
-                        </div>
+                <div class="hukamnama-content">
+                    <div class="gurbani-text">
+                        <h3 class="gurmukhi">ਗੁਰਮੁਖਿ ਨਾਮੁ ਮੰਨਿ ਵਸੈ ਸਚੁ ਧਨੁ ਰਾਸਿ ॥</h3>
+                        <p class="transliteration">Gurmukh nām man vasai sach dhan rās.</p>
                     </div>
                     
-                    <div class="hukamnama-content">
-                        <div class="gurmukhi-text gurmukhi-font">
-                            <h3>ਗੁਰਮੁਖਿ ਨਾਮੁ ਮੰਨਿ ਵਸੈ ਸਚੁ ਧਨੁ ਰਾਸਿ ॥</h3>
-                            <p>गुरमुखि नामु मंनि वसै सचु धनु रासि ॥</p>
-                        </div>
-                        
-                        <div class="translation">
-                            <h4><i class="fas fa-language"></i> Translation</h4>
-                            <p>The Gurmukh enshrines the Naam within the mind; the True Name is the treasure of wealth.</p>
-                        </div>
-                        
-                        <div class="transliteration">
-                            <h4><i class="fas fa-font"></i> Transliteration</h4>
-                            <p>Gurmukh nām man vasai sach dhan rās.</p>
-                        </div>
-                        
-                        <div class="hukamnama-actions">
-                            <button class="btn-audio">
-                                <i class="fas fa-volume-up"></i> Listen
-                            </button>
-                            <button class="btn-save">
-                                <i class="far fa-bookmark"></i> Save
-                            </button>
-                            <button class="btn-share">
-                                <i class="fas fa-share-alt"></i> Share
-                            </button>
-                        </div>
+                    <div class="translation">
+                        <h4><i class="fas fa-language"></i> Translation</h4>
+                        <p>The Gurmukh enshrines the Naam within the mind; the True Name is the treasure of wealth.</p>
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-audio" id="playHukamnama">
+                            <i class="fas fa-volume-up"></i> Listen Audio
+                        </button>
+                        <button class="btn btn-save" id="saveHukamnama">
+                            <i class="far fa-bookmark"></i> Save
+                        </button>
+                        <button class="btn btn-share" id="shareHukamnama">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Featured Ragis -->
-        <section class="section-container">
-            <div class="section-header">
-                <h2><i class="fas fa-users"></i> Featured Ragis</h2>
-                <p>Renowned Kirtan exponents</p>
-            </div>
+    <!-- Featured Ragis -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title"><i class="fas fa-users"></i> Featured Ragis</h2>
+            <p class="section-subtitle">Renowned Kirtan exponents</p>
             
-            <div class="ragis-carousel">
-                <div class="ragi-card">
-                    <img src="https://via.placeholder.com/300x200/FF9933/FFFFFF?text=Bhai+Harvinder+Singh" alt="Bhai Harvinder Singh">
+            <div class="ragis-grid">
+                <div class="raagi-card">
+                    <div class="raagi-image" style="background: linear-gradient(135deg, #FF9933, #FF8C00);">
+                        <i class="fas fa-user"></i>
+                    </div>
                     <h3>Bhai Harvinder Singh</h3>
-                    <p>Classical Raag Kirtan</p>
+                    <p>Classical Raag Kirtan Specialist</p>
                     <div class="raag-tags">
                         <span>Asa</span>
                         <span>Bilawal</span>
                         <span>Marwa</span>
                     </div>
+                    <button class="btn btn-sm btn-outline" data-raagi="harvinder">
+                        <i class="fas fa-play"></i> Play Shabads
+                    </button>
                 </div>
                 
-                <div class="ragi-card">
-                    <img src="https://via.placeholder.com/300x200/000080/FFFFFF?text=Bhai+Nirmal+Singh" alt="Bhai Nirmal Singh">
+                <div class="raagi-card">
+                    <div class="raagi-image" style="background: linear-gradient(135deg, #000080, #1E90FF);">
+                        <i class="fas fa-user"></i>
+                    </div>
                     <h3>Bhai Nirmal Singh</h3>
-                    <p>Hazuri Ragi</p>
+                    <p>Hazuri Ragi, Golden Temple</p>
                     <div class="raag-tags">
                         <span>Todi</span>
                         <span>Darbari</span>
                         <span>Kalyan</span>
                     </div>
+                    <button class="btn btn-sm btn-outline" data-raagi="nirmal">
+                        <i class="fas fa-play"></i> Play Shabads
+                    </button>
                 </div>
                 
-                <div class="ragi-card">
-                    <img src="https://via.placeholder.com/300x200/FFFFFF/333333?text=Bibi+Jaswinder+Kaur" alt="Bibi Jaswinder Kaur">
+                <div class="raagi-card">
+                    <div class="raagi-image" style="background: linear-gradient(135deg, #87CEEB, #00BFFF);">
+                        <i class="fas fa-user"></i>
+                    </div>
                     <h3>Bibi Jaswinder Kaur</h3>
-                    <p>Devotional Kirtan</p>
+                    <p>Devotional Kirtan Exponent</p>
                     <div class="raag-tags">
                         <span>Suhi</span>
                         <span>Malhar</span>
                         <span>Kanara</span>
                     </div>
+                    <button class="btn btn-sm btn-outline" data-raagi="jaswinder">
+                        <i class="fas fa-play"></i> Play Shabads
+                    </button>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- Gurbani Quote -->
-        <section class="quote-section">
-            <div class="section-container">
-                <blockquote class="gurbani-quote">
-                    <p class="gurmukhi-font">ਨਾਨਕ ਨਾਮੁ ਮਿਲੈ ਤਾਂ ਜੀਵੁ ਤਨੁ ਮਨੁ ਥੀਵੈ ਹਰਿਆ ॥</p>
-                    <p>O Nanak, if you obtain the Naam, then you shall live, and your body and mind shall become green again.</p>
-                    <cite>– Sri Guru Granth Sahib Ji, Ang 877</cite>
-                </blockquote>
+    <!-- Gurbani Quote -->
+    <section class="section quote-section">
+        <div class="container">
+            <div class="quote-card">
+                <i class="fas fa-quote-left"></i>
+                <p class="gurmukhi">ਨਾਨਕ ਨਾਮੁ ਮਿਲੈ ਤਾਂ ਜੀਵੁ ਤਨੁ ਮਨੁ ਥੀਵੈ ਹਰਿਆ ॥</p>
+                <p>O Nanak, if you obtain the Naam, then you shall live, and your body and mind shall become green again.</p>
+                <cite>– Sri Guru Granth Sahib Ji, Ang 877</cite>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-column">
-                <div class="footer-logo">
-                    <i class="fas fa-pray"></i>
-                    <h3>Gurbani Radio</h3>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <i class="fas fa-praying-hands"></i>
+                        <h3>Gurbani Radio</h3>
+                    </div>
+                    <p class="footer-description">
+                        A non-profit initiative to spread the divine message of Sri Guru Granth Sahib Ji worldwide through digital media.
+                    </p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-spotify"></i></a>
+                    </div>
                 </div>
-                <p class="footer-description">
-                    A non-profit initiative to spread the divine message of Sri Guru Granth Sahib Ji worldwide through digital media.
-                </p>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-spotify"></i></a>
-                </div>
-            </div>
-            
-            <div class="footer-column">
-                <h4>Quick Links</h4>
-                <ul class="footer-links">
-                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
-                    <li><a href="live-radio.html"><i class="fas fa-chevron-right"></i> Live Radio</a></li>
-                    <li><a href="shabad-library.html"><i class="fas fa-chevron-right"></i> Shabad Library</a></li>
-                    <li><a href="raag-mala.html"><i class="fas fa-chevron-right"></i> Raag Mala</a></li>
-                    <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h4>Resources</h4>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Daily Hukamnama</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Nitnem Banis</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Gurbani Search</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Sikh History</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Downloads</a></li>
-                </ul>
-            </div>
-            
-            <div class="footer-column">
-                <h4>Contact Info</h4>
-                <ul class="contact-info">
-                    <li><i class="fas fa-map-marker-alt"></i> Amritsar, Punjab, India</li>
-                    <li><i class="fas fa-envelope"></i> contact@gurbaniradio.com</li>
-                    <li><i class="fas fa-phone"></i> +91 123 456 7890</li>
-                </ul>
                 
-                <div class="newsletter">
-                    <h5>Subscribe for Updates</h5>
-                    <div class="newsletter-form">
-                        <input type="email" placeholder="Your email address">
-                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                        <li><a href="live-radio.html"><i class="fas fa-chevron-right"></i> Live Radio</a></li>
+                        <li><a href="shabad-library.html"><i class="fas fa-chevron-right"></i> Shabad Library</a></li>
+                        <li><a href="raag-mala.html"><i class="fas fa-chevron-right"></i> Raag Mala</a></li>
+                        <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Daily Hukamnama</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Nitnem Banis</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Gurbani Search</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Sikh History</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Mobile App</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Contact Info</h4>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-map-marker-alt"></i> Amritsar, Punjab, India</li>
+                        <li><i class="fas fa-envelope"></i> contact@gurbaniradio.com</li>
+                        <li><i class="fas fa-phone"></i> +91 123 456 7890</li>
+                    </ul>
+                    
+                    <div class="newsletter">
+                        <h5>Subscribe for Updates</h5>
+                        <div class="newsletter-form">
+                            <input type="email" placeholder="Your email address" id="newsletterEmail">
+                            <button type="button" id="subscribeBtn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="footer-bottom">
-            <p>&copy; 2023 Gurbani Radio. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-            <p class="gurmukhi-font">ਵਾਹਿਗੁਰੂ ਜੀ ਕਾ ਖਾਲਸਾ, ਵਾਹਿਗੁਰੂ ਜੀ ਕੀ ਫਤਹਿ ॥</p>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Gurbani Radio. All rights reserved. | 
+                    <a href="#">Privacy Policy</a> | 
+                    <a href="#">Terms of Service</a>
+                </p>
+                <p class="gurmukhi">ਵਾਹਿਗੁਰੂ ਜੀ ਕਾ ਖਾਲਸਾ, ਵਾਹਿਗੁਰੂ ਜੀ ਕੀ ਫਤਹਿ ॥</p>
+            </div>
         </div>
     </footer>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast"></div>
 
     <!-- Scripts -->
     <script src="js/main.js"></script>
     <script src="js/audio-player.js"></script>
     <script src="js/search.js"></script>
+    
+    <!-- Audio Element -->
+    <audio id="audioElement" preload="metadata" style="display: none;">
+        <source src="https://docs.google.com/uc?export=download&id=1YhKsTpKCoAPcmtybBF8T_bmq2Vb9K2Vk" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
 </body>
 </html>
