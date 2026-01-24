@@ -1,184 +1,162 @@
-// Search Functionality for Gurbani Radio
-class SearchSystem {
-    constructor() {
-        this.searchData = [];
-        this.searchIndex = null;
-        this.initializeSearch();
-    }
+// Search System for Gurbani Radio
+
+const SearchSystem = (function() {
+    // Search database
+    const searchData = [
+        {
+            id: 1,
+            title: "Japji Sahib",
+            type: "Bani",
+            category: "Nitnem",
+            duration: "20:00",
+            ang: "1",
+            raag: "Jap",
+            description: "The first bani in the Guru Granth Sahib, composed by Guru Nanak Dev Ji",
+            keywords: ["morning prayer", "nitnem", "guru nanak"]
+        },
+        {
+            id: 2,
+            title: "Asa Di Var",
+            type: "Bani",
+            category: "Morning Prayer",
+            duration: "45:00",
+            ang: "462-475",
+            raag: "Asa",
+            description: "A collection of 24 shabads by Guru Nanak Dev Ji, sung in the morning",
+            keywords: ["asa", "morning", "var"]
+        },
+        {
+            id: 3,
+            title: "Sukhmani Sahib",
+            type: "Bani",
+            category: "Psalm of Peace",
+            duration: "60:00",
+            ang: "262-296",
+            raag: "Gauri",
+            description: "The prayer of peace composed by Guru Arjan Dev Ji",
+            keywords: ["peace", "sukhmani", "meditation"]
+        },
+        {
+            id: 4,
+            title: "Bhai Harvinder Singh",
+            type: "Ragi",
+            category: "Classical Kirtan",
+            shabads: 125,
+            raags: ["Asa", "Bilawal", "Marwa", "Todi"],
+            description: "Renowned classical ragi specializing in traditional raags",
+            keywords: ["classical", "traditional", "raga"]
+        },
+        {
+            id: 5,
+            title: "Raag Asa",
+            type: "Raag",
+            category: "Morning Raag",
+            time: "4-7 AM",
+            thaats: "Bilawal",
+            description: "A morning raag that creates a devotional mood",
+            keywords: ["morning", "devotional", "classical"]
+        },
+        {
+            id: 6,
+            title: "Anand Sahib",
+            type: "Bani",
+            category: "Song of Bliss",
+            duration: "15:00",
+            ang: "917-922",
+            raag: "Ramkali",
+            description: "Composed by Guru Amar Das Ji, expresses spiritual bliss",
+            keywords: ["bliss", "anand", "happiness"]
+        },
+        {
+            id: 7,
+            title: "Rehras Sahib",
+            type: "Bani",
+            category: "Evening Prayer",
+            duration: "25:00",
+            ang: "8-12",
+            description: "Evening prayer recited after sunset",
+            keywords: ["evening", "rehras", "prayer"]
+        },
+        {
+            id: 8,
+            title: "Bhai Nirmal Singh",
+            type: "Ragi",
+            category: "Hazuri Ragi",
+            shabads: 89,
+            raags: ["Darbari", "Kalyan", "Todi"],
+            description: "Hazuri ragi at Golden Temple, Amritsar",
+            keywords: ["golden temple", "hazuri", "amritsar"]
+        }
+    ];
     
-    async initializeSearch() {
-        // In a real implementation, this would load from an API
-        this.searchData = [
-            { 
-                id: 1, 
-                title: "Japji Sahib", 
-                type: "Bani", 
-                ang: 1,
-                raag: "Jap",
-                description: "The first bani in the Guru Granth Sahib",
-                audio: "https://example.com/japji-sahib.mp3"
-            },
-            { 
-                id: 2, 
-                title: "Asa Di Var", 
-                type: "Bani", 
-                ang: 462,
-                raag: "Asa",
-                description: "A morning prayer by Guru Nanak Dev Ji",
-                audio: "https://example.com/asa-di-var.mp3"
-            },
-            { 
-                id: 3, 
-                title: "Sukhmani Sahib", 
-                type: "Bani", 
-                ang: 262,
-                raag: "Gauri",
-                description: "The Psalm of Peace by Guru Arjan Dev Ji",
-                audio: "https://example.com/sukhmani-sahib.mp3"
-            },
-            { 
-                id: 4, 
-                title: "Anand Sahib", 
-                type: "Bani", 
-                ang: 917,
-                raag: "Ramkali",
-                description: "The Song of Bliss by Guru Amar Das Ji",
-                audio: "https://example.com/anand-sahib.mp3"
-            },
-            { 
-                id: 5, 
-                title: "Bhai Harvinder Singh", 
-                type: "Ragi", 
-                description: "Renowned classical ragi specializing in traditional raags",
-                audio: "https://example.com/harvinder-singh.mp3"
-            },
-            { 
-                id: 6, 
-                title: "Bhai Nirmal Singh", 
-                type: "Ragi", 
-                description: "Hazuri ragi at Golden Temple, Amritsar",
-                audio: "https://example.com/nirmal-singh.mp3"
-            }
-        ];
+    // DOM Elements
+    let searchInput, searchBtn, resultsContainer;
+    
+    // Initialize search system
+    function init() {
+        // Create search components if they don't exist
+        createSearchUI();
         
-        this.setupSearchUI();
-    }
-    
-    setupSearchUI() {
-        // Create search component if it doesn't exist
-        if (!document.querySelector('.search-container')) {
-            this.createSearchComponent();
+        // Get DOM elements
+        searchInput = document.querySelector('.search-input');
+        searchBtn = document.querySelector('.search-btn');
+        resultsContainer = document.createElement('div');
+        resultsContainer.className = 'search-results';
+        
+        // Insert results container after search input
+        if (searchInput && searchInput.parentNode) {
+            searchInput.parentNode.appendChild(resultsContainer);
         }
         
-        const searchInput = document.querySelector('.search-input');
-        const searchBtn = document.querySelector('.search-btn');
+        setupEventListeners();
+        setupKeyboardShortcuts();
         
-        searchInput.addEventListener('input', (e) => this.performSearch(e.target.value));
-        searchBtn.addEventListener('click', () => this.performSearch(searchInput.value));
-        
-        // Add keyboard shortcut (Ctrl + K)
-        document.addEventListener('keydown', (e) => {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-                e.preventDefault();
-                searchInput.focus();
-            }
-        });
+        console.log('Search system initialized');
     }
     
-    createSearchComponent() {
-        const searchHTML = `
-            <div class="search-container">
-                <div class="search-box">
-                    <i class="fas fa-search"></i>
-                    <input type="text" class="search-input" placeholder="Search Shabads, Ragis, Raags... (Ctrl+K)">
-                    <button class="search-btn">Search</button>
-                </div>
-                <div class="search-results">
-                    <!-- Results will be inserted here -->
-                </div>
-            </div>
+    // Create search UI components
+    function createSearchUI() {
+        // Check if search already exists
+        if (document.querySelector('.search-container')) return;
+        
+        // Find nav-actions container
+        const navActions = document.querySelector('.nav-actions');
+        if (!navActions) return;
+        
+        // Create search container
+        const searchContainer = document.createElement('div');
+        searchContainer.className = 'search-container';
+        searchContainer.innerHTML = `
+            <input type="text" class="search-input" placeholder="Search Shabads, Ragis, Raags...">
+            <button class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
         `;
         
-        // Add to navbar
-        const navMenu = document.querySelector('.nav-menu');
-        if (navMenu) {
-            const searchDiv = document.createElement('div');
-            searchDiv.innerHTML = searchHTML;
-            navMenu.insertBefore(searchDiv, navMenu.firstChild);
-            
-            // Add styles
-            this.addSearchStyles();
-        }
+        // Insert at beginning of nav-actions
+        navActions.insertBefore(searchContainer, navActions.firstChild);
+        
+        // Add search styles
+        addSearchStyles();
     }
     
-    addSearchStyles() {
+    // Add search-specific styles
+    function addSearchStyles() {
         const styles = `
-            .search-container {
-                position: relative;
-                width: 300px;
-            }
-            
-            .search-box {
-                display: flex;
-                align-items: center;
-                background: var(--white-off);
-                border-radius: var(--radius-lg);
-                padding: 8px 15px;
-                border: 2px solid transparent;
-                transition: var(--transition);
-            }
-            
-            .search-box:focus-within {
-                border-color: var(--kesri-primary);
-                background: var(--white-pure);
-            }
-            
-            .search-box i {
-                color: var(--gray-medium);
-                margin-right: 10px;
-            }
-            
-            .search-input {
-                flex: 1;
-                border: none;
-                background: transparent;
-                outline: none;
-                font-size: 0.95rem;
-                color: var(--gray-dark);
-            }
-            
-            .search-input::placeholder {
-                color: var(--gray-medium);
-            }
-            
-            .search-btn {
-                background: var(--kesri-primary);
-                color: var(--white-pure);
-                border: none;
-                padding: 6px 15px;
-                border-radius: var(--radius-md);
-                cursor: pointer;
-                font-weight: 500;
-                transition: var(--transition);
-            }
-            
-            .search-btn:hover {
-                background: var(--kesri-dark);
-            }
-            
             .search-results {
                 position: absolute;
                 top: 100%;
                 left: 0;
                 right: 0;
-                background: var(--white-pure);
+                background: var(--white);
                 border-radius: var(--radius-lg);
-                box-shadow: var(--shadow-lg);
+                box-shadow: var(--shadow-xl);
                 max-height: 400px;
                 overflow-y: auto;
                 display: none;
-                z-index: 1000;
+                z-index: var(--z-dropdown);
                 margin-top: 5px;
+                border: 1px solid var(--gray-light);
             }
             
             .search-results.show {
@@ -186,10 +164,13 @@ class SearchSystem {
             }
             
             .search-result-item {
-                padding: 15px;
+                padding: 1rem;
                 border-bottom: 1px solid var(--gray-light);
                 cursor: pointer;
                 transition: var(--transition);
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
             }
             
             .search-result-item:hover {
@@ -200,40 +181,90 @@ class SearchSystem {
                 border-bottom: none;
             }
             
+            .search-result-content {
+                flex: 1;
+            }
+            
             .result-title {
                 font-weight: 600;
-                color: var(--blue-dark);
-                margin-bottom: 5px;
+                color: var(--blue);
+                margin-bottom: 0.25rem;
                 display: flex;
                 align-items: center;
-                gap: 8px;
+                gap: 0.5rem;
             }
             
             .result-type {
-                background: var(--kesri-primary);
+                background: var(--kesri);
                 color: white;
-                padding: 2px 8px;
+                padding: 0.125rem 0.5rem;
                 border-radius: 12px;
                 font-size: 0.75rem;
+                font-weight: 500;
             }
             
             .result-description {
-                color: var(--gray-medium);
-                font-size: 0.9rem;
-                margin-bottom: 5px;
+                color: var(--gray);
+                font-size: 0.875rem;
+                margin-bottom: 0.5rem;
             }
             
             .result-meta {
                 display: flex;
-                gap: 15px;
-                font-size: 0.8rem;
-                color: var(--gray-medium);
+                gap: 1rem;
+                font-size: 0.75rem;
+                color: var(--gray);
+            }
+            
+            .result-meta span {
+                display: flex;
+                align-items: center;
+                gap: 0.25rem;
+            }
+            
+            .result-action {
+                background: var(--blue);
+                color: white;
+                border: none;
+                width: 32px;
+                height: 32px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: var(--transition);
+            }
+            
+            .result-action:hover {
+                background: var(--blue-dark);
+                transform: scale(1.1);
+            }
+            
+            .no-results {
+                padding: 2rem;
+                text-align: center;
+                color: var(--gray);
+            }
+            
+            .no-results i {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+                color: var(--gray-light);
             }
             
             @media (max-width: 768px) {
                 .search-container {
                     width: 100%;
                     order: -1;
+                }
+                
+                .search-results {
+                    position: fixed;
+                    top: 70px;
+                    left: 1rem;
+                    right: 1rem;
+                    max-height: 60vh;
                 }
             }
         `;
@@ -243,95 +274,255 @@ class SearchSystem {
         document.head.appendChild(styleSheet);
     }
     
-    performSearch(query) {
-        const resultsContainer = document.querySelector('.search-results');
+    // Setup event listeners
+    function setupEventListeners() {
+        if (!searchInput || !searchBtn) return;
         
-        if (!query.trim()) {
-            resultsContainer.classList.remove('show');
+        // Search button click
+        searchBtn.addEventListener('click', performSearch);
+        
+        // Input events
+        searchInput.addEventListener('input', function() {
+            if (this.value.trim()) {
+                performSearch();
+            } else {
+                hideResults();
+            }
+        });
+        
+        // Close results when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container') && 
+                !e.target.closest('.search-results')) {
+                hideResults();
+            }
+        });
+        
+        // Prevent form submission
+        if (searchInput.form) {
+            searchInput.form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                performSearch();
+            });
+        }
+    }
+    
+    // Setup keyboard shortcuts
+    function setupKeyboardShortcuts() {
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + K to focus search
+            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                e.preventDefault();
+                if (searchInput) {
+                    searchInput.focus();
+                    searchInput.select();
+                }
+            }
+            
+            // Escape to close results
+            if (e.key === 'Escape') {
+                hideResults();
+                if (searchInput) {
+                    searchInput.blur();
+                }
+            }
+            
+            // Arrow keys navigation in results
+            if (resultsContainer.classList.contains('show')) {
+                const items = resultsContainer.querySelectorAll('.search-result-item');
+                const activeItem = resultsContainer.querySelector('.search-result-item.active');
+                
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateResults(1, items, activeItem);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    navigateResults(-1, items, activeItem);
+                } else if (e.key === 'Enter' && activeItem) {
+                    e.preventDefault();
+                    activeItem.click();
+                }
+            }
+        });
+    }
+    
+    // Perform search
+    function performSearch() {
+        if (!searchInput || !resultsContainer) return;
+        
+        const query = searchInput.value.trim().toLowerCase();
+        
+        if (!query) {
+            hideResults();
             return;
         }
         
-        const results = this.searchData.filter(item => {
-            const searchText = `${item.title} ${item.type} ${item.raag || ''} ${item.description}`.toLowerCase();
-            return searchText.includes(query.toLowerCase());
+        // Filter search data
+        const results = searchData.filter(item => {
+            const searchString = `
+                ${item.title} 
+                ${item.type} 
+                ${item.category || ''} 
+                ${item.description || ''} 
+                ${item.raag || ''} 
+                ${(item.keywords || []).join(' ')}
+            `.toLowerCase();
+            
+            return searchString.includes(query);
         });
         
-        this.displayResults(results);
+        // Display results
+        displayResults(results);
     }
     
-    displayResults(results) {
-        const resultsContainer = document.querySelector('.search-results');
+    // Display search results
+    function displayResults(results) {
+        if (!resultsContainer) return;
+        
         resultsContainer.innerHTML = '';
         
         if (results.length === 0) {
             resultsContainer.innerHTML = `
-                <div class="search-result-item">
-                    <div class="result-title">
-                        <i class="fas fa-search"></i>
-                        No results found
-                    </div>
-                    <p class="result-description">Try different keywords</p>
+                <div class="no-results">
+                    <i class="fas fa-search"></i>
+                    <p>No results found</p>
+                    <small>Try different keywords</small>
                 </div>
             `;
         } else {
             results.forEach(result => {
                 const resultItem = document.createElement('div');
                 resultItem.className = 'search-result-item';
-                resultItem.innerHTML = this.getResultHTML(result);
-                resultItem.addEventListener('click', () => this.handleResultClick(result));
+                resultItem.innerHTML = getResultHTML(result);
+                resultItem.addEventListener('click', () => handleResultClick(result));
                 resultsContainer.appendChild(resultItem);
             });
         }
         
         resultsContainer.classList.add('show');
-        
-        // Close results when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.search-container')) {
-                resultsContainer.classList.remove('show');
-            }
-        });
     }
     
-    getResultHTML(result) {
+    // Generate HTML for a search result
+    function getResultHTML(result) {
         return `
-            <div class="result-title">
-                ${result.title}
-                <span class="result-type">${result.type}</span>
+            <div class="search-result-content">
+                <div class="result-title">
+                    ${result.title}
+                    <span class="result-type">${result.type}</span>
+                </div>
+                <p class="result-description">${result.description}</p>
+                <div class="result-meta">
+                    ${result.ang ? `<span><i class="fas fa-book"></i> Ang ${result.ang}</span>` : ''}
+                    ${result.raag ? `<span><i class="fas fa-music"></i> ${result.raag}</span>` : ''}
+                    ${result.duration ? `<span><i class="fas fa-clock"></i> ${result.duration}</span>` : ''}
+                    ${result.shabads ? `<span><i class="fas fa-list"></i> ${result.shabads} shabads</span>` : ''}
+                </div>
             </div>
-            <p class="result-description">${result.description}</p>
-            <div class="result-meta">
-                ${result.ang ? `<span><i class="fas fa-book"></i> Ang ${result.ang}</span>` : ''}
-                ${result.raag ? `<span><i class="fas fa-music"></i> ${result.raag}</span>` : ''}
-                <span><i class="fas fa-clock"></i> Click to play</span>
-            </div>
+            <button class="result-action" title="Play">
+                <i class="fas fa-play"></i>
+            </button>
         `;
     }
     
-    handleResultClick(result) {
-        // Play the audio
-        if (window.audioPlayer && result.audio) {
-            window.audioPlayer.playStream(result.audio, result.title);
-        }
+    // Handle result click
+    function handleResultClick(result) {
+        // Play the result
+        playResult(result);
         
-        // Close results
-        document.querySelector('.search-results').classList.remove('show');
+        // Hide results
+        hideResults();
+        
+        // Clear search input
+        if (searchInput) {
+            searchInput.value = '';
+        }
         
         // Show notification
-        this.showNotification(`Now playing: ${result.title}`);
+        showNotification(`Now playing: ${result.title}`);
     }
     
-    showNotification(message) {
-        // Reuse the notification system from main.js
-        if (typeof showNotification === 'function') {
-            showNotification(message);
-        } else {
-            alert(message);
+    // Play a search result
+    function playResult(result) {
+        if (window.AudioPlayer) {
+            const track = {
+                title: result.title,
+                artist: result.type === 'Ragi' ? result.category : result.description,
+                duration: result.duration || '3:45'
+            };
+            
+            if (result.type === 'Ragi') {
+                // Add multiple tracks for ragi
+                const tracks = [
+                    { ...track, title: `${result.title} - Shabad 1` },
+                    { ...track, title: `${result.title} - Shabad 2` },
+                    { ...track, title: `${result.title} - Shabad 3` }
+                ];
+                window.AudioPlayer.addToPlaylist(tracks);
+                window.AudioPlayer.playTrack(tracks[0]);
+            } else {
+                window.AudioPlayer.playTrack(track);
+            }
         }
     }
-}
+    
+    // Navigate results with arrow keys
+    function navigateResults(direction, items, activeItem) {
+        let nextIndex = 0;
+        
+        if (activeItem) {
+            const currentIndex = Array.from(items).indexOf(activeItem);
+            nextIndex = currentIndex + direction;
+            
+            if (nextIndex < 0) nextIndex = items.length - 1;
+            if (nextIndex >= items.length) nextIndex = 0;
+        }
+        
+        // Remove active class from all items
+        items.forEach(item => item.classList.remove('active'));
+        
+        // Add active class to selected item
+        if (items[nextIndex]) {
+            items[nextIndex].classList.add('active');
+            items[nextIndex].scrollIntoView({ block: 'nearest' });
+        }
+    }
+    
+    // Hide search results
+    function hideResults() {
+        if (resultsContainer) {
+            resultsContainer.classList.remove('show');
+        }
+    }
+    
+    // Show notification
+    function showNotification(message) {
+        if (window.GurbaniRadio && window.GurbaniRadio.showToast) {
+            window.GurbaniRadio.showToast(message, 'success');
+        }
+    }
+    
+    // Public API
+    return {
+        init,
+        performSearch,
+        hideResults,
+        addToSearchData: function(items) {
+            if (Array.isArray(items)) {
+                searchData.push(...items);
+            } else {
+                searchData.push(items);
+            }
+        },
+        getSearchData: function() {
+            return [...searchData];
+        }
+    };
+})();
 
 // Initialize search system
-document.addEventListener('DOMContentLoaded', () => {
-    window.searchSystem = new SearchSystem();
+document.addEventListener('DOMContentLoaded', function() {
+    SearchSystem.init();
 });
+
+// Make SearchSystem globally available
+window.SearchSystem = SearchSystem;
