@@ -1,0 +1,411 @@
+/* ===== Responsive Design ===== */
+
+/* Large Desktop (1200px and above) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1140px;
+    }
+}
+
+/* Desktop (992px to 1199px) */
+@media (max-width: 1199px) {
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.75rem;
+    }
+    
+    .channels-grid,
+    .ragis-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .player-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .player-controls {
+        width: 100%;
+    }
+}
+
+/* Tablet (768px to 991px) */
+@media (max-width: 991px) {
+    .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: var(--white);
+        flex-direction: column;
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+        z-index: var(--z-dropdown);
+    }
+    
+    .nav-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+    
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .nav-actions {
+        flex-direction: column;
+        width: 100%;
+        align-items: stretch;
+    }
+    
+    .search-container {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    
+    .search-input {
+        width: 100%;
+    }
+    
+    .hamburger {
+        display: flex;
+    }
+    
+    .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .hamburger.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+    
+    .hero {
+        min-height: 60vh;
+        padding-top: 100px;
+    }
+    
+    .hero-content h1 {
+        font-size: 2.25rem;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-buttons a {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .hukamnama-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .ang-info {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
+    
+    .actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .footer-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .floating-audio-player {
+        width: 95%;
+        padding: 0.75rem;
+    }
+    
+    .playlist-sidebar {
+        width: 100%;
+        right: 0;
+    }
+}
+
+/* Mobile Landscape (576px to 767px) */
+@media (max-width: 767px) {
+    body {
+        padding-top: 60px;
+    }
+    
+    .navbar {
+        padding: 0.5rem 0;
+    }
+    
+    .hero {
+        min-height: 50vh;
+        padding: 80px 1rem 3rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    
+    .hero-content h2 {
+        font-size: 1.25rem;
+    }
+    
+    .hero-content p {
+        font-size: 1rem;
+    }
+    
+    .section {
+        padding: 3rem 0;
+    }
+    
+    .section-title {
+        font-size: 1.75rem;
+    }
+    
+    .channels-grid,
+    .ragis-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .channel-card,
+    .raagi-card {
+        padding: 1.25rem;
+    }
+    
+    .hukamnama-card {
+        margin: 0 1rem;
+    }
+    
+    .hukamnama-content {
+        padding: 1.5rem;
+    }
+    
+    .gurbani-text h3 {
+        font-size: 1.5rem;
+    }
+    
+    .quote-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .quote-card p:first-of-type {
+        font-size: 1.5rem;
+    }
+    
+    .footer-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    
+    .footer-col {
+        text-align: center;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+    
+    .contact-info li {
+        justify-content: center;
+    }
+    
+    .newsletter-form {
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    
+    .player-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .progress-container,
+    .volume-container {
+        width: 100%;
+    }
+    
+    .current-time,
+    .duration {
+        min-width: 45px;
+    }
+}
+
+/* Mobile Portrait (575px and below) */
+@media (max-width: 575px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .logo a {
+        font-size: 1.25rem;
+    }
+    
+    .hero-content h1 {
+        font-size: 1.75rem;
+    }
+    
+    .gurbani-text h3 {
+        font-size: 1.25rem;
+    }
+    
+    .gurmukhi {
+        font-size: 0.9em;
+    }
+    
+    .floating-audio-player {
+        bottom: 10px;
+        width: 98%;
+        padding: 0.5rem;
+    }
+    
+    .now-playing {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+    
+    .track-info {
+        width: 100%;
+    }
+    
+    .footer-bottom p {
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+}
+
+/* Small Mobile (400px and below) */
+@media (max-width: 400px) {
+    .hero-content h1 {
+        font-size: 1.5rem;
+    }
+    
+    .hero-buttons .btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+    }
+    
+    .channel-icon,
+    .raagi-image {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+    }
+    
+    .live-badge {
+        font-size: 0.65rem;
+        padding: 3px 8px;
+    }
+    
+    .footer-bottom p {
+        font-size: 0.8rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .navbar,
+    .floating-audio-player,
+    .hero-buttons,
+    .btn-stream,
+    .actions,
+    .social-links,
+    .newsletter-form,
+    .footer {
+        display: none !important;
+    }
+    
+    body {
+        padding-top: 0;
+        color: black;
+        background: white;
+        font-size: 12pt;
+    }
+    
+    .hero {
+        background: none !important;
+        color: black;
+        min-height: auto;
+        padding: 1rem 0;
+    }
+    
+    .hero-content h1,
+    .hero-content h2 {
+        color: black;
+    }
+    
+    .section {
+        padding: 1rem 0;
+    }
+    
+    a {
+        color: black;
+        text-decoration: underline;
+    }
+}
+
+/* High Resolution Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .hero {
+        background-image: linear-gradient(rgba(0, 0, 128, 0.8), rgba(255, 153, 51, 0.8)),
+                          url('https://images.unsplash.com/photo-1621277224637-8a2293c8e6c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=80');
+    }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+    
+    .live-badge {
+        animation: none;
+    }
+}
+
+/* Dark Mode Preference */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --white: #1a1a1a;
+        --white-off: #2d2d2d;
+        --gray-light: #404040;
+        --gray: #8a8a8a;
+        --gray-dark: #e0e0e0;
+    }
+    
+    .hero {
+        background-blend-mode: overlay;
+    }
+}
