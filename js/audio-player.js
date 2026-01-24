@@ -1,4 +1,4 @@
-// Advanced Audio Player
+//Advanced Audio Player
 class AudioPlayer {
     constructor() {
         this.audio = new Audio();
