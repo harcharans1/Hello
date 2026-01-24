@@ -1,343 +1,278 @@
 <!DOCTYPE html>
-<html lang="pa">
+<html lang="en-pa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gurfateh Radio - 24/7 Gurbani Radio</title>
+    <title>Gurbani Radio | Live Spiritual Stream</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Gurmukhi+MN:wght@400;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gurmukhi:wght@400;500;700&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
 </head>
 <body>
-    <!-- Loading Screen -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-content">
-            <div class="loading-logo">
-                <i class="fas fa-praying-hands"></i>
-                <span>Gurfateh</span>
-            </div>
-            <div class="loading-spinner"></div>
-            <p class="loading-text">ਲੋਡ ਹੋ ਰਿਹਾ ਹੈ...</p>
-        </div>
-    </div>
-
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <div class="logo">
-                <i class="fas fa-praying-hands"></i>
-                <span class="logo-text">Gurfateh Radio</span>
+                <a href="index.html">
+                    <i class="fas fa-pray"></i>
+                    <span>Gurbani</span>Radio
+                </a>
             </div>
             
-            <ul class="nav-menu">
-                <li><a href="#home" class="active"><i class="fas fa-home"></i> ਘਰ</a></li>
-                <li><a href="#channels"><i class="fas fa-broadcast-tower"></i> ਚੈਨਲ</a></li>
-                <li><a href="#schedule"><i class="fas fa-calendar-alt"></i> ਸਮਾਂ ਸਾਰਨੀ</a></li>
-                <li><a href="#downloads"><i class="fas fa-download"></i> ਡਾਊਨਲੋਡ</a></li>
-                <li><a href="#about"><i class="fas fa-info-circle"></i> ਸਾਡੇ ਬਾਰੇ</a></li>
-            </ul>
-            
-            <div class="nav-actions">
-                <button class="btn-login">
-                    <i class="fas fa-user"></i>
-                    <span>ਲਾਗਇਨ</span>
-                </button>
-                <button class="menu-toggle" id="menuToggle">
-                    <i class="fas fa-bars"></i>
-                </button>
+            <div class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="live-radio.html"><i class="fas fa-broadcast-tower"></i> Live Radio</a></li>
+                    <li><a href="shabad-library.html"><i class="fas fa-music"></i> Shabad Library</a></li>
+                    <li><a href="raag-mala.html"><i class="fas fa-book"></i> Raag Mala</a></li>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                    <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                </ul>
+                
+                <div class="nav-actions">
+                    <button class="btn-login"><i class="fas fa-user"></i> Login</button>
+                    <button class="btn-register">Register</button>
+                    <div class="theme-switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <label for="theme-toggle">
+                            <i class="fas fa-sun"></i>
+                            <i class="fas fa-moon"></i>
+                            <span class="switch-ball"></span>
+                        </label>
+                    </div>
+                </div>
             </div>
+            
+            <button class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </nav>
 
+    <!-- Audio Player (Fixed) -->
+    <div class="audio-player-container">
+        <div class="player-controls">
+            <button class="player-btn prev-btn"><i class="fas fa-step-backward"></i></button>
+            <button class="player-btn play-btn"><i class="fas fa-play"></i></button>
+            <button class="player-btn next-btn"><i class="fas fa-step-forward"></i></button>
+            <div class="track-info">
+                <h4 class="track-title">Loading...</h4>
+                <p class="track-artist">Gurbani Radio</p>
+            </div>
+            <div class="progress-container">
+                <span class="current-time">0:00</span>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+                <span class="duration">0:00</span>
+            </div>
+            <div class="volume-container">
+                <i class="fas fa-volume-up"></i>
+                <input type="range" class="volume-slider" min="0" max="100" value="80">
+            </div>
+            <button class="player-btn playlist-toggle">
+                <i class="fas fa-list"></i>
+            </button>
+        </div>
+        
+        <div class="playlist-sidebar">
+            <h3><i class="fas fa-stream"></i> Current Playlist</h3>
+            <ul class="playlist-items">
+                <!-- Dynamic playlist items -->
+            </ul>
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <main class="main-content">
+    <main>
         <!-- Hero Section -->
-        <section class="hero-section" id="home">
-            <div class="hero-overlay">
-                <div class="hero-content">
-                    <h1 class="hero-title">
-                        <span class="gurmukhi">ਗੁਰਫਤਹ ਰੇਡੀਓ</span>
-                        <span class="english">Gurfateh Radio</span>
-                    </h1>
-                    <p class="hero-subtitle">24/7 ਗੁਰਬਾਣੀ, ਕੀਰਤਨ ਅਤੇ ਸਿੱਖ ਇਤਿਹਾਸ</p>
-                    
-                    <div class="hero-stats">
-                        <div class="stat-item">
-                            <i class="fas fa-headphones"></i>
-                            <div>
-                                <span class="stat-number" id="liveListeners">1,250</span>
-                                <span class="stat-label">ਲਾਈਵ ਸੁਣ ਰਹੇ</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-satellite-dish"></i>
-                            <div>
-                                <span class="stat-number">12</span>
-                                <span class="stat-label">ਚੈਨਲ</span>
-                            </div>
-                        </div>
-                        <div class="stat-item">
-                            <i class="fas fa-globe"></i>
-                            <div>
-                                <span class="stat-number">50+</span>
-                                <span class="stat-label">ਦੇਸ਼</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <button class="btn-live" id="playLiveBtn">
-                        <i class="fas fa-play-circle"></i>
-                        <span>ਲਾਈਵ ਸੁਣੋ</span>
-                    </button>
+        <section class="hero-section">
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <h1 class="gurmukhi-font">ਸ੍ਰੀ ਗੁਰੂ ਗ੍ਰੰਥ ਸਾਹਿਬ ਜੀ</h1>
+                <h2>Experience Divine Gurbani 24/7</h2>
+                <p>Live streaming of Kirtan, Katha, and spiritual discourses from around the world</p>
+                <div class="hero-buttons">
+                    <a href="live-radio.html" class="btn-primary">
+                        <i class="fas fa-play-circle"></i> Listen Live
+                    </a>
+                    <a href="shabad-library.html" class="btn-secondary">
+                        <i class="fas fa-music"></i> Explore Shabads
+                    </a>
                 </div>
+            </div>
+            <div class="wave-divider">
+                <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"></path>
+                </svg>
             </div>
         </section>
 
-        <!-- Main Player -->
-        <section class="player-section">
-            <div class="player-container">
-                <div class="player-main">
-                    <div class="now-playing">
-                        <div class="track-cover">
-                            <div class="cover-image">
-                                <i class="fas fa-compact-disc spinning"></i>
-                            </div>
-                        </div>
-                        
-                        <div class="track-info">
-                            <h3 class="track-title" id="currentTrack">ਗੁਰਬਾਣੀ ਕੀਰਤਨ</h3>
-                            <p class="track-artist" id="currentArtist">ਭਾਈ ਹਰਭਜਨ ਸਿੰਘ</p>
-                            <div class="track-meta">
-                                <span class="track-channel" id="currentChannel">ਕੀਰਤਨ ਚੈਨਲ</span>
-                                <span class="track-quality">128 kbps</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="player-controls">
-                        <button class="control-btn" id="prevBtn" title="ਪਿਛਲਾ">
-                            <i class="fas fa-step-backward"></i>
-                        </button>
-                        
-                        <button class="control-btn play-btn" id="playBtn" title="ਪਲੇ/ਰੋਕੋ">
-                            <i class="fas fa-play" id="playIcon"></i>
-                        </button>
-                        
-                        <button class="control-btn" id="nextBtn" title="ਅਗਲਾ">
-                            <i class="fas fa-step-forward"></i>
-                        </button>
-                        
-                        <div class="volume-control">
-                            <i class="fas fa-volume-up" id="volumeIcon"></i>
-                            <input type="range" id="volumeSlider" min="0" max="100" value="70">
-                        </div>
-                        
-                        <button class="control-btn" id="favoriteBtn" title="ਪਸੰਦੀਦਾ">
-                            <i class="far fa-heart"></i>
-                        </button>
-                    </div>
-                    
-                    <div class="player-progress">
-                        <div class="progress-bar" id="progressBar">
-                            <div class="progress-fill" id="progressFill"></div>
-                            <div class="progress-thumb" id="progressThumb"></div>
-                        </div>
-                        <div class="time-display">
-                            <span id="currentTime">0:00</span>
-                            <span id="totalTime">4:30</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="player-extra">
-                    <button class="extra-btn" id="repeatBtn" title="ਦੁਹਰਾਓ">
-                        <i class="fas fa-redo"></i>
-                    </button>
-                    <button class="extra-btn" id="shuffleBtn" title="ਮਿਲਾਓ">
-                        <i class="fas fa-random"></i>
-                    </button>
-                    <button class="extra-btn" id="downloadBtn" title="ਡਾਊਨਲੋਡ">
-                        <i class="fas fa-download"></i>
-                    </button>
-                    <button class="extra-btn" id="shareBtn" title="ਸਾਂਝਾ ਕਰੋ">
-                        <i class="fas fa-share-alt"></i>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Channels Section -->
-        <section class="channels-section" id="channels">
+        <!-- Live Channels -->
+        <section class="section-container">
             <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-satellite-dish"></i>
-                    ਸਾਰੇ ਚੈਨਲ
-                </h2>
-                <p class="section-subtitle">24 ਘੰਟੇ ਗੁਰਬਾਣੀ ਦਾ ਪ੍ਰਸਾਰਨ</p>
+                <h2><i class="fas fa-satellite-dish"></i> Live Channels</h2>
+                <p>Choose from our spiritual streams</p>
             </div>
             
-            <div class="channels-grid" id="channelsGrid">
-                <!-- Channels will be populated by JavaScript -->
-            </div>
-            
-            <div class="section-footer">
-                <button class="btn-view-all" id="viewAllChannels">
-                    <span>ਸਾਰੇ ਚੈਨਲ ਦੇਖੋ</span>
-                    <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
-        </section>
-
-        <!-- Live Schedule -->
-        <section class="schedule-section" id="schedule">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-calendar-alt"></i>
-                    ਲਾਈਵ ਸਮਾਂ ਸਾਰਨੀ
-                </h2>
-                <p class="section-subtitle">ਅੱਜ ਦੇ ਪ੍ਰੋਗਰਾਮ (22 ਮਾਰਚ 2024)</p>
-            </div>
-            
-            <div class="schedule-container">
-                <div class="schedule-tabs">
-                    <button class="schedule-tab active" data-day="today">ਅੱਜ</button>
-                    <button class="schedule-tab" data-day="tomorrow">ਕੱਲ</button>
-                    <button class="schedule-tab" data-day="week">ਇਸ ਹਫ਼ਤੇ</button>
-                </div>
-                
-                <div class="schedule-content">
-                    <div class="schedule-list" id="scheduleList">
-                        <!-- Schedule items will be populated by JavaScript -->
+            <div class="channels-grid">
+                <div class="channel-card">
+                    <div class="channel-icon kesri-bg">
+                        <i class="fas fa-heart"></i>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Downloads Section -->
-        <section class="downloads-section" id="downloads">
-            <div class="section-header">
-                <h2 class="section-title">
-                    <i class="fas fa-download"></i>
-                    ਡਾਊਨਲੋਡ
-                </h2>
-                <p class="section-subtitle">ਆਫਲਾਈਨ ਸੁਣਨ ਲਈ ਡਾਊਨਲੋਡ ਕਰੋ</p>
-            </div>
-            
-            <div class="downloads-grid">
-                <div class="download-card">
-                    <div class="download-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                    </div>
-                    <h3>ਮੋਬਾਈਲ ਐਪ</h3>
-                    <p>Android ਅਤੇ iOS ਲਈ</p>
-                    <div class="download-buttons">
-                        <button class="btn-download">
-                            <i class="fab fa-google-play"></i>
-                            Google Play
-                        </button>
-                        <button class="btn-download">
-                            <i class="fab fa-app-store"></i>
-                            App Store
-                        </button>
-                    </div>
-                </div>
-                
-                <div class="download-card">
-                    <div class="download-icon">
-                        <i class="fas fa-desktop"></i>
-                    </div>
-                    <h3>ਡੈਸਕਟਾਪ ਐਪ</h3>
-                    <p>Windows, Mac, Linux</p>
-                    <button class="btn-download">
-                        <i class="fas fa-download"></i>
-                        ਡਾਊਨਲੋਡ ਕਰੋ
+                    <h3>Kirtan Live</h3>
+                    <p>Traditional Shabad Kirtan from Harmandir Sahib</p>
+                    <button class="btn-stream" data-channel="kirtan">
+                        <i class="fas fa-play"></i> Play Now
                     </button>
+                    <span class="live-badge">LIVE</span>
                 </div>
                 
-                <div class="download-card">
-                    <div class="download-icon">
-                        <i class="fas fa-podcast"></i>
+                <div class="channel-card">
+                    <div class="channel-icon blue-bg">
+                        <i class="fas fa-book-open"></i>
                     </div>
-                    <h3>ਪੌਡਕਾਸਟ</h3>
-                    <p>RSS ਫੀਡ ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ</p>
-                    <button class="btn-download">
-                        <i class="fas fa-rss"></i>
-                        ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ
+                    <h3>Katha Channel</h3>
+                    <p>Spiritual discourses and explanations</p>
+                    <button class="btn-stream" data-channel="katha">
+                        <i class="fas fa-play"></i> Play Now
                     </button>
+                    <span class="live-badge">LIVE</span>
+                </div>
+                
+                <div class="channel-card">
+                    <div class="channel-icon white-bg">
+                        <i class="fas fa-om"></i>
+                    </div>
+                    <h3>Simran Stream</h3>
+                    <p>Continuous Naam Simran and meditation</p>
+                    <button class="btn-stream" data-channel="simran">
+                        <i class="fas fa-play"></i> Play Now
+                    </button>
+                    <span class="live-badge">LIVE</span>
+                </div>
+                
+                <div class="channel-card">
+                    <div class="channel-icon dark-bg">
+                        <i class="fas fa-globe-asia"></i>
+                    </div>
+                    <h3>International</h3>
+                    <p>Gurbani from Gurdwaras worldwide</p>
+                    <button class="btn-stream" data-channel="international">
+                        <i class="fas fa-play"></i> Play Now
+                    </button>
+                    <span class="live-badge">LIVE</span>
                 </div>
             </div>
         </section>
 
-        <!-- About Section -->
-        <section class="about-section" id="about">
-            <div class="about-container">
-                <div class="about-content">
-                    <h2 class="about-title">Gurfateh Radio ਬਾਰੇ</h2>
-                    <p class="about-text">
-                        Gurfateh Radio ਇੱਕ ਅਜਿਹਾ ਪਲੇਟਫਾਰਮ ਹੈ ਜੋ ਦੁਨੀਆ ਭਰ ਦੇ ਸ਼ਰਧਾਲੂਆਂ ਨੂੰ 24 ਘੰਟੇ ਗੁਰਬਾਣੀ, 
-                        ਕੀਰਤਨ, ਕਥਾ ਅਤੇ ਸਿੱਖ ਇਤਿਹਾਸ ਤੱਕ ਪਹੁੰਚ ਪ੍ਰਦਾਨ ਕਰਦਾ ਹੈ। ਸਾਡਾ ਉਦੇਸ਼ ਤਕਨੀਕੀ ਦੀ 
-                        ਮਦਦ ਨਾਲ ਗੁਰਬਾਣੀ ਦਾ ਪ੍ਰਸਾਰਨ ਕਰਨਾ ਹੈ।
-                    </p>
+        <!-- Daily Hukamnama -->
+        <section class="hukamnama-section">
+            <div class="section-container">
+                <div class="section-header">
+                    <h2><i class="fas fa-star-of-david"></i> Today's Hukamnama</h2>
+                    <p>From Sri Harmandir Sahib, Amritsar</p>
+                </div>
+                
+                <div class="hukamnama-card">
+                    <div class="hukamnama-header">
+                        <div class="date-display">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="current-date">Loading...</span>
+                        </div>
+                        <div class="ang-info">
+                            <span class="ang-number">Ang 305</span>
+                            <span class="raag-name">Raag Asa</span>
+                        </div>
+                    </div>
                     
-                    <div class="about-features">
-                        <div class="feature">
-                            <i class="fas fa-broadcast-tower"></i>
-                            <h4>24/7 ਪ੍ਰਸਾਰਨ</h4>
-                            <p>ਹਰ ਸਮੇਂ ਲਾਈਵ ਰੇਡੀਓ</p>
+                    <div class="hukamnama-content">
+                        <div class="gurmukhi-text gurmukhi-font">
+                            <h3>ਗੁਰਮੁਖਿ ਨਾਮੁ ਮੰਨਿ ਵਸੈ ਸਚੁ ਧਨੁ ਰਾਸਿ ॥</h3>
+                            <p>गुरमुखि नामु मंनि वसै सचु धनु रासि ॥</p>
                         </div>
-                        <div class="feature">
-                            <i class="fas fa-music"></i>
-                            <h4>ਮਲਟੀਪਲ ਚੈਨਲ</h4>
-                            <p>12 ਤੋਂ ਵੱਧ ਵਿਸ਼ੇਸ਼ ਚੈਨਲ</p>
+                        
+                        <div class="translation">
+                            <h4><i class="fas fa-language"></i> Translation</h4>
+                            <p>The Gurmukh enshrines the Naam within the mind; the True Name is the treasure of wealth.</p>
                         </div>
-                        <div class="feature">
-                            <i class="fas fa-globe"></i>
-                            <h4>ਗਲੋਬਲ ਪਹੁੰਚ</h4>
-                            <p>50+ ਦੇਸ਼ਾਂ ਵਿੱਚ ਉਪਲੱਬਧ</p>
+                        
+                        <div class="transliteration">
+                            <h4><i class="fas fa-font"></i> Transliteration</h4>
+                            <p>Gurmukh nām man vasai sach dhan rās.</p>
                         </div>
-                        <div class="feature">
-                            <i class="fas fa-download"></i>
-                            <h4>ਆਫਲਾਈਨ ਸੁਣੋ</h4>
-                            <p>ਡਾਊਨਲੋਡ ਅਤੇ ਸੁਣੋ</p>
+                        
+                        <div class="hukamnama-actions">
+                            <button class="btn-audio">
+                                <i class="fas fa-volume-up"></i> Listen
+                            </button>
+                            <button class="btn-save">
+                                <i class="far fa-bookmark"></i> Save
+                            </button>
+                            <button class="btn-share">
+                                <i class="fas fa-share-alt"></i> Share
+                            </button>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="about-image">
-                    <div class="image-frame">
-                        <i class="fas fa-praying-hands"></i>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Contact Section -->
-        <section class="contact-section">
-            <div class="contact-container">
-                <div class="contact-info">
-                    <h3>ਸੰਪਰਕ ਕਰੋ</h3>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>contact@gurfatehradio.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>+1 234 567 8900</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>ਅੰਮ੍ਰਿਤਸਰ, ਪੰਜਾਬ, ਭਾਰਤ</span>
+        <!-- Featured Ragis -->
+        <section class="section-container">
+            <div class="section-header">
+                <h2><i class="fas fa-users"></i> Featured Ragis</h2>
+                <p>Renowned Kirtan exponents</p>
+            </div>
+            
+            <div class="ragis-carousel">
+                <div class="ragi-card">
+                    <img src="https://via.placeholder.com/300x200/FF9933/FFFFFF?text=Bhai+Harvinder+Singh" alt="Bhai Harvinder Singh">
+                    <h3>Bhai Harvinder Singh</h3>
+                    <p>Classical Raag Kirtan</p>
+                    <div class="raag-tags">
+                        <span>Asa</span>
+                        <span>Bilawal</span>
+                        <span>Marwa</span>
                     </div>
                 </div>
                 
-                <div class="newsletter">
-                    <h3>ਨਿਊਜ਼ਲੈਟਰ</h3>
-                    <p>ਤਾਜ਼ਾ ਅੱਪਡੇਟ ਪ੍ਰਾਪਤ ਕਰੋ</p>
-                    <div class="newsletter-form">
-                        <input type="email" placeholder="ਤੁਹਾਡਾ ਈਮੇਲ" id="newsletterEmail">
-                        <button class="btn-subscribe">ਸਬਸਕ੍ਰਾਈਬ ਕਰੋ</button>
+                <div class="ragi-card">
+                    <img src="https://via.placeholder.com/300x200/000080/FFFFFF?text=Bhai+Nirmal+Singh" alt="Bhai Nirmal Singh">
+                    <h3>Bhai Nirmal Singh</h3>
+                    <p>Hazuri Ragi</p>
+                    <div class="raag-tags">
+                        <span>Todi</span>
+                        <span>Darbari</span>
+                        <span>Kalyan</span>
                     </div>
                 </div>
+                
+                <div class="ragi-card">
+                    <img src="https://via.placeholder.com/300x200/FFFFFF/333333?text=Bibi+Jaswinder+Kaur" alt="Bibi Jaswinder Kaur">
+                    <h3>Bibi Jaswinder Kaur</h3>
+                    <p>Devotional Kirtan</p>
+                    <div class="raag-tags">
+                        <span>Suhi</span>
+                        <span>Malhar</span>
+                        <span>Kanara</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gurbani Quote -->
+        <section class="quote-section">
+            <div class="section-container">
+                <blockquote class="gurbani-quote">
+                    <p class="gurmukhi-font">ਨਾਨਕ ਨਾਮੁ ਮਿਲੈ ਤਾਂ ਜੀਵੁ ਤਨੁ ਮਨੁ ਥੀਵੈ ਹਰਿਆ ॥</p>
+                    <p>O Nanak, if you obtain the Naam, then you shall live, and your body and mind shall become green again.</p>
+                    <cite>– Sri Guru Granth Sahib Ji, Ang 877</cite>
+                </blockquote>
             </div>
         </section>
     </main>
@@ -345,80 +280,72 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-container">
-            <div class="footer-main">
-                <div class="footer-brand">
-                    <div class="logo">
-                        <i class="fas fa-praying-hands"></i>
-                        <span class="logo-text">Gurfateh Radio</span>
-                    </div>
-                    <p class="footer-description">
-                        24 ਘੰਟੇ ਗੁਰਬਾਣੀ ਦਾ ਪ੍ਰਸਾਰਨ<br>
-                        Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh
-                    </p>
-                    
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-whatsapp"></i></a>
-                    </div>
+            <div class="footer-column">
+                <div class="footer-logo">
+                    <i class="fas fa-pray"></i>
+                    <h3>Gurbani Radio</h3>
                 </div>
-                
-                <div class="footer-links">
-                    <h4>ਲਿੰਕ</h4>
-                    <ul>
-                        <li><a href="#home">ਘਰ</a></li>
-                        <li><a href="#channels">ਚੈਨਲ</a></li>
-                        <li><a href="#schedule">ਸਮਾਂ ਸਾਰਨੀ</a></li>
-                        <li><a href="#downloads">ਡਾਊਨਲੋਡ</a></li>
-                        <li><a href="#about">ਸਾਡੇ ਬਾਰੇ</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-links">
-                    <h4>ਸਹਾਇਤਾ</h4>
-                    <ul>
-                        <li><a href="#">ਸਹਾਇਤਾ ਕੇਂਦਰ</a></li>
-                        <li><a href="#">ਸੰਪਰਕ ਕਰੋ</a></li>
-                        <li><a href="#">ਪ੍ਰਾਈਵੇਸੀ ਨੀਤੀ</a></li>
-                        <li><a href="#">ਸੇਵਾ ਦੀਆਂ ਸ਼ਰਤਾਂ</a></li>
-                        <li><a href="#">ਐਪ ਡਾਊਨਲੋਡ</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-apps">
-                    <h4>ਐਪ ਡਾਊਨਲੋਡ ਕਰੋ</h4>
-                    <div class="app-buttons">
-                        <button class="btn-app">
-                            <i class="fab fa-google-play"></i>
-                            <div>
-                                <span>Get it on</span>
-                                <strong>Google Play</strong>
-                            </div>
-                        </button>
-                        <button class="btn-app">
-                            <i class="fab fa-app-store"></i>
-                            <div>
-                                <span>Download on</span>
-                                <strong>App Store</strong>
-                            </div>
-                        </button>
-                    </div>
+                <p class="footer-description">
+                    A non-profit initiative to spread the divine message of Sri Guru Granth Sahib Ji worldwide through digital media.
+                </p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-spotify"></i></a>
                 </div>
             </div>
             
-            <div class="footer-bottom">
-                <p>© 2024 Gurfateh Radio. ਸਾਰੇ ਅਧਿਕਾਰ ਸੁਰੱਖਿਅਤ।</p>
-                <p>Waheguru Ji Ka Khalsa, Waheguru Ji Ki Fateh</p>
+            <div class="footer-column">
+                <h4>Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="live-radio.html"><i class="fas fa-chevron-right"></i> Live Radio</a></li>
+                    <li><a href="shabad-library.html"><i class="fas fa-chevron-right"></i> Shabad Library</a></li>
+                    <li><a href="raag-mala.html"><i class="fas fa-chevron-right"></i> Raag Mala</a></li>
+                    <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                </ul>
             </div>
+            
+            <div class="footer-column">
+                <h4>Resources</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Daily Hukamnama</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Nitnem Banis</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Gurbani Search</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Sikh History</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Downloads</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h4>Contact Info</h4>
+                <ul class="contact-info">
+                    <li><i class="fas fa-map-marker-alt"></i> Amritsar, Punjab, India</li>
+                    <li><i class="fas fa-envelope"></i> contact@gurbaniradio.com</li>
+                    <li><i class="fas fa-phone"></i> +91 123 456 7890</li>
+                </ul>
+                
+                <div class="newsletter">
+                    <h5>Subscribe for Updates</h5>
+                    <div class="newsletter-form">
+                        <input type="email" placeholder="Your email address">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2023 Gurbani Radio. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+            <p class="gurmukhi-font">ਵਾਹਿਗੁਰੂ ਜੀ ਕਾ ਖਾਲਸਾ, ਵਾਹਿਗੁਰੂ ਜੀ ਕੀ ਫਤਹਿ ॥</p>
         </div>
     </footer>
 
-    <!-- Audio Player -->
-    <audio id="audioPlayer" preload="metadata"></audio>
-
-    <!-- JavaScript Files -->
-    <script src="script.js"></script>
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/audio-player.js"></script>
+    <script src="js/search.js"></script>
 </body>
 </html>
