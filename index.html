@@ -250,6 +250,7 @@
         .track-info p {
             color: var(--gray);
             font-size: 16px;
+            margin-bottom: 5px;
         }
 
         .player-controls {
@@ -303,6 +304,7 @@
             border-radius: 10px;
             cursor: pointer;
             margin-bottom: 10px;
+            position: relative;
         }
 
         .progress {
@@ -311,6 +313,18 @@
             background-color: var(--primary);
             border-radius: 10px;
             transition: width 0.1s linear;
+        }
+
+        .progress-bar:hover .progress::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary);
+            border-radius: 50%;
         }
 
         .time-info {
@@ -338,6 +352,7 @@
             background-color: #e0e0e0;
             border-radius: 10px;
             cursor: pointer;
+            position: relative;
         }
 
         .volume-percentage {
@@ -391,6 +406,7 @@
             box-shadow: var(--shadow);
             transition: var(--transition);
             cursor: pointer;
+            position: relative;
         }
 
         .station-card:hover {
@@ -497,6 +513,8 @@
             border-radius: var(--radius);
             overflow: hidden;
             box-shadow: var(--shadow);
+            cursor: pointer;
+            position: relative;
         }
 
         .featured-badge {
@@ -509,6 +527,7 @@
             border-radius: 30px;
             font-size: 12px;
             font-weight: 600;
+            z-index: 2;
         }
 
         /* Categories */
@@ -623,6 +642,43 @@
             font-size: 14px;
         }
 
+        /* Station Active State */
+        .station-active {
+            border: 2px solid var(--primary);
+        }
+
+        .station-active::before {
+            content: "NOW PLAYING";
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
+        .featured-active {
+            border: 2px solid var(--primary);
+        }
+
+        .featured-active::before {
+            content: "NOW PLAYING";
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background-color: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            z-index: 2;
+        }
+
         /* Responsive Design */
         @media (max-width: 992px) {
             .hero h1 {
@@ -707,24 +763,48 @@
             animation: pulse 2s infinite;
         }
 
-        /* Station active state */
-        .station-active {
-            border: 2px solid var(--primary);
-            position: relative;
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
         }
 
-        .station-active::before {
-            content: "NOW PLAYING";
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: var(--primary);
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading .spinner {
+            display: block;
+        }
+
+        .loading .play-icon {
+            display: none;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--secondary);
             color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            z-index: 2;
+            padding: 15px 25px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
         }
     </style>
 </head>
@@ -753,11 +833,11 @@
             <div class="header-right">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search stations...">
+                    <input type="text" placeholder="Search stations..." id="search-input">
                 </div>
                 
                 <div class="user-actions">
-                    <i class="far fa-heart"></i>
+                    <i class="far fa-heart" id="header-favorite"></i>
                     <i class="far fa-user"></i>
                 </div>
                 
@@ -783,18 +863,19 @@
             <div class="player-header">
                 <h2>Now Playing</h2>
                 <div class="station-info">
-                    <span class="station-genre">Bollywood Hits</span>
+                    <span class="station-genre" id="current-genre">Bollywood Hits</span>
                 </div>
             </div>
             
             <div class="now-playing">
                 <div class="album-art">
-                    <img src="https://images.unsplash.com/photo-1598387993499-40ad4b2adecd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Album Art">
+                    <img src="https://images.unsplash.com/photo-1598387993499-40ad4b2adecd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80" alt="Album Art" id="current-album-art">
                 </div>
                 <div class="track-info">
-                    <h3>Radio Mirchi 98.3 FM</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> Mumbai, Maharashtra</p>
-                    <p><i class="fas fa-music"></i> Playing: Chaiyya Chaiyya - A.R. Rahman</p>
+                    <h3 id="current-station-name">Radio Mirchi 98.3 FM</h3>
+                    <p><i class="fas fa-map-marker-alt"></i> <span id="current-station-location">Mumbai, Maharashtra</span></p>
+                    <p><i class="fas fa-music"></i> <span id="current-track">Chaiyya Chaiyya - A.R. Rahman</span></p>
+                    <p><i class="fas fa-wave-square"></i> <span id="current-frequency">98.3 FM</span></p>
                 </div>
             </div>
             
@@ -804,13 +885,14 @@
                         <i class="fas fa-step-backward"></i>
                     </button>
                     <button class="control-btn play-btn" id="play-btn">
+                        <div class="spinner"></div>
                         <i class="fas fa-play" id="play-icon"></i>
                     </button>
                     <button class="control-btn" id="next-btn">
                         <i class="fas fa-step-forward"></i>
                     </button>
                     <button class="control-btn" id="favorite-btn">
-                        <i class="far fa-heart"></i>
+                        <i class="fas fa-heart"></i>
                     </button>
                 </div>
                 
@@ -830,6 +912,7 @@
                         <div class="volume-percentage" id="volume-percentage"></div>
                     </div>
                     <i class="fas fa-volume-up"></i>
+                    <span id="volume-text" style="font-size: 12px; min-width: 30px;">70%</span>
                 </div>
             </div>
         </div>
@@ -866,27 +949,27 @@
         </div>
         
         <div class="categories-grid">
-            <div class="category-card">
+            <div class="category-card" data-category="bollywood">
                 <i class="fas fa-music"></i>
                 <h3>Bollywood</h3>
             </div>
-            <div class="category-card">
+            <div class="category-card" data-category="regional">
                 <i class="fas fa-globe-asia"></i>
                 <h3>Regional</h3>
             </div>
-            <div class="category-card">
+            <div class="category-card" data-category="devotional">
                 <i class="fas fa-headphones-alt"></i>
                 <h3>Devotional</h3>
             </div>
-            <div class="category-card">
+            <div class="category-card" data-category="news">
                 <i class="fas fa-newspaper"></i>
                 <h3>News</h3>
             </div>
-            <div class="category-card">
+            <div class="category-card" data-category="sports">
                 <i class="fas fa-futbol"></i>
                 <h3>Sports</h3>
             </div>
-            <div class="category-card">
+            <div class="category-card" data-category="talk">
                 <i class="fas fa-microphone-alt"></i>
                 <h3>Talk Shows</h3>
             </div>
@@ -922,11 +1005,11 @@
                 <div class="footer-column">
                     <h3>Popular Cities</h3>
                     <ul>
-                        <li><a href="#">Mumbai</a></li>
-                        <li><a href="#">Delhi</a></li>
-                        <li><a href="#">Bangalore</a></li>
-                        <li><a href="#">Chennai</a></li>
-                        <li><a href="#">Kolkata</a></li>
+                        <li><a href="#" data-city="mumbai">Mumbai</a></li>
+                        <li><a href="#" data-city="delhi">Delhi</a></li>
+                        <li><a href="#" data-city="bangalore">Bangalore</a></li>
+                        <li><a href="#" data-city="chennai">Chennai</a></li>
+                        <li><a href="#" data-city="kolkata">Kolkata</a></li>
                     </ul>
                 </div>
                 
@@ -946,8 +1029,13 @@
         </div>
     </footer>
 
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        Station switched successfully!
+    </div>
+
     <script>
-        // Sample data for radio stations
+        // Sample data for radio stations with more details
         const stations = [
             {
                 id: 1,
@@ -957,7 +1045,9 @@
                 frequency: "98.3 FM",
                 isPlaying: true,
                 isFavorite: true,
-                image: "https://images.unsplash.com/photo-1598387993499-40ad4b2adecd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1598387993499-40ad4b2adecd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Chaiyya Chaiyya - A.R. Rahman",
+                category: "bollywood"
             },
             {
                 id: 2,
@@ -967,7 +1057,9 @@
                 frequency: "93.5 FM",
                 isPlaying: false,
                 isFavorite: false,
-                image: "https://images.unsplash.com/photo-1619983450144-6d0a6cce7fd1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1619983450144-6d0a6cce7fd1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Tum Hi Ho - Arijit Singh",
+                category: "bollywood"
             },
             {
                 id: 3,
@@ -977,7 +1069,9 @@
                 frequency: "101.4 FM",
                 isPlaying: false,
                 isFavorite: true,
-                image: "https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1528164344705-47542687000d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Kolaveri Di - Dhanush",
+                category: "regional"
             },
             {
                 id: 4,
@@ -987,7 +1081,9 @@
                 frequency: "91.1 FM",
                 isPlaying: false,
                 isFavorite: false,
-                image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Jotheyali - Vijay Prakash",
+                category: "regional"
             },
             {
                 id: 5,
@@ -997,7 +1093,9 @@
                 frequency: "92.7 FM",
                 isPlaying: false,
                 isFavorite: false,
-                image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Bolo Na - Shreya Ghoshal",
+                category: "regional"
             },
             {
                 id: 6,
@@ -1007,7 +1105,9 @@
                 frequency: "102.9 FM",
                 isPlaying: false,
                 isFavorite: false,
-                image: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Chupke Chupke - Ghulam Ali",
+                category: "regional"
             }
         ];
 
@@ -1021,7 +1121,9 @@
                 frequency: "100.1 FM",
                 isPlaying: false,
                 isFavorite: false,
-                image: "https://images.unsplash.com/photo-1595769812725-4c6564f6536d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1595769812725-4c6564f6536d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Vande Mataram - Various Artists",
+                category: "regional"
             },
             {
                 id: 8,
@@ -1031,7 +1133,9 @@
                 frequency: "94.3 FM",
                 isPlaying: false,
                 isFavorite: true,
-                image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Bohemian Rhapsody - Queen",
+                category: "regional"
             },
             {
                 id: 9,
@@ -1041,7 +1145,9 @@
                 frequency: "104.0 FM",
                 isPlaying: false,
                 isFavorite: false,
-                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Dil To Pagal Hai - Lata Mangeshkar",
+                category: "bollywood"
             },
             {
                 id: 10,
@@ -1051,17 +1157,20 @@
                 frequency: "95.0 FM",
                 isPlaying: false,
                 isFavorite: false,
-                image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80"
+                image: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&q=80",
+                currentTrack: "Lamberghini - The Doorbeen",
+                category: "regional"
             }
         ];
 
         // Player state
-        let isPlaying = false;
+        let isPlaying = true;
         let currentStationId = 1;
         let currentTime = 0;
         let totalTime = 270; // 4:30 in seconds
         let volume = 0.7;
-        let intervalId = null;
+        let progressInterval = null;
+        let allStations = [...stations, ...featuredStations];
 
         // DOM Elements
         const playBtn = document.getElementById('play-btn');
@@ -1075,10 +1184,20 @@
         const totalTimeEl = document.getElementById('total-time');
         const volumeSlider = document.getElementById('volume-slider');
         const volumePercentage = document.getElementById('volume-percentage');
+        const volumeText = document.getElementById('volume-text');
         const stationsGrid = document.getElementById('stations-grid');
         const featuredSlider = document.getElementById('featured-slider');
-        const nowPlayingSection = document.querySelector('.now-playing');
-        const albumArt = document.querySelector('.album-art');
+        const notification = document.getElementById('notification');
+        const searchInput = document.getElementById('search-input');
+        const headerFavorite = document.getElementById('header-favorite');
+
+        // Player display elements
+        const currentStationName = document.getElementById('current-station-name');
+        const currentStationLocation = document.getElementById('current-station-location');
+        const currentTrack = document.getElementById('current-track');
+        const currentFrequency = document.getElementById('current-frequency');
+        const currentGenre = document.getElementById('current-genre');
+        const currentAlbumArt = document.getElementById('current-album-art');
 
         // Initialize the page
         document.addEventListener('DOMContentLoaded', function() {
@@ -1090,10 +1209,13 @@
             totalTimeEl.textContent = formatTime(totalTime);
             
             // Set volume display
-            volumePercentage.style.width = `${volume * 100}%`;
+            updateVolumeDisplay();
             
             // Set initial station
             updatePlayerStation(currentStationId);
+            
+            // Start playback simulation
+            startPlayback();
             
             // Set up event listeners
             setupEventListeners();
@@ -1138,9 +1260,11 @@
             
             // Add event listeners to station cards for clicking anywhere
             document.querySelectorAll('.station-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const stationId = parseInt(this.dataset.id);
-                    playStation(stationId);
+                card.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('play-station-btn')) {
+                        const stationId = parseInt(this.dataset.id);
+                        playStation(stationId);
+                    }
                 });
             });
         }
@@ -1151,7 +1275,7 @@
             
             featuredStations.forEach(station => {
                 const featuredCard = document.createElement('div');
-                featuredCard.className = 'featured-card';
+                featuredCard.className = `featured-card ${station.id === currentStationId ? 'featured-active' : ''}`;
                 featuredCard.dataset.id = station.id;
                 
                 featuredCard.innerHTML = `
@@ -1181,7 +1305,7 @@
 
         // Update player station
         function updatePlayerStation(stationId) {
-            const station = [...stations, ...featuredStations].find(s => s.id === stationId);
+            const station = allStations.find(s => s.id === stationId);
             
             if (!station) return;
             
@@ -1189,23 +1313,33 @@
             currentStationId = stationId;
             
             // Update player UI
-            const trackInfo = nowPlayingSection.querySelector('.track-info');
-            trackInfo.querySelector('h3').textContent = station.name;
-            trackInfo.querySelectorAll('p')[0].innerHTML = `<i class="fas fa-map-marker-alt"></i> ${station.location}`;
-            
-            // Update album art
-            const albumArtImg = albumArt.querySelector('img');
-            albumArtImg.src = station.image;
-            albumArtImg.alt = station.name;
+            currentStationName.textContent = station.name;
+            currentStationLocation.textContent = station.location;
+            currentTrack.textContent = station.currentTrack;
+            currentFrequency.textContent = station.frequency;
+            currentGenre.textContent = station.genre;
+            currentAlbumArt.src = station.image;
+            currentAlbumArt.alt = station.name;
             
             // Update favorite button
             const favoriteIcon = favoriteBtn.querySelector('i');
             favoriteIcon.className = station.isFavorite ? 'fas fa-heart' : 'far fa-heart';
             
+            // Update header favorite icon
+            headerFavorite.className = station.isFavorite ? 'fas fa-heart' : 'far fa-heart';
+            
             // Update station cards
-            document.querySelectorAll('.station-card, .featured-card').forEach(card => {
+            updateStationCards();
+        }
+
+        // Update all station cards UI
+        function updateStationCards() {
+            // Update regular station cards
+            document.querySelectorAll('.station-card').forEach(card => {
                 const cardId = parseInt(card.dataset.id);
-                if (cardId === stationId) {
+                const station = allStations.find(s => s.id === cardId);
+                
+                if (cardId === currentStationId) {
                     card.classList.add('station-active');
                     const btn = card.querySelector('.play-station-btn');
                     if (btn) {
@@ -1219,29 +1353,52 @@
                     }
                 }
             });
+            
+            // Update featured station cards
+            document.querySelectorAll('.featured-card').forEach(card => {
+                const cardId = parseInt(card.dataset.id);
+                
+                if (cardId === currentStationId) {
+                    card.classList.add('featured-active');
+                } else {
+                    card.classList.remove('featured-active');
+                }
+            });
         }
 
         // Play station
         function playStation(stationId) {
-            // If clicking the same station, toggle play/pause
-            if (stationId === currentStationId) {
-                togglePlay();
-                return;
-            }
+            // Show loading state
+            playBtn.classList.add('loading');
             
-            // Stop current playback
-            stopPlayback();
-            
-            // Update station
-            updatePlayerStation(stationId);
-            
-            // Start playback
-            startPlayback();
-            
-            // Update UI
-            isPlaying = true;
-            playIcon.className = 'fas fa-pause';
-            nowPlayingSection.parentElement.classList.add('playing');
+            // Simulate loading delay
+            setTimeout(() => {
+                // If clicking the same station, toggle play/pause
+                if (stationId === currentStationId) {
+                    togglePlay();
+                    playBtn.classList.remove('loading');
+                    return;
+                }
+                
+                // Stop current playback
+                stopPlayback();
+                
+                // Update station
+                updatePlayerStation(stationId);
+                
+                // Start playback
+                startPlayback();
+                
+                // Update UI
+                isPlaying = true;
+                playIcon.className = 'fas fa-pause';
+                document.querySelector('.main-player').classList.add('playing');
+                playBtn.classList.remove('loading');
+                
+                // Show notification
+                showNotification(`Now playing: ${allStations.find(s => s.id === stationId).name}`);
+                
+            }, 500);
         }
 
         // Toggle play/pause
@@ -1256,23 +1413,28 @@
             playIcon.className = isPlaying ? 'fas fa-pause' : 'fas fa-play';
             
             if (isPlaying) {
-                nowPlayingSection.parentElement.classList.add('playing');
+                document.querySelector('.main-player').classList.add('playing');
+                showNotification('Playback resumed');
             } else {
-                nowPlayingSection.parentElement.classList.remove('playing');
+                document.querySelector('.main-player').classList.remove('playing');
+                showNotification('Playback paused');
             }
             
             // Update station cards
-            document.querySelectorAll(`.station-card[data-id="${currentStationId}"] .play-station-btn`).forEach(btn => {
-                btn.innerHTML = `<i class="fas fa-${isPlaying ? 'pause' : 'play'}"></i> ${isPlaying ? 'Playing Now' : 'Play Now'}`;
-            });
+            updateStationCards();
         }
 
         // Start playback
         function startPlayback() {
+            // Clear any existing interval
+            if (progressInterval) clearInterval(progressInterval);
+            
             // Simulate playback progress
-            intervalId = setInterval(() => {
+            progressInterval = setInterval(() => {
                 if (currentTime >= totalTime) {
                     currentTime = 0;
+                    // Auto play next station when track ends
+                    playNextStation();
                 } else {
                     currentTime += 1;
                 }
@@ -1283,10 +1445,28 @@
 
         // Stop playback
         function stopPlayback() {
-            if (intervalId) {
-                clearInterval(intervalId);
-                intervalId = null;
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
             }
+        }
+
+        // Play next station
+        function playNextStation() {
+            const currentIndex = allStations.findIndex(s => s.id === currentStationId);
+            const nextIndex = (currentIndex + 1) % allStations.length;
+            const nextStation = allStations[nextIndex];
+            
+            playStation(nextStation.id);
+        }
+
+        // Play previous station
+        function playPrevStation() {
+            const currentIndex = allStations.findIndex(s => s.id === currentStationId);
+            const prevIndex = currentIndex === 0 ? allStations.length - 1 : currentIndex - 1;
+            const prevStation = allStations[prevIndex];
+            
+            playStation(prevStation.id);
         }
 
         // Update progress bar
@@ -1303,6 +1483,22 @@
             return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
         }
 
+        // Update volume display
+        function updateVolumeDisplay() {
+            volumePercentage.style.width = `${volume * 100}%`;
+            volumeText.textContent = `${Math.round(volume * 100)}%`;
+        }
+
+        // Show notification
+        function showNotification(message) {
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
         // Set up event listeners
         function setupEventListeners() {
             // Play button
@@ -1310,29 +1506,16 @@
             
             // Previous button
             prevBtn.addEventListener('click', () => {
-                // Find current station index
-                const allStations = [...stations, ...featuredStations];
-                const currentIndex = allStations.findIndex(s => s.id === currentStationId);
-                const prevIndex = currentIndex > 0 ? currentIndex - 1 : allStations.length - 1;
-                const prevStation = allStations[prevIndex];
-                
-                playStation(prevStation.id);
+                playPrevStation();
             });
             
             // Next button
             nextBtn.addEventListener('click', () => {
-                // Find current station index
-                const allStations = [...stations, ...featuredStations];
-                const currentIndex = allStations.findIndex(s => s.id === currentStationId);
-                const nextIndex = currentIndex < allStations.length - 1 ? currentIndex + 1 : 0;
-                const nextStation = allStations[nextIndex];
-                
-                playStation(nextStation.id);
+                playNextStation();
             });
             
             // Favorite button
             favoriteBtn.addEventListener('click', () => {
-                const allStations = [...stations, ...featuredStations];
                 const station = allStations.find(s => s.id === currentStationId);
                 
                 if (station) {
@@ -1340,10 +1523,25 @@
                     const favoriteIcon = favoriteBtn.querySelector('i');
                     favoriteIcon.className = station.isFavorite ? 'fas fa-heart' : 'far fa-heart';
                     
-                    // Update station cards if needed
-                    document.querySelectorAll(`[data-id="${currentStationId}"]`).forEach(card => {
-                        // Update any favorite indicators if present
-                    });
+                    // Update header favorite icon
+                    headerFavorite.className = station.isFavorite ? 'fas fa-heart' : 'far fa-heart';
+                    
+                    // Show notification
+                    showNotification(station.isFavorite ? 'Added to favorites' : 'Removed from favorites');
+                }
+            });
+            
+            // Header favorite button
+            headerFavorite.addEventListener('click', () => {
+                // Just toggle the current station's favorite status
+                const station = allStations.find(s => s.id === currentStationId);
+                if (station) {
+                    station.isFavorite = !station.isFavorite;
+                    const favoriteIcon = favoriteBtn.querySelector('i');
+                    favoriteIcon.className = station.isFavorite ? 'fas fa-heart' : 'far fa-heart';
+                    headerFavorite.className = station.isFavorite ? 'fas fa-heart' : 'far fa-heart';
+                    
+                    showNotification(station.isFavorite ? 'Added to favorites' : 'Removed from favorites');
                 }
             });
             
@@ -1352,7 +1550,7 @@
                 const rect = progressBar.getBoundingClientRect();
                 const clickX = e.clientX - rect.left;
                 const width = rect.width;
-                const percentage = clickX / width;
+                const percentage = Math.min(Math.max(clickX / width, 0), 1);
                 
                 currentTime = percentage * totalTime;
                 updateProgress();
@@ -1366,13 +1564,21 @@
                 const percentage = Math.min(Math.max(clickX / width, 0), 1);
                 
                 volume = percentage;
-                volumePercentage.style.width = `${volume * 100}%`;
+                updateVolumeDisplay();
+                showNotification(`Volume: ${Math.round(volume * 100)}%`);
             });
             
             // Search functionality
-            const searchInput = document.querySelector('.search-box input');
             searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
+                const searchTerm = this.value.toLowerCase().trim();
+                
+                if (searchTerm === '') {
+                    // Show all stations
+                    document.querySelectorAll('.station-card, .featured-card').forEach(card => {
+                        card.style.display = 'block';
+                    });
+                    return;
+                }
                 
                 document.querySelectorAll('.station-card, .featured-card').forEach(card => {
                     const stationName = card.querySelector('h3').textContent.toLowerCase();
@@ -1409,9 +1615,51 @@
             // Category cards
             document.querySelectorAll('.category-card').forEach(card => {
                 card.addEventListener('click', function() {
-                    const category = this.querySelector('h3').textContent;
-                    alert(`Showing stations for category: ${category}`);
+                    const category = this.dataset.category;
+                    const categoryStations = allStations.filter(s => s.category === category);
+                    
+                    if (categoryStations.length > 0) {
+                        // Play the first station in this category
+                        playStation(categoryStations[0].id);
+                        showNotification(`Playing ${category} station`);
+                    } else {
+                        showNotification(`No ${this.querySelector('h3').textContent} stations available`);
+                    }
                 });
+            });
+            
+            // City links in footer
+            document.querySelectorAll('.footer-column a[data-city]').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const city = this.dataset.city;
+                    const cityStations = allStations.filter(s => 
+                        s.location.toLowerCase().includes(city.toLowerCase())
+                    );
+                    
+                    if (cityStations.length > 0) {
+                        // Play the first station from this city
+                        playStation(cityStations[0].id);
+                        showNotification(`Playing station from ${city}`);
+                    } else {
+                        showNotification(`No stations found for ${city}`);
+                    }
+                });
+            });
+            
+            // View all links
+            document.querySelectorAll('.view-all').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showNotification('Showing all stations');
+                    // In a real app, this would load more stations
+                });
+            });
+            
+            // CTA button
+            document.querySelector('.cta-button').addEventListener('click', function(e) {
+                e.preventDefault();
+                document.getElementById('player').scrollIntoView({ behavior: 'smooth' });
             });
         }
     </script>
