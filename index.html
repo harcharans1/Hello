@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HarmonyStream - Offline Music Player</title>
+    <title>Gurbani Radio - Spiritual Streams</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -13,229 +13,284 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        :root {
-            --primary: #4361ee;
-            --secondary: #3f37c9;
-            --accent: #4cc9f0;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
-            --success: #4caf50;
-            --warning: #ff9800;
-            --danger: #f44336;
-            --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            --player-height: 80px;
-        }
-
         body {
-            background-color: #f5f7ff;
-            color: var(--dark);
+            background-color: #f5f5f5;
+            color: #333;
             line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* Layout */
-        .app-container {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            background-image: linear-gradient(to bottom, #f9f9f9, #e6f0ff);
         }
 
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, #1a6b2c 0%, #2d8f47 100%);
             color: white;
-            padding: 1rem 2rem;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            color: #FFD700;
+        }
+
+        .logo-text h1 {
             font-size: 1.8rem;
             font-weight: 700;
+            margin-bottom: 5px;
         }
 
-        .logo i {
-            color: var(--accent);
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
         }
 
-        .nav-menu {
-            display: flex;
-            gap: 1.5rem;
+        /* Search Bar */
+        .search-container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+            margin: 20px auto 0;
         }
 
-        .nav-item {
-            color: white;
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-            font-weight: 500;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            background-color: rgba(255, 255, 255, 0.15);
-        }
-
-        .user-actions {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .user-actions button {
-            background: rgba(255, 255, 255, 0.2);
+        .search-bar {
+            width: 100%;
+            padding: 15px 20px;
+            border-radius: 50px;
             border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
+            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding-left: 50px;
         }
 
-        .user-actions button:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #2d8f47;
+            font-size: 1.2rem;
         }
 
         /* Main Content */
-        .main-content {
+        main {
             flex: 1;
             padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
+            max-width: 1200px;
             width: 100%;
+            margin: 0 auto;
         }
 
-        .page-title {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: var(--secondary);
+        .stations-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .section-title {
             display: flex;
             align-items: center;
             gap: 10px;
+            margin-bottom: 1.5rem;
+            color: #2d8f47;
+            font-size: 1.5rem;
         }
 
-        /* Music Player */
-        .music-player {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            height: var(--player-height);
+        .section-title i {
+            font-size: 1.8rem;
+        }
+
+        /* Radio Station List */
+        .stations-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .station-card {
+            background-color: #f9f9f9;
+            border-radius: 12px;
+            padding: 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 2rem;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            z-index: 200;
+            gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 5px solid #2d8f47;
         }
 
-        .player-album-art {
+        .station-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            background-color: #f0f9ff;
+        }
+
+        .station-card.active {
+            background-color: #e8f5e9;
+            border-left-color: #FFD700;
+        }
+
+        .station-icon {
             width: 60px;
             height: 60px;
-            border-radius: 8px;
-            background-color: var(--light-gray);
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2d8f47, #1a6b2c);
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
+            color: white;
+            font-size: 1.8rem;
         }
 
-        .player-album-art img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .player-song-info {
+        .station-info {
             flex: 1;
-            margin-left: 1rem;
         }
 
-        .player-song-title {
+        .station-name {
             font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 4px;
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 5px;
         }
 
-        .player-song-artist {
-            color: var(--gray);
+        .station-desc {
             font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .station-status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-live {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .status-offline {
+            background-color: #f5f5f5;
+            color: #757575;
+        }
+
+        /* Footer Player */
+        footer {
+            background-color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.08);
+            border-top: 1px solid #eee;
+            position: sticky;
+            bottom: 0;
+            z-index: 100;
+        }
+
+        .player-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .now-playing {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .now-playing-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #2d8f47, #1a6b2c);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .now-playing-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .now-playing-info p {
+            font-size: 0.9rem;
+            color: #666;
         }
 
         .player-controls {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            flex: 2;
-        }
-
-        .player-buttons {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 8px;
-        }
-
-        .player-button {
-            background: none;
-            border: none;
-            font-size: 1.2rem;
-            color: var(--dark);
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-
-        .player-button:hover {
-            color: var(--primary);
-        }
-
-        .play-button {
-            background: var(--primary);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
+            gap: 20px;
+            flex: 1;
             justify-content: center;
         }
 
-        .player-progress {
-            width: 100%;
+        .control-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            border: none;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .progress-bar {
-            flex: 1;
-            height: 4px;
-            background-color: var(--light-gray);
-            border-radius: 2px;
-            overflow: hidden;
+            justify-content: center;
             cursor: pointer;
+            font-size: 1.2rem;
+            color: #2d8f47;
+            transition: all 0.2s ease;
         }
 
-        .progress {
-            height: 100%;
-            background-color: var(--primary);
-            width: 30%;
+        .control-btn:hover {
+            background-color: #2d8f47;
+            color: white;
+            transform: scale(1.05);
         }
 
-        .player-time {
-            font-size: 0.8rem;
-            color: var(--gray);
-            min-width: 100px;
+        .control-btn.play-pause {
+            width: 60px;
+            height: 60px;
+            background-color: #2d8f47;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .control-btn.play-pause:hover {
+            background-color: #1a6b2c;
         }
 
         .player-volume {
@@ -244,348 +299,28 @@
             gap: 10px;
             flex: 1;
             justify-content: flex-end;
+            min-width: 200px;
         }
 
         .volume-slider {
             width: 100px;
         }
 
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--card-shadow);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .card-title {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--secondary);
-        }
-
-        /* Grid Layout */
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .song-card {
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-        }
-
-        .song-image {
-            height: 180px;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 1rem;
-            background-color: var(--light-gray);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: var(--gray);
-        }
-
-        .song-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .song-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-            font-size: 1.1rem;
-        }
-
-        .song-artist {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .song-duration {
-            font-size: 0.8rem;
-            color: var(--gray);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Playlist Page */
-        .playlist-header {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            align-items: center;
-        }
-
-        .playlist-cover {
-            width: 200px;
-            height: 200px;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-        }
-
-        .playlist-cover img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .playlist-info {
-            flex: 1;
-        }
-
-        .playlist-title {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .playlist-meta {
-            color: var(--gray);
-            margin-bottom: 1rem;
-        }
-
-        .playlist-actions {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-
-        .btn {
-            padding: 0.7rem 1.5rem;
-            border-radius: 6px;
-            border: none;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background-color: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--secondary);
-        }
-
-        .btn-outline {
-            background-color: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
-        }
-
-        .btn-outline:hover {
-            background-color: rgba(67, 97, 238, 0.1);
-        }
-
-        /* Table for songs list */
-        .songs-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-        }
-
-        .songs-table th, .songs-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--light-gray);
-        }
-
-        .songs-table th {
-            background-color: var(--light-gray);
-            font-weight: 600;
-            color: var(--dark);
-        }
-
-        .songs-table tr:hover {
-            background-color: rgba(67, 97, 238, 0.05);
-        }
-
-        .songs-table .song-number {
-            width: 50px;
-            text-align: center;
-            color: var(--gray);
-        }
-
-        .songs-table .song-actions {
-            width: 100px;
-            text-align: center;
-        }
-
-        /* Now Playing Page */
-        .now-playing-container {
-            display: flex;
-            gap: 3rem;
-            height: calc(100vh - 200px);
-            align-items: center;
-        }
-
-        .now-playing-album-art {
-            flex: 1;
-            max-width: 400px;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .now-playing-album-art img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .now-playing-info {
-            flex: 1;
-            max-width: 500px;
-        }
-
-        .now-playing-title {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            line-height: 1.2;
-        }
-
-        .now-playing-artist {
-            font-size: 1.5rem;
-            color: var(--primary);
-            margin-bottom: 2rem;
-        }
-
-        .now-playing-album {
-            font-size: 1.2rem;
-            color: var(--gray);
-            margin-bottom: 2rem;
-        }
-
-        .lyrics-container {
-            background-color: rgba(67, 97, 238, 0.05);
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-top: 2rem;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .lyrics-title {
-            font-weight: 600;
-            margin-bottom: 1rem;
-            color: var(--secondary);
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .now-playing-container {
-                flex-direction: column;
-                height: auto;
-                margin-bottom: 3rem;
-            }
-
-            .now-playing-album-art {
-                max-width: 300px;
-                margin-bottom: 2rem;
-            }
-
-            .playlist-header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .playlist-cover {
-                width: 250px;
-                height: 250px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header {
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
-            }
-
-            .nav-menu {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-
-            .music-player {
-                padding: 0 1rem;
-                flex-wrap: wrap;
-                height: auto;
-                padding: 1rem;
-            }
-
-            .player-volume {
-                display: none;
-            }
-
-            .cards-grid {
-                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            }
-
-            .songs-table {
-                display: block;
-                overflow-x: auto;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .main-content {
-                padding: 1rem;
-            }
-
-            .cards-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .player-buttons {
-                gap: 1rem;
-            }
-
-            .player-song-info {
-                min-width: 150px;
-            }
-        }
-
-        /* Pages */
-        .page {
-            display: none;
-        }
-
-        .page.active {
-            display: block;
-        }
-
         /* Loading Spinner */
+        .loading-spinner {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
         .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
             width: 40px;
             height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2d8f47;
             border-radius: 50%;
-            border-left-color: var(--primary);
             animation: spin 1s linear infinite;
-            margin: 2rem auto;
+            margin: 0 auto 10px;
         }
 
         @keyframes spin {
@@ -593,1181 +328,759 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: var(--gray);
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .logo {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .search-container {
+                margin-top: 10px;
+            }
+
+            .stations-list {
+                grid-template-columns: 1fr;
+            }
+
+            .player-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .now-playing, .player-controls, .player-volume {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .player-volume {
+                justify-content: center;
+            }
         }
 
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            color: var(--light-gray);
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #2d8f47;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            transform: translateX(150%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        /* Backend Simulation UI */
+        .backend-panel {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #4a6fa5;
+        }
+
+        .backend-title {
+            color: #4a6fa5;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .backend-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .backend-btn {
+            background-color: #4a6fa5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .backend-btn:hover {
+            background-color: #3a5a80;
         }
     </style>
 </head>
 <body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
+    <!-- Header with Search Bar -->
+    <header>
+        <div class="header-content">
             <div class="logo">
-                <i class="fas fa-music"></i>
-                <span>HarmonyStream</span>
-            </div>
-            
-            <nav class="nav-menu">
-                <a href="#" class="nav-item active" data-page="home">Home</a>
-                <a href="#" class="nav-item" data-page="library">Library</a>
-                <a href="#" class="nav-item" data-page="playlists">Playlists</a>
-                <a href="#" class="nav-item" data-page="now-playing">Now Playing</a>
-                <a href="#" class="nav-item" data-page="discover">Discover</a>
-                <a href="#" class="nav-item" data-page="settings">Settings</a>
-            </nav>
-            
-            <div class="user-actions">
-                <button id="upload-btn">
-                    <i class="fas fa-upload"></i> Upload
-                </button>
-                <button id="user-btn">
-                    <i class="fas fa-user"></i> Profile
-                </button>
-            </div>
-        </header>
-
-        <!-- Main Content Area -->
-        <main class="main-content">
-            <!-- Home Page -->
-            <div id="home-page" class="page active">
-                <h1 class="page-title"><i class="fas fa-home"></i> Home</h1>
-                
-                <div class="card" style="margin-bottom: 2rem;">
-                    <h2 class="card-title">Welcome to HarmonyStream</h2>
-                    <p>Your personal offline music player. Enjoy your music collection without an internet connection.</p>
-                    <p>Currently playing: <span id="current-song-indicator">Nothing playing</span></p>
+                <div class="logo-icon">
+                    <i class="fas fa-pray"></i>
                 </div>
-                
-                <h2 class="page-title"><i class="fas fa-headphones"></i> Recently Played</h2>
-                <div id="recently-played" class="cards-grid">
-                    <!-- Recently played songs will be loaded here -->
+                <div class="logo-text">
+                    <h1>Gurbani Radio</h1>
+                    <p>Streaming Spiritual Wisdom 24/7</p>
                 </div>
-                
-                <h2 class="page-title"><i class="fas fa-fire"></i> Most Played</h2>
-                <div id="most-played" class="cards-grid">
-                    <!-- Most played songs will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Library Page -->
-            <div id="library-page" class="page">
-                <h1 class="page-title"><i class="fas fa-music"></i> Music Library</h1>
-                
-                <div class="card" style="margin-bottom: 2rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2 class="card-title">All Songs</h2>
-                        <div>
-                            <input type="text" id="search-songs" placeholder="Search songs..." style="padding: 0.5rem 1rem; border-radius: 4px; border: 1px solid var(--light-gray); width: 250px;">
-                        </div>
-                    </div>
-                    <div id="library-stats" style="display: flex; gap: 2rem; margin-top: 1rem;">
-                        <div>
-                            <h3 style="color: var(--primary); font-size: 1.5rem;" id="total-songs">0</h3>
-                            <p>Total Songs</p>
-                        </div>
-                        <div>
-                            <h3 style="color: var(--primary); font-size: 1.5rem;" id="total-artists">0</h3>
-                            <p>Artists</p>
-                        </div>
-                        <div>
-                            <h3 style="color: var(--primary); font-size: 1.5rem;" id="total-albums">0</h3>
-                            <p>Albums</p>
-                        </div>
-                        <div>
-                            <h3 style="color: var(--primary); font-size: 1.5rem;" id="total-duration">0h 0m</h3>
-                            <p>Total Duration</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <table class="songs-table">
-                    <thead>
-                        <tr>
-                            <th class="song-number">#</th>
-                            <th>Title</th>
-                            <th>Artist</th>
-                            <th>Album</th>
-                            <th>Duration</th>
-                            <th class="song-actions">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="library-songs">
-                        <!-- Songs will be loaded here -->
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Playlists Page -->
-            <div id="playlists-page" class="page">
-                <h1 class="page-title"><i class="fas fa-list"></i> Playlists</h1>
-                
-                <div class="card" style="margin-bottom: 2rem;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h2 class="card-title">Your Playlists</h2>
-                        <button class="btn btn-primary" id="create-playlist-btn">
-                            <i class="fas fa-plus"></i> Create New Playlist
-                        </button>
-                    </div>
-                </div>
-                
-                <div id="playlists-container" class="cards-grid">
-                    <!-- Playlists will be loaded here -->
-                </div>
-                
-                <div id="playlist-detail" style="display: none;">
-                    <!-- Playlist detail will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Now Playing Page -->
-            <div id="now-playing-page" class="page">
-                <div id="now-playing-container" class="now-playing-container">
-                    <div class="now-playing-album-art">
-                        <img id="now-playing-image" src="" alt="Album Art">
-                    </div>
-                    <div class="now-playing-info">
-                        <h1 id="now-playing-title" class="now-playing-title">Song Title</h1>
-                        <h2 id="now-playing-artist" class="now-playing-artist">Artist Name</h2>
-                        <h3 id="now-playing-album" class="now-playing-album">Album Name</h3>
-                        
-                        <div class="player-controls" style="max-width: 500px; margin: 2rem 0;">
-                            <div class="player-buttons">
-                                <button class="player-button"><i class="fas fa-step-backward"></i></button>
-                                <button class="player-button play-button" id="now-playing-play">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                                <button class="player-button"><i class="fas fa-step-forward"></i></button>
-                            </div>
-                            <div class="player-progress">
-                                <span class="player-time" id="now-playing-current">0:00</span>
-                                <div class="progress-bar">
-                                    <div class="progress" id="now-playing-progress"></div>
-                                </div>
-                                <span class="player-time" id="now-playing-duration">0:00</span>
-                            </div>
-                        </div>
-                        
-                        <div class="playlist-actions">
-                            <button class="btn btn-primary">
-                                <i class="fas fa-heart"></i> Like
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-list"></i> Add to Playlist
-                            </button>
-                            <button class="btn btn-outline">
-                                <i class="fas fa-share"></i> Share
-                            </button>
-                        </div>
-                        
-                        <div class="lyrics-container">
-                            <h3 class="lyrics-title">Lyrics</h3>
-                            <p id="now-playing-lyrics">Lyrics will appear here when available.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Discover Page -->
-            <div id="discover-page" class="page">
-                <h1 class="page-title"><i class="fas fa-compass"></i> Discover</h1>
-                
-                <div class="card" style="margin-bottom: 2rem;">
-                    <h2 class="card-title">Genres</h2>
-                    <div id="genres-container" style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                        <!-- Genres will be loaded here -->
-                    </div>
-                </div>
-                
-                <h2 class="page-title"><i class="fas fa-star"></i> Recommended For You</h2>
-                <div id="recommended-songs" class="cards-grid">
-                    <!-- Recommended songs will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Settings Page -->
-            <div id="settings-page" class="page">
-                <h1 class="page-title"><i class="fas fa-cog"></i> Settings</h1>
-                
-                <div class="card" style="margin-bottom: 2rem;">
-                    <h2 class="card-title">Audio Settings</h2>
-                    
-                    <div style="margin-top: 1.5rem;">
-                        <div style="margin-bottom: 1.5rem;">
-                            <label for="audio-quality" style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Audio Quality</label>
-                            <select id="audio-quality" style="padding: 0.5rem 1rem; border-radius: 4px; border: 1px solid var(--light-gray); width: 250px;">
-                                <option value="high">High (320kbps)</option>
-                                <option value="medium" selected>Medium (192kbps)</option>
-                                <option value="low">Low (128kbps)</option>
-                            </select>
-                        </div>
-                        
-                        <div style="margin-bottom: 1.5rem;">
-                            <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Crossfade</label>
-                            <div style="display: flex; align-items: center; gap: 1rem;">
-                                <input type="range" id="crossfade" min="0" max="10" value="3" style="flex: 1; max-width: 300px;">
-                                <span id="crossfade-value">3 seconds</span>
-                            </div>
-                        </div>
-                        
-                        <div style="margin-bottom: 1.5rem;">
-                            <label style="display: flex; align-items: center; gap: 10px;">
-                                <input type="checkbox" id="auto-play" checked>
-                                <span>Auto-play next song</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card" style="margin-bottom: 2rem;">
-                    <h2 class="card-title">Storage Management</h2>
-                    
-                    <div style="margin-top: 1.5rem;">
-                        <div style="margin-bottom: 1.5rem;">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Local Storage Usage</span>
-                                <span id="storage-usage">0 MB / 100 MB</span>
-                            </div>
-                            <div style="height: 10px; background-color: var(--light-gray); border-radius: 5px; overflow: hidden;">
-                                <div id="storage-progress" style="height: 100%; background-color: var(--primary); width: 15%;"></div>
-                            </div>
-                        </div>
-                        
-                        <div style="display: flex; gap: 1rem;">
-                            <button class="btn btn-outline" id="clear-cache-btn">
-                                <i class="fas fa-broom"></i> Clear Cache
-                            </button>
-                            <button class="btn btn-outline" id="export-data-btn">
-                                <i class="fas fa-download"></i> Export Data
-                            </button>
-                            <button class="btn btn-outline" id="import-data-btn">
-                                <i class="fas fa-upload"></i> Import Data
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card">
-                    <h2 class="card-title">About HarmonyStream</h2>
-                    <p style="margin-bottom: 1rem;">Version 2.1.0</p>
-                    <p>HarmonyStream is a full-featured offline music player that works completely without an internet connection. All your music is stored locally on your device.</p>
-                </div>
-            </div>
-        </main>
-
-        <!-- Music Player -->
-        <div class="music-player">
-            <div style="display: flex; align-items: center;">
-                <div class="player-album-art">
-                    <img id="player-album-art" src="" alt="Album Art">
-                </div>
-                <div class="player-song-info">
-                    <div class="player-song-title" id="player-song-title">No song selected</div>
-                    <div class="player-song-artist" id="player-song-artist">Select a song to play</div>
-                </div>
-            </div>
-            
-            <div class="player-controls">
-                <div class="player-buttons">
-                    <button class="player-button" id="prev-btn">
-                        <i class="fas fa-step-backward"></i>
-                    </button>
-                    <button class="player-button play-button" id="play-pause-btn">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <button class="player-button" id="next-btn">
-                        <i class="fas fa-step-forward"></i>
-                    </button>
-                </div>
-                <div class="player-progress">
-                    <span class="player-time" id="current-time">0:00</span>
-                    <div class="progress-bar" id="progress-bar">
-                        <div class="progress" id="progress"></div>
-                    </div>
-                    <span class="player-time" id="duration">0:00</span>
-                </div>
-            </div>
-            
-            <div class="player-volume">
-                <button class="player-button" id="volume-btn">
-                    <i class="fas fa-volume-up"></i>
-                </button>
-                <input type="range" min="0" max="100" value="80" class="volume-slider" id="volume-slider">
             </div>
         </div>
-    </div>
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-bar" id="searchBar" placeholder="Search for Gurbani radio stations, kirtan, or katha...">
+        </div>
+    </header>
 
-    <!-- JavaScript -->
-    <script>
-        // React-like state management
-        const AppState = {
-            currentSong: null,
-            isPlaying: false,
-            currentTime: 0,
-            volume: 80,
-            playlist: [],
-            currentPlaylistIndex: -1,
-            library: [],
-            playlists: []
-        };
+    <!-- Main Content with Radio Stations -->
+    <main>
+        <div class="stations-container">
+            <div class="section-title">
+                <i class="fas fa-broadcast-tower"></i>
+                <h2>Gurbani Radio Stations</h2>
+            </div>
 
-        // Sample data for the music player
-        const sampleSongs = [
-            {
-                id: 1,
-                title: "Blinding Lights",
-                artist: "The Weeknd",
-                album: "After Hours",
-                duration: "3:22",
-                genre: "Pop",
-                plays: 42,
-                liked: true,
-                cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 2,
-                title: "Bohemian Rhapsody",
-                artist: "Queen",
-                album: "A Night at the Opera",
-                duration: "5:55",
-                genre: "Rock",
-                plays: 38,
-                liked: true,
-                cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 3,
-                title: "Shape of You",
-                artist: "Ed Sheeran",
-                album: "÷ (Divide)",
-                duration: "3:54",
-                genre: "Pop",
-                plays: 35,
-                liked: false,
-                cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 4,
-                title: "Billie Jean",
-                artist: "Michael Jackson",
-                album: "Thriller",
-                duration: "4:54",
-                genre: "Pop",
-                plays: 32,
-                liked: true,
-                cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 5,
-                title: "Hotel California",
-                artist: "Eagles",
-                album: "Hotel California",
-                duration: "6:30",
-                genre: "Rock",
-                plays: 28,
-                liked: false,
-                cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 6,
-                title: "Smells Like Teen Spirit",
-                artist: "Nirvana",
-                album: "Nevermind",
-                duration: "5:01",
-                genre: "Rock",
-                plays: 25,
-                liked: true,
-                cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 7,
-                title: "Uptown Funk",
-                artist: "Mark Ronson ft. Bruno Mars",
-                album: "Uptown Special",
-                duration: "4:30",
-                genre: "Funk",
-                plays: 22,
-                liked: false,
-                cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 8,
-                title: "Rolling in the Deep",
-                artist: "Adele",
-                album: "21",
-                duration: "3:48",
-                genre: "Pop",
-                plays: 20,
-                liked: true,
-                cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            }
-        ];
+            <div class="loading-spinner" id="loadingSpinner">
+                <div class="spinner"></div>
+                <p>Loading radio stations...</p>
+            </div>
 
-        const samplePlaylists = [
-            {
-                id: 1,
-                name: "Favorites",
-                description: "My favorite tracks",
-                songCount: 12,
-                cover: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 2,
-                name: "Workout Mix",
-                description: "High energy tracks for workouts",
-                songCount: 18,
-                cover: "https://images.unsplash.com/photo-1518611012118-696072aa579a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 3,
-                name: "Chill Vibes",
-                description: "Relaxing music for unwinding",
-                songCount: 15,
-                cover: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                id: 4,
-                name: "Road Trip",
-                description: "Perfect for long drives",
-                songCount: 22,
-                cover: "https://images.unsplash.com/photo-1484704849700-f032a568e944?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-            }
-        ];
+            <div class="stations-list" id="stationsList">
+                <!-- Radio stations will be loaded here by JavaScript -->
+            </div>
 
-        // Initialize the app
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set initial state
-            AppState.library = [...sampleSongs];
-            AppState.playlists = [...samplePlaylists];
-            
-            // Initialize UI
-            initNavigation();
-            renderHomePage();
-            renderLibraryPage();
-            renderPlaylistsPage();
-            renderDiscoverPage();
-            initMusicPlayer();
-            initSettingsPage();
-            
-            // Set current song as first song
-            if (AppState.library.length > 0) {
-                AppState.currentSong = AppState.library[0];
-                updatePlayerDisplay();
-            }
-            
-            // Update storage display
-            updateStorageDisplay();
-        });
-
-        // Navigation between pages
-        function initNavigation() {
-            const navItems = document.querySelectorAll('.nav-item');
-            const pages = document.querySelectorAll('.page');
-            
-            navItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Remove active class from all nav items
-                    navItems.forEach(nav => nav.classList.remove('active'));
-                    
-                    // Add active class to clicked nav item
-                    this.classList.add('active');
-                    
-                    // Get page id from data attribute
-                    const pageId = this.getAttribute('data-page');
-                    
-                    // Hide all pages
-                    pages.forEach(page => {
-                        page.classList.remove('active');
-                    });
-                    
-                    // Show selected page
-                    document.getElementById(`${pageId}-page`).classList.add('active');
-                    
-                    // Update page-specific content
-                    if (pageId === 'home') {
-                        renderHomePage();
-                    } else if (pageId === 'library') {
-                        renderLibraryPage();
-                    } else if (pageId === 'playlists') {
-                        renderPlaylistsPage();
-                    } else if (pageId === 'now-playing') {
-                        renderNowPlayingPage();
-                    } else if (pageId === 'discover') {
-                        renderDiscoverPage();
-                    }
-                });
-            });
-            
-            // Upload button
-            document.getElementById('upload-btn').addEventListener('click', function() {
-                alert('In a real application, this would open a file upload dialog to add music files to your library.');
-            });
-            
-            // User button
-            document.getElementById('user-btn').addEventListener('click', function() {
-                alert('User profile menu would open here.');
-            });
-        }
-
-        // Render Home Page
-        function renderHomePage() {
-            // Update current song indicator
-            if (AppState.currentSong) {
-                document.getElementById('current-song-indicator').textContent = 
-                    `${AppState.currentSong.title} by ${AppState.currentSong.artist}`;
-            }
-            
-            // Render recently played (top 4 most played)
-            const recentlyPlayedContainer = document.getElementById('recently-played');
-            const recentlyPlayed = [...AppState.library]
-                .sort((a, b) => b.plays - a.plays)
-                .slice(0, 4);
-            
-            recentlyPlayedContainer.innerHTML = recentlyPlayed.map(song => `
-                <div class="card song-card" data-song-id="${song.id}">
-                    <div class="song-image">
-                        <img src="${song.cover}" alt="${song.album}">
-                    </div>
-                    <div class="song-title">${song.title}</div>
-                    <div class="song-artist">${song.artist}</div>
-                    <div class="song-duration">
-                        <span>${song.duration}</span>
-                        <span><i class="fas fa-play"></i> ${song.plays}</span>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Add click event to play songs
-            recentlyPlayedContainer.querySelectorAll('.song-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const songId = parseInt(this.getAttribute('data-song-id'));
-                    const song = AppState.library.find(s => s.id === songId);
-                    if (song) {
-                        playSong(song);
-                    }
-                });
-            });
-            
-            // Render most played (top 4)
-            const mostPlayedContainer = document.getElementById('most-played');
-            const mostPlayed = [...AppState.library]
-                .sort((a, b) => b.plays - a.plays)
-                .slice(0, 4);
-            
-            mostPlayedContainer.innerHTML = mostPlayed.map(song => `
-                <div class="card song-card" data-song-id="${song.id}">
-                    <div class="song-image">
-                        <img src="${song.cover}" alt="${song.album}">
-                    </div>
-                    <div class="song-title">${song.title}</div>
-                    <div class="song-artist">${song.artist}</div>
-                    <div class="song-duration">
-                        <span>${song.duration}</span>
-                        <span><i class="fas fa-play"></i> ${song.plays}</span>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Add click event to play songs
-            mostPlayedContainer.querySelectorAll('.song-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const songId = parseInt(this.getAttribute('data-song-id'));
-                    const song = AppState.library.find(s => s.id === songId);
-                    if (song) {
-                        playSong(song);
-                    }
-                });
-            });
-        }
-
-        // Render Library Page
-        function renderLibraryPage() {
-            // Update library stats
-            document.getElementById('total-songs').textContent = AppState.library.length;
-            
-            const artists = [...new Set(AppState.library.map(song => song.artist))];
-            document.getElementById('total-artists').textContent = artists.length;
-            
-            const albums = [...new Set(AppState.library.map(song => song.album))];
-            document.getElementById('total-albums').textContent = albums.length;
-            
-            // Calculate total duration (simplified)
-            let totalMinutes = 0;
-            AppState.library.forEach(song => {
-                const timeParts = song.duration.split(':');
-                totalMinutes += parseInt(timeParts[0]) * 60 + parseInt(timeParts[1]);
-            });
-            
-            const hours = Math.floor(totalMinutes / 60);
-            const minutes = totalMinutes % 60;
-            document.getElementById('total-duration').textContent = `${hours}h ${minutes}m`;
-            
-            // Render songs table
-            const librarySongsContainer = document.getElementById('library-songs');
-            librarySongsContainer.innerHTML = AppState.library.map((song, index) => `
-                <tr>
-                    <td class="song-number">${index + 1}</td>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 40px; height: 40px; border-radius: 4px; overflow: hidden;">
-                                <img src="${song.cover}" alt="${song.album}" style="width: 100%; height: 100%; object-fit: cover;">
-                            </div>
-                            <span>${song.title}</span>
-                        </div>
-                    </td>
-                    <td>${song.artist}</td>
-                    <td>${song.album}</td>
-                    <td>${song.duration}</td>
-                    <td class="song-actions">
-                        <button class="player-button play-song-btn" data-song-id="${song.id}" title="Play">
-                            <i class="fas fa-play"></i>
-                        </button>
-                        <button class="player-button" title="Add to playlist">
-                            <i class="fas fa-plus"></i>
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-            
-            // Add play button events
-            librarySongsContainer.querySelectorAll('.play-song-btn').forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    const songId = parseInt(this.getAttribute('data-song-id'));
-                    const song = AppState.library.find(s => s.id === songId);
-                    if (song) {
-                        playSong(song);
-                    }
-                });
-            });
-            
-            // Add row click events
-            librarySongsContainer.querySelectorAll('tr').forEach(row => {
-                row.addEventListener('click', function() {
-                    const songId = parseInt(this.querySelector('.play-song-btn').getAttribute('data-song-id'));
-                    const song = AppState.library.find(s => s.id === songId);
-                    if (song) {
-                        // Switch to now playing page
-                        document.querySelector('.nav-item[data-page="now-playing"]').click();
-                        renderNowPlayingPage(song);
-                    }
-                });
-            });
-            
-            // Search functionality
-            document.getElementById('search-songs').addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                const rows = librarySongsContainer.querySelectorAll('tr');
-                
-                rows.forEach(row => {
-                    const text = row.textContent.toLowerCase();
-                    if (text.includes(searchTerm)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // Render Playlists Page
-        function renderPlaylistsPage() {
-            const playlistsContainer = document.getElementById('playlists-container');
-            playlistsContainer.innerHTML = AppState.playlists.map(playlist => `
-                <div class="card song-card" data-playlist-id="${playlist.id}">
-                    <div class="song-image">
-                        <img src="${playlist.cover}" alt="${playlist.name}">
-                    </div>
-                    <div class="song-title">${playlist.name}</div>
-                    <div class="song-artist">${playlist.description}</div>
-                    <div class="song-duration">
-                        <span>${playlist.songCount} songs</span>
-                        <span><i class="fas fa-play"></i></span>
-                    </div>
-                </div>
-            `).join('');
-            
-            // Add click event to view playlist details
-            playlistsContainer.querySelectorAll('.song-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const playlistId = parseInt(this.getAttribute('data-playlist-id'));
-                    showPlaylistDetail(playlistId);
-                });
-            });
-            
-            // Create playlist button
-            document.getElementById('create-playlist-btn').addEventListener('click', function() {
-                const playlistName = prompt('Enter playlist name:');
-                if (playlistName) {
-                    const newPlaylist = {
-                        id: AppState.playlists.length + 1,
-                        name: playlistName,
-                        description: "New playlist",
-                        songCount: 0,
-                        cover: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
-                        songs: []
-                    };
-                    
-                    AppState.playlists.push(newPlaylist);
-                    renderPlaylistsPage();
-                    alert(`Playlist "${playlistName}" created!`);
-                }
-            });
-        }
-
-        // Show playlist detail
-        function showPlaylistDetail(playlistId) {
-            const playlist = AppState.playlists.find(p => p.id === playlistId);
-            if (!playlist) return;
-            
-            const playlistDetailContainer = document.getElementById('playlist-detail');
-            const playlistsContainer = document.getElementById('playlists-container');
-            
-            // Hide playlist grid, show detail
-            playlistsContainer.style.display = 'none';
-            playlistDetailContainer.style.display = 'block';
-            
-            playlistDetailContainer.innerHTML = `
-                <div class="playlist-header">
-                    <div class="playlist-cover">
-                        <img src="${playlist.cover}" alt="${playlist.name}">
-                    </div>
-                    <div class="playlist-info">
-                        <h1 class="playlist-title">${playlist.name}</h1>
-                        <p class="playlist-meta">${playlist.description} • ${playlist.songCount} songs</p>
-                        <p>Created by you • Updated today</p>
-                        <div class="playlist-actions">
-                            <button class="btn btn-primary" id="play-playlist-btn">
-                                <i class="fas fa-play"></i> Play
-                            </button>
-                            <button class="btn btn-outline" id="shuffle-playlist-btn">
-                                <i class="fas fa-random"></i> Shuffle
-                            </button>
-                            <button class="btn btn-outline" id="edit-playlist-btn">
-                                <i class="fas fa-edit"></i> Edit
-                            </button>
-                            <button class="btn btn-outline" id="back-to-playlists-btn">
-                                <i class="fas fa-arrow-left"></i> Back
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <h2 class="page-title">Songs</h2>
-                <div class="empty-state">
-                    <i class="fas fa-music"></i>
-                    <p>No songs in this playlist yet. Add some songs from your library!</p>
-                    <button class="btn btn-primary" style="margin-top: 1rem;">
-                        <i class="fas fa-plus"></i> Add Songs
+            <!-- Backend Simulation Panel -->
+            <div class="backend-panel">
+                <h3 class="backend-title">
+                    <i class="fas fa-server"></i>
+                    Backend Simulation Controls
+                </h3>
+                <p style="margin-bottom: 15px; color: #666;">This panel simulates backend API interactions. In a real application, these would be handled by a server.</p>
+                <div class="backend-controls">
+                    <button class="backend-btn" id="simulateLoad">
+                        <i class="fas fa-download"></i> Simulate API Load
+                    </button>
+                    <button class="backend-btn" id="simulateError">
+                        <i class="fas fa-exclamation-triangle"></i> Simulate API Error
+                    </button>
+                    <button class="backend-btn" id="addStation">
+                        <i class="fas fa-plus"></i> Add Random Station
+                    </button>
+                    <button class="backend-btn" id="resetStations">
+                        <i class="fas fa-redo"></i> Reset Stations
                     </button>
                 </div>
-            `;
-            
-            // Back button
-            document.getElementById('back-to-playlists-btn').addEventListener('click', function() {
-                playlistDetailContainer.style.display = 'none';
-                playlistsContainer.style.display = 'grid';
-            });
-            
-            // Play playlist button
-            document.getElementById('play-playlist-btn').addEventListener('click', function() {
-                // In a real app, this would play the playlist
-                alert(`Playing playlist: ${playlist.name}`);
-            });
-        }
-
-        // Render Now Playing Page
-        function renderNowPlayingPage(song = null) {
-            const displaySong = song || AppState.currentSong;
-            if (!displaySong) return;
-            
-            document.getElementById('now-playing-title').textContent = displaySong.title;
-            document.getElementById('now-playing-artist').textContent = displaySong.artist;
-            document.getElementById('now-playing-album').textContent = displaySong.album;
-            document.getElementById('now-playing-image').src = displaySong.cover;
-            
-            // Update play button
-            const playButton = document.getElementById('now-playing-play');
-            if (AppState.isPlaying && AppState.currentSong && AppState.currentSong.id === displaySong.id) {
-                playButton.innerHTML = '<i class="fas fa-pause"></i>';
-            } else {
-                playButton.innerHTML = '<i class="fas fa-play"></i>';
-            }
-            
-            // Play button event
-            playButton.addEventListener('click', function() {
-                if (AppState.isPlaying && AppState.currentSong && AppState.currentSong.id === displaySong.id) {
-                    pauseSong();
-                } else {
-                    playSong(displaySong);
-                }
-            });
-            
-            // Format duration for display
-            const durationParts = displaySong.duration.split(':');
-            const minutes = parseInt(durationParts[0]);
-            const seconds = parseInt(durationParts[1]);
-            document.getElementById('now-playing-duration').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            
-            // Set up progress update
-            if (AppState.currentSong && AppState.currentSong.id === displaySong.id) {
-                updateNowPlayingProgress();
-            } else {
-                document.getElementById('now-playing-current').textContent = '0:00';
-                document.getElementById('now-playing-progress').style.width = '0%';
-            }
-        }
-
-        // Render Discover Page
-        function renderDiscoverPage() {
-            // Render genres
-            const genres = [...new Set(AppState.library.map(song => song.genre))];
-            const genresContainer = document.getElementById('genres-container');
-            
-            genresContainer.innerHTML = genres.map(genre => `
-                <div class="card" style="padding: 1rem; cursor: pointer; min-width: 150px;">
-                    <h3 style="margin-bottom: 0.5rem; color: var(--primary);">${genre}</h3>
-                    <p style="color: var(--gray); font-size: 0.9rem;">
-                        ${AppState.library.filter(song => song.genre === genre).length} songs
-                    </p>
+                <div style="margin-top: 15px; font-size: 0.9rem; color: #888;">
+                    <i class="fas fa-info-circle"></i> Current API Status: <span id="apiStatus" style="color: #2d8f47; font-weight: bold;">Ready</span>
                 </div>
-            `).join('');
-            
-            // Render recommended songs (shuffle the library)
-            const recommendedSongsContainer = document.getElementById('recommended-songs');
-            const shuffled = [...AppState.library].sort(() => 0.5 - Math.random()).slice(0, 6);
-            
-            recommendedSongsContainer.innerHTML = shuffled.map(song => `
-                <div class="card song-card" data-song-id="${song.id}">
-                    <div class="song-image">
-                        <img src="${song.cover}" alt="${song.album}">
-                    </div>
-                    <div class="song-title">${song.title}</div>
-                    <div class="song-artist">${song.artist}</div>
-                    <div class="song-duration">
-                        <span>${song.duration}</span>
-                        <span>${song.genre}</span>
-                    </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer with Player Controls -->
+    <footer>
+        <div class="player-container">
+            <div class="now-playing">
+                <div class="now-playing-icon">
+                    <i class="fas fa-play"></i>
                 </div>
-            `).join('');
-            
-            // Add click event to play songs
-            recommendedSongsContainer.querySelectorAll('.song-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    const songId = parseInt(this.getAttribute('data-song-id'));
-                    const song = AppState.library.find(s => s.id === songId);
-                    if (song) {
-                        playSong(song);
+                <div class="now-playing-info">
+                    <h3 id="currentStationName">Select a Radio Station</h3>
+                    <p id="currentStationDesc">Click on any station above to start playing</p>
+                </div>
+            </div>
+
+            <div class="player-controls">
+                <button class="control-btn" id="prevBtn" title="Previous">
+                    <i class="fas fa-step-backward"></i>
+                </button>
+                <button class="control-btn play-pause" id="playPauseBtn" title="Play/Pause">
+                    <i class="fas fa-play" id="playIcon"></i>
+                </button>
+                <button class="control-btn" id="nextBtn" title="Next">
+                    <i class="fas fa-step-forward"></i>
+                </button>
+            </div>
+
+            <div class="player-volume">
+                <i class="fas fa-volume-down"></i>
+                <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
+                <i class="fas fa-volume-up"></i>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="notificationText">Notification message here</span>
+    </div>
+
+    <script>
+        // Backend simulation - In a real app, this would be an API server
+        class RadioBackend {
+            constructor() {
+                // Simulate database of radio stations
+                this.stations = [
+                    {
+                        id: 1,
+                        name: "Gurbani Sangeet Radio",
+                        description: "24/7 live kirtan from Harmandir Sahib",
+                        frequency: "98.5 FM",
+                        status: "live",
+                        streamUrl: "https://example.com/stream1",
+                        icon: "fas fa-music"
+                    },
+                    {
+                        id: 2,
+                        name: "Katha Channel",
+                        description: "Gurbani katha and explanations",
+                        frequency: "101.2 FM",
+                        status: "live",
+                        streamUrl: "https://example.com/stream2",
+                        icon: "fas fa-book-open"
+                    },
+                    {
+                        id: 3,
+                        name: "Nitnem Radio",
+                        description: "Daily prayers and nitnem",
+                        frequency: "89.7 FM",
+                        status: "live",
+                        streamUrl: "https://example.com/stream3",
+                        icon: "fas fa-praying-hands"
+                    },
+                    {
+                        id: 4,
+                        name: "Sikh History Channel",
+                        description: "Sikh history and philosophy",
+                        frequency: "103.5 FM",
+                        status: "offline",
+                        streamUrl: "https://example.com/stream4",
+                        icon: "fas fa-landmark"
+                    },
+                    {
+                        id: 5,
+                        name: "Raagmala Radio",
+                        description: "Traditional raag-based kirtan",
+                        frequency: "96.3 FM",
+                        status: "live",
+                        streamUrl: "https://example.com/stream5",
+                        icon: "fas fa-sliders-h"
+                    },
+                    {
+                        id: 6,
+                        name: "Panjabi Virsa",
+                        description: "Cultural programs and discussions",
+                        frequency: "94.1 FM",
+                        status: "live",
+                        streamUrl: "https://example.com/stream6",
+                        icon: "fas fa-globe-asia"
+                    },
+                    {
+                        id: 7,
+                        name: "Akhand Path Channel",
+                        description: "Continuous recitation of Guru Granth Sahib",
+                        frequency: "107.9 FM",
+                        status: "live",
+                        streamUrl: "https://example.com/stream7",
+                        icon: "fas fa-book-reader"
+                    },
+                    {
+                        id: 8,
+                        name: "Youth Sikh Radio",
+                        description: "Programs for Sikh youth",
+                        frequency: "92.7 FM",
+                        status: "offline",
+                        streamUrl: "https://example.com/stream8",
+                        icon: "fas fa-users"
+                    },
+                    {
+                        id: 9,
+                        name: "Gurmat Sangeet",
+                        description: "Traditional Gurmat sangeet",
+                        frequency: "99.9 FM",
+                        status: "live",
+                        streamUrl: "https://example.com/stream9",
+                        icon: "fas fa-guitar"
+                    },
+                    {
+                        id: 10,
+                        name: "Sahaj Path",
+                        description: "Slow-paced Gurbani recitation",
+                        frequency: "105.5 FM",
+                        status: "live",
+                        streamUrl: "https://example.com/stream10",
+                        icon: "fas fa-spa"
                     }
+                ];
+                
+                this.currentStationIndex = 0;
+                this.isPlaying = false;
+                this.audioContext = null;
+                this.apiStatus = "Ready";
+                this.simulatedLatency = 800; // ms
+            }
+
+            // Simulate API call to get stations
+            async getStations() {
+                await this.simulateLatency();
+                return {
+                    success: true,
+                    data: this.stations,
+                    message: "Stations loaded successfully"
+                };
+            }
+
+            // Simulate API call to play a station
+            async playStation(stationId) {
+                await this.simulateLatency();
+                const station = this.stations.find(s => s.id === stationId);
+                
+                if (!station) {
+                    return {
+                        success: false,
+                        message: "Station not found"
+                    };
+                }
+                
+                if (station.status === "offline") {
+                    return {
+                        success: false,
+                        message: "Station is currently offline"
+                    };
+                }
+                
+                return {
+                    success: true,
+                    data: station,
+                    message: `Now playing: ${station.name}`
+                };
+            }
+
+            // Simulate API call to add a station
+            async addStation(station) {
+                await this.simulateLatency();
+                const newId = this.stations.length > 0 ? 
+                    Math.max(...this.stations.map(s => s.id)) + 1 : 1;
+                
+                const newStation = {
+                    ...station,
+                    id: newId
+                };
+                
+                this.stations.push(newStation);
+                
+                return {
+                    success: true,
+                    data: newStation,
+                    message: "Station added successfully"
+                };
+            }
+
+            // Simulate latency for API calls
+            async simulateLatency() {
+                return new Promise(resolve => {
+                    setTimeout(() => resolve(), this.simulatedLatency);
                 });
-            });
+            }
+
+            // Simulate an API error
+            async simulateError() {
+                await this.simulateLatency();
+                return {
+                    success: false,
+                    message: "Server error: Unable to process request"
+                };
+            }
+
+            // Get next station
+            getNextStation() {
+                this.currentStationIndex = (this.currentStationIndex + 1) % this.stations.length;
+                return this.stations[this.currentStationIndex];
+            }
+
+            // Get previous station
+            getPrevStation() {
+                this.currentStationIndex = this.currentStationIndex === 0 ? 
+                    this.stations.length - 1 : this.currentStationIndex - 1;
+                return this.stations[this.currentStationIndex];
+            }
+
+            // Search stations
+            searchStations(query) {
+                if (!query) return this.stations;
+                
+                const lowerQuery = query.toLowerCase();
+                return this.stations.filter(station => 
+                    station.name.toLowerCase().includes(lowerQuery) ||
+                    station.description.toLowerCase().includes(lowerQuery) ||
+                    station.frequency.toLowerCase().includes(lowerQuery)
+                );
+            }
         }
 
-        // Initialize Music Player
-        function initMusicPlayer() {
-            // Play/Pause button
-            document.getElementById('play-pause-btn').addEventListener('click', function() {
-                if (AppState.currentSong) {
-                    if (AppState.isPlaying) {
-                        pauseSong();
-                    } else {
-                        playSong(AppState.currentSong);
-                    }
-                } else if (AppState.library.length > 0) {
-                    // If no song is selected, play the first one
-                    playSong(AppState.library[0]);
-                }
-            });
-            
-            // Previous button
-            document.getElementById('prev-btn').addEventListener('click', function() {
-                playPreviousSong();
-            });
-            
-            // Next button
-            document.getElementById('next-btn').addEventListener('click', function() {
-                playNextSong();
-            });
-            
-            // Volume slider
-            const volumeSlider = document.getElementById('volume-slider');
-            volumeSlider.addEventListener('input', function() {
-                AppState.volume = parseInt(this.value);
-                updateVolumeIcon();
-                // In a real app, this would adjust the audio volume
-            });
-            
-            // Volume button (mute/unmute)
-            document.getElementById('volume-btn').addEventListener('click', function() {
-                if (AppState.volume > 0) {
-                    AppState.lastVolume = AppState.volume;
-                    AppState.volume = 0;
-                    volumeSlider.value = 0;
+        // Frontend Application
+        class RadioApp {
+            constructor() {
+                this.backend = new RadioBackend();
+                this.currentStation = null;
+                this.isPlaying = false;
+                this.volume = 70;
+                
+                // Initialize the app
+                this.init();
+            }
+
+            init() {
+                // DOM elements
+                this.stationsList = document.getElementById('stationsList');
+                this.loadingSpinner = document.getElementById('loadingSpinner');
+                this.searchBar = document.getElementById('searchBar');
+                this.playPauseBtn = document.getElementById('playPauseBtn');
+                this.prevBtn = document.getElementById('prevBtn');
+                this.nextBtn = document.getElementById('nextBtn');
+                this.volumeSlider = document.getElementById('volumeSlider');
+                this.currentStationName = document.getElementById('currentStationName');
+                this.currentStationDesc = document.getElementById('currentStationDesc');
+                this.notification = document.getElementById('notification');
+                this.notificationText = document.getElementById('notificationText');
+                this.playIcon = document.getElementById('playIcon');
+                this.apiStatusElement = document.getElementById('apiStatus');
+                
+                // Backend simulation buttons
+                this.simulateLoadBtn = document.getElementById('simulateLoad');
+                this.simulateErrorBtn = document.getElementById('simulateError');
+                this.addStationBtn = document.getElementById('addStation');
+                this.resetStationsBtn = document.getElementById('resetStations');
+                
+                // Set initial volume
+                this.volumeSlider.value = this.volume;
+                
+                // Load stations
+                this.loadStations();
+                
+                // Set up event listeners
+                this.setupEventListeners();
+                
+                // Show welcome notification
+                this.showNotification("Welcome to Gurbani Radio! Select a station to begin streaming.", "success");
+            }
+
+            setupEventListeners() {
+                // Search functionality
+                this.searchBar.addEventListener('input', (e) => {
+                    this.filterStations(e.target.value);
+                });
+
+                // Player controls
+                this.playPauseBtn.addEventListener('click', () => this.togglePlay());
+                this.prevBtn.addEventListener('click', () => this.playPrevious());
+                this.nextBtn.addEventListener('click', () => this.playNext());
+                this.volumeSlider.addEventListener('input', (e) => {
+                    this.volume = e.target.value;
+                    this.showNotification(`Volume set to ${this.volume}%`, "info");
+                });
+
+                // Backend simulation controls
+                this.simulateLoadBtn.addEventListener('click', () => this.simulateApiLoad());
+                this.simulateErrorBtn.addEventListener('click', () => this.simulateApiError());
+                this.addStationBtn.addEventListener('click', () => this.addRandomStation());
+                this.resetStationsBtn.addEventListener('click', () => this.resetStations());
+            }
+
+            async loadStations() {
+                this.showLoading(true);
+                this.updateApiStatus("Loading stations...");
+                
+                // Simulate API call to backend
+                const response = await this.backend.getStations();
+                
+                if (response.success) {
+                    this.renderStations(response.data);
+                    this.showNotification(response.message, "success");
                 } else {
-                    AppState.volume = AppState.lastVolume || 80;
-                    volumeSlider.value = AppState.volume;
+                    this.showNotification(response.message, "error");
                 }
-                updateVolumeIcon();
-            });
-            
-            // Progress bar click
-            document.getElementById('progress-bar').addEventListener('click', function(e) {
-                if (!AppState.currentSong) return;
                 
-                const rect = this.getBoundingClientRect();
-                const percent = (e.clientX - rect.left) / rect.width;
+                this.showLoading(false);
+                this.updateApiStatus("Ready");
+            }
+
+            renderStations(stations) {
+                this.stationsList.innerHTML = '';
                 
-                // Update progress display
-                const durationParts = AppState.currentSong.duration.split(':');
-                const totalSeconds = parseInt(durationParts[0]) * 60 + parseInt(durationParts[1]);
-                const newTime = totalSeconds * percent;
+                if (stations.length === 0) {
+                    this.stationsList.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #666; grid-column: 1 / -1;">
+                            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
+                            <h3>No stations found</h3>
+                            <p>Try a different search term</p>
+                        </div>
+                    `;
+                    return;
+                }
                 
-                AppState.currentTime = newTime;
-                updateProgressDisplay();
-                
-                // In a real app, this would seek the audio to the new time
-            });
-            
-            // Simulate playback progress (for demo purposes)
-            setInterval(() => {
-                if (AppState.isPlaying && AppState.currentSong) {
-                    const durationParts = AppState.currentSong.duration.split(':');
-                    const totalSeconds = parseInt(durationParts[0]) * 60 + parseInt(durationParts[1]);
+                stations.forEach(station => {
+                    const stationElement = document.createElement('div');
+                    stationElement.className = `station-card ${this.currentStation && this.currentStation.id === station.id ? 'active' : ''}`;
+                    stationElement.innerHTML = `
+                        <div class="station-icon">
+                            <i class="${station.icon}"></i>
+                        </div>
+                        <div class="station-info">
+                            <div class="station-name">${station.name}</div>
+                            <div class="station-desc">${station.description}</div>
+                            <div>
+                                <span class="station-status ${station.status === 'live' ? 'status-live' : 'status-offline'}">
+                                    <i class="fas fa-circle" style="font-size: 0.6rem;"></i> ${station.status === 'live' ? 'LIVE' : 'OFFLINE'}
+                                </span>
+                                <span style="margin-left: 10px; color: #888; font-size: 0.9rem;">
+                                    ${station.frequency}
+                                </span>
+                            </div>
+                        </div>
+                    `;
                     
-                    // Increment current time
-                    AppState.currentTime += 1;
+                    stationElement.addEventListener('click', () => this.selectStation(station.id));
+                    this.stationsList.appendChild(stationElement);
+                });
+            }
+
+            async selectStation(stationId) {
+                this.showLoading(true);
+                this.updateApiStatus("Connecting to station...");
+                
+                // Simulate API call to backend
+                const response = await this.backend.playStation(stationId);
+                
+                if (response.success) {
+                    this.currentStation = response.data;
+                    this.isPlaying = true;
+                    this.updatePlayer();
+                    this.highlightSelectedStation(stationId);
+                    this.showNotification(response.message, "success");
+                } else {
+                    this.showNotification(response.message, "error");
+                }
+                
+                this.showLoading(false);
+                this.updateApiStatus("Ready");
+            }
+
+            updatePlayer() {
+                if (this.currentStation) {
+                    this.currentStationName.textContent = this.currentStation.name;
+                    this.currentStationDesc.textContent = `${this.currentStation.description} • ${this.currentStation.frequency}`;
                     
-                    // If we reached the end, play next song
-                    if (AppState.currentTime >= totalSeconds) {
-                        playNextSong();
+                    // Update play/pause button
+                    this.playIcon.className = this.isPlaying ? 'fas fa-pause' : 'fas fa-play';
+                    
+                    // Update play/pause button style
+                    if (this.isPlaying) {
+                        this.playPauseBtn.style.backgroundColor = '#d32f2f';
+                        this.playPasteBtnTitle = "Pause";
                     } else {
-                        updateProgressDisplay();
-                        updateNowPlayingProgress();
+                        this.playPauseBtn.style.backgroundColor = '#2d8f47';
+                        this.playPasteBtnTitle = "Play";
                     }
                 }
-            }, 1000);
-        }
-
-        // Initialize Settings Page
-        function initSettingsPage() {
-            // Crossfade slider
-            const crossfadeSlider = document.getElementById('crossfade');
-            const crossfadeValue = document.getElementById('crossfade-value');
-            
-            crossfadeSlider.addEventListener('input', function() {
-                crossfadeValue.textContent = `${this.value} seconds`;
-            });
-            
-            // Clear cache button
-            document.getElementById('clear-cache-btn').addEventListener('click', function() {
-                if (confirm('Are you sure you want to clear the cache? This will not delete your music files.')) {
-                    alert('Cache cleared successfully!');
-                    updateStorageDisplay();
-                }
-            });
-            
-            // Export data button
-            document.getElementById('export-data-btn').addEventListener('click', function() {
-                alert('In a real application, this would export your playlists and settings as a file.');
-            });
-            
-            // Import data button
-            document.getElementById('import-data-btn').addEventListener('click', function() {
-                alert('In a real application, this would import playlists and settings from a file.');
-            });
-        }
-
-        // Update storage display
-        function updateStorageDisplay() {
-            // Calculate simulated storage usage
-            const used = Math.floor(Math.random() * 70) + 10; // 10-80 MB
-            const total = 100;
-            const percent = (used / total) * 100;
-            
-            document.getElementById('storage-usage').textContent = `${used} MB / ${total} MB`;
-            document.getElementById('storage-progress').style.width = `${percent}%`;
-        }
-
-        // Play a song
-        function playSong(song) {
-            // Update state
-            AppState.currentSong = song;
-            AppState.isPlaying = true;
-            
-            // Increment play count for demo
-            song.plays = (song.plays || 0) + 1;
-            
-            // Update player display
-            updatePlayerDisplay();
-            
-            // Update home page if needed
-            if (document.getElementById('home-page').classList.contains('active')) {
-                renderHomePage();
             }
-            
-            // Update now playing page if active
-            if (document.getElementById('now-playing-page').classList.contains('active')) {
-                renderNowPlayingPage(song);
-            }
-        }
 
-        // Pause current song
-        function pauseSong() {
-            AppState.isPlaying = false;
-            updatePlayerDisplay();
-            
-            // Update now playing page if active
-            if (document.getElementById('now-playing-page').classList.contains('active')) {
-                const playButton = document.getElementById('now-playing-play');
-                playButton.innerHTML = '<i class="fas fa-play"></i>';
-            }
-        }
-
-        // Play next song
-        function playNextSong() {
-            if (AppState.library.length === 0) return;
-            
-            let currentIndex = AppState.library.findIndex(song => song.id === AppState.currentSong.id);
-            let nextIndex = (currentIndex + 1) % AppState.library.length;
-            
-            playSong(AppState.library[nextIndex]);
-        }
-
-        // Play previous song
-        function playPreviousSong() {
-            if (AppState.library.length === 0) return;
-            
-            let currentIndex = AppState.library.findIndex(song => song.id === AppState.currentSong.id);
-            let prevIndex = currentIndex - 1;
-            if (prevIndex < 0) prevIndex = AppState.library.length - 1;
-            
-            playSong(AppState.library[prevIndex]);
-        }
-
-        // Update player display
-        function updatePlayerDisplay() {
-            const playPauseBtn = document.getElementById('play-pause-btn');
-            
-            if (AppState.currentSong) {
-                // Update player info
-                document.getElementById('player-song-title').textContent = AppState.currentSong.title;
-                document.getElementById('player-song-artist').textContent = AppState.currentSong.artist;
-                document.getElementById('player-album-art').src = AppState.currentSong.cover;
+            highlightSelectedStation(stationId) {
+                // Remove active class from all stations
+                document.querySelectorAll('.station-card').forEach(card => {
+                    card.classList.remove('active');
+                });
                 
-                // Update play/pause button
-                if (AppState.isPlaying) {
-                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                // Add active class to selected station
+                document.querySelectorAll('.station-card').forEach(card => {
+                    if (card.querySelector('.station-name').textContent === 
+                        this.currentStation.name) {
+                        card.classList.add('active');
+                    }
+                });
+            }
+
+            togglePlay() {
+                if (!this.currentStation) {
+                    this.showNotification("Please select a station first", "warning");
+                    return;
+                }
+                
+                this.isPlaying = !this.isPlaying;
+                this.updatePlayer();
+                
+                const action = this.isPlaying ? "Playing" : "Paused";
+                this.showNotification(`${action}: ${this.currentStation.name}`, "info");
+            }
+
+            async playPrevious() {
+                if (!this.currentStation) {
+                    this.showNotification("Please select a station first", "warning");
+                    return;
+                }
+                
+                const prevStation = this.backend.getPrevStation();
+                await this.selectStation(prevStation.id);
+            }
+
+            async playNext() {
+                if (!this.currentStation) {
+                    this.showNotification("Please select a station first", "warning");
+                    return;
+                }
+                
+                const nextStation = this.backend.getNextStation();
+                await this.selectStation(nextStation.id);
+            }
+
+            filterStations(query) {
+                const filteredStations = this.backend.searchStations(query);
+                this.renderStations(filteredStations);
+                
+                if (query) {
+                    this.showNotification(`Found ${filteredStations.length} station(s) for "${query}"`, "info");
+                }
+            }
+
+            showLoading(show) {
+                this.loadingSpinner.style.display = show ? 'block' : 'none';
+                this.stationsList.style.display = show ? 'none' : 'grid';
+            }
+
+            showNotification(message, type = "info") {
+                this.notificationText.textContent = message;
+                
+                // Set color based on type
+                if (type === "success") {
+                    this.notification.style.backgroundColor = "#2d8f47";
+                } else if (type === "error") {
+                    this.notification.style.backgroundColor = "#d32f2f";
+                } else if (type === "warning") {
+                    this.notification.style.backgroundColor = "#ff9800";
                 } else {
-                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    this.notification.style.backgroundColor = "#4a6fa5";
                 }
                 
-                // Reset and start progress
-                AppState.currentTime = 0;
-                updateProgressDisplay();
-            } else {
-                document.getElementById('player-song-title').textContent = 'No song selected';
-                document.getElementById('player-song-artist').textContent = 'Select a song to play';
-                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                // Show notification
+                this.notification.classList.add('show');
+                
+                // Hide after 3 seconds
+                setTimeout(() => {
+                    this.notification.classList.remove('show');
+                }, 3000);
+            }
+
+            updateApiStatus(status) {
+                this.apiStatus = status;
+                this.apiStatusElement.textContent = status;
+                
+                // Color code the status
+                if (status === "Ready") {
+                    this.apiStatusElement.style.color = "#2d8f47";
+                } else if (status.includes("Loading") || status.includes("Connecting")) {
+                    this.apiStatusElement.style.color = "#ff9800";
+                } else if (status.includes("Error")) {
+                    this.apiStatusElement.style.color = "#d32f2f";
+                } else {
+                    this.apiStatusElement.style.color = "#4a6fa5";
+                }
+            }
+
+            // Backend simulation methods
+            async simulateApiLoad() {
+                this.showLoading(true);
+                this.updateApiStatus("Simulating API load...");
+                
+                // Simulate a longer API call
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                this.showLoading(false);
+                this.updateApiStatus("Ready");
+                this.showNotification("Simulated API load complete. In a real app, this would fetch data from a server.", "info");
+            }
+
+            async simulateApiError() {
+                this.updateApiStatus("Simulating API error...");
+                
+                // Simulate API error
+                const response = await this.backend.simulateError();
+                
+                this.updateApiStatus("Error simulated");
+                this.showNotification(response.message, "error");
+                
+                // Reset status after delay
+                setTimeout(() => {
+                    this.updateApiStatus("Ready");
+                }, 2000);
+            }
+
+            async addRandomStation() {
+                this.updateApiStatus("Adding new station...");
+                
+                // Generate random station data
+                const stationsPool = [
+                    { name: "Seva Radio", description: "Community service and seva updates", frequency: "102.3 FM", icon: "fas fa-hands-helping" },
+                    { name: "Rehat Maryada Channel", description: "Sikh code of conduct discussions", frequency: "95.7 FM", icon: "fas fa-balance-scale" },
+                    { name: "Guru Nanak Dev Ji Radio", description: "Teachings of Guru Nanak Dev Ji", frequency: "106.1 FM", icon: "fas fa-user-friends" },
+                    { name: "Kirtan Darbar", description: "Live kirtan from global darbars", frequency: "88.9 FM", icon: "fas fa-microphone-alt" },
+                    { name: "Sikh Warriors Channel", description: "History of Sikh warriors", frequency: "104.7 FM", icon: "fas fa-shield-alt" }
+                ];
+                
+                const randomStation = stationsPool[Math.floor(Math.random() * stationsPool.length)];
+                randomStation.status = Math.random() > 0.3 ? "live" : "offline";
+                
+                // Add station via backend
+                const response = await this.backend.addStation(randomStation);
+                
+                if (response.success) {
+                    // Refresh the station list
+                    this.filterStations(this.searchBar.value);
+                    this.showNotification(response.message, "success");
+                }
+                
+                this.updateApiStatus("Ready");
+            }
+
+            async resetStations() {
+                this.updateApiStatus("Resetting stations...");
+                
+                // Reset backend to initial state
+                this.backend = new RadioBackend();
+                this.currentStation = null;
+                this.isPlaying = false;
+                
+                // Reload stations
+                await this.loadStations();
+                this.updatePlayer();
+                
+                this.updateApiStatus("Ready");
+                this.showNotification("All stations have been reset to default", "success");
             }
         }
 
-        // Update progress display
-        function updateProgressDisplay() {
-            if (!AppState.currentSong) return;
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = new RadioApp();
             
-            // Format current time
-            const currentMinutes = Math.floor(AppState.currentTime / 60);
-            const currentSeconds = Math.floor(AppState.currentTime % 60);
-            document.getElementById('current-time').textContent = 
-                `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
-            
-            // Format duration
-            const durationParts = AppState.currentSong.duration.split(':');
-            const totalSeconds = parseInt(durationParts[0]) * 60 + parseInt(durationParts[1]);
-            document.getElementById('duration').textContent = AppState.currentSong.duration;
-            
-            // Update progress bar
-            const progressPercent = (AppState.currentTime / totalSeconds) * 100;
-            document.getElementById('progress').style.width = `${progressPercent}%`;
-        }
-
-        // Update now playing progress
-        function updateNowPlayingProgress() {
-            if (!AppState.currentSong) return;
-            
-            // Format current time
-            const currentMinutes = Math.floor(AppState.currentTime / 60);
-            const currentSeconds = Math.floor(AppState.currentTime % 60);
-            document.getElementById('now-playing-current').textContent = 
-                `${currentMinutes}:${currentSeconds.toString().padStart(2, '0')}`;
-            
-            // Update progress bar
-            const durationParts = AppState.currentSong.duration.split(':');
-            const totalSeconds = parseInt(durationParts[0]) * 60 + parseInt(durationParts[1]);
-            const progressPercent = (AppState.currentTime / totalSeconds) * 100;
-            document.getElementById('now-playing-progress').style.width = `${progressPercent}%`;
-        }
-
-        // Update volume icon
-        function updateVolumeIcon() {
-            const volumeBtn = document.getElementById('volume-btn');
-            const icon = volumeBtn.querySelector('i');
-            
-            if (AppState.volume === 0) {
-                icon.className = 'fas fa-volume-mute';
-            } else if (AppState.volume < 50) {
-                icon.className = 'fas fa-volume-down';
-            } else {
-                icon.className = 'fas fa-volume-up';
-            }
-        }
-
-        // Simulate Node.js backend API (for demo purposes)
-        const MockBackendAPI = {
-            getSongs: () => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(sampleSongs);
-                    }, 300);
-                });
-            },
-            
-            getPlaylists: () => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        resolve(samplePlaylists);
-                    }, 300);
-                });
-            },
-            
-            uploadSong: (file) => {
-                return new Promise(resolve => {
-                    setTimeout(() => {
-                        const newSong = {
-                            id: sampleSongs.length + 1,
-                            title: file.name.replace(/\.[^/.]+$/, ""),
-                            artist: "Unknown Artist",
-                            album: "Unknown Album",
-                            duration: "3:45",
-                            genre: "Unknown",
-                            plays: 0,
-                            liked: false,
-                            cover: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
-                        };
-                        resolve(newSong);
-                    }, 500);
-                });
-            }
-        };
+            // Make app available globally for debugging
+            window.radioApp = app;
+        });
     </script>
 </body>
 </html>
