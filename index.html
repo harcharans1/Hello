@@ -3,1084 +3,1161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gurbani Radio - Spiritual Streams</title>
+    <title>Gurbani Radio | Seamless Spiritual Streaming</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gurmukhi:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-gold: #DAA520;
+            --primary-blue: #003366;
+            --primary-white: #FFFFFF;
+            --light-bg: #F8F9FA;
+            --dark-bg: #1A1A2E;
+            --text-dark: #333333;
+            --text-light: #666666;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
             line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: linear-gradient(to bottom, #f9f9f9, #e6f0ff);
+            transition: background-color 0.3s ease;
+        }
+
+        .gurmukhi-font {
+            font-family: 'Noto Sans Gurmukhi', sans-serif;
         }
 
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, #1a6b2c 0%, #2d8f47 100%);
-            color: white;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            position: relative;
-            overflow: hidden;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, #002244 100%);
+            color: var(--primary-white);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
         }
 
-        .header-content {
+        .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
-            position: relative;
-            z-index: 2;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
-        .logo-icon {
-            font-size: 2.5rem;
-            color: #FFD700;
+        .logo i {
+            color: var(--primary-gold);
+            font-size: 2rem;
         }
 
-        .logo-text h1 {
+        .logo h1 {
             font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 5px;
+            font-weight: 600;
         }
 
-        .logo-text p {
-            font-size: 0.9rem;
-            opacity: 0.9;
+        .logo span {
+            color: var(--primary-gold);
         }
 
-        /* Search Bar */
-        .search-container {
-            width: 100%;
-            max-width: 500px;
-            position: relative;
-            margin: 20px auto 0;
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
         }
 
-        .search-bar {
-            width: 100%;
-            padding: 15px 20px;
-            border-radius: 50px;
+        nav a {
+            color: var(--primary-white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        nav a:hover, nav a.active {
+            background-color: rgba(218, 165, 32, 0.2);
+            color: var(--primary-gold);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
             border: none;
-            font-size: 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding-left: 50px;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #2d8f47;
-            font-size: 1.2rem;
+            color: var(--primary-white);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         /* Main Content */
-        main {
-            flex: 1;
-            padding: 2rem;
-            max-width: 1200px;
-            width: 100%;
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
-        }
-
-        .stations-container {
-            background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             padding: 2rem;
-            margin-top: 1.5rem;
         }
 
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 1.5rem;
-            color: #2d8f47;
-            font-size: 1.5rem;
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(rgba(0, 51, 102, 0.9), rgba(0, 34, 68, 0.9)), url('https://images.unsplash.com/photo-1544098289-aca6d5c9b5d1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: var(--primary-white);
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
         }
 
-        .section-title i {
-            font-size: 1.8rem;
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
         }
 
-        /* Radio Station List */
-        .stations-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .station-card {
-            background-color: #f9f9f9;
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-left: 5px solid #2d8f47;
-        }
-
-        .station-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            background-color: #f0f9ff;
-        }
-
-        .station-card.active {
-            background-color: #e8f5e9;
-            border-left-color: #FFD700;
-        }
-
-        .station-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #2d8f47, #1a6b2c);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.8rem;
-        }
-
-        .station-info {
-            flex: 1;
-        }
-
-        .station-name {
-            font-weight: 600;
+        .hero p {
             font-size: 1.2rem;
-            color: #333;
-            margin-bottom: 5px;
+            max-width: 700px;
+            margin: 0 auto 2rem;
         }
 
-        .station-desc {
-            font-size: 0.9rem;
-            color: #666;
-            margin-bottom: 8px;
-        }
-
-        .station-status {
+        .cta-button {
             display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.8rem;
+            background-color: var(--primary-gold);
+            color: var(--primary-blue);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
             font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
         }
 
-        .status-live {
-            background-color: #ffebee;
-            color: #d32f2f;
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(218, 165, 32, 0.4);
         }
 
-        .status-offline {
-            background-color: #f5f5f5;
-            color: #757575;
-        }
-
-        /* Footer Player */
-        footer {
-            background-color: white;
-            padding: 1.5rem 2rem;
-            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.08);
-            border-top: 1px solid #eee;
-            position: sticky;
-            bottom: 0;
-            z-index: 100;
+        /* Audio Player */
+        .audio-player-section {
+            margin-bottom: 2rem;
         }
 
         .player-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            background-color: var(--primary-white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .player-header {
+            background-color: var(--primary-blue);
+            color: var(--primary-white);
+            padding: 1.2rem 2rem;
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .now-playing {
-            display: flex;
             align-items: center;
-            gap: 15px;
-            flex: 1;
-            min-width: 300px;
         }
 
-        .now-playing-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #2d8f47, #1a6b2c);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.8rem;
+        .player-header h3 {
+            font-size: 1.4rem;
         }
 
-        .now-playing-info h3 {
-            font-size: 1.2rem;
+        .station-indicator {
+            background-color: var(--primary-gold);
+            color: var(--primary-blue);
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
             font-weight: 600;
-            color: #333;
-            margin-bottom: 5px;
-        }
-
-        .now-playing-info p {
             font-size: 0.9rem;
-            color: #666;
         }
 
         .player-controls {
+            padding: 2rem;
+        }
+
+        .station-selector {
+            margin-bottom: 1.5rem;
+        }
+
+        .station-selector h4 {
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+        }
+
+        .station-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .station-btn {
+            background-color: var(--light-bg);
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 20px;
-            flex: 1;
+            gap: 12px;
+        }
+
+        .station-btn:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-3px);
+        }
+
+        .station-btn.active {
+            border-color: var(--primary-gold);
+            background-color: rgba(218, 165, 32, 0.1);
+        }
+
+        .station-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--primary-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
             justify-content: center;
+            color: var(--primary-white);
+            font-size: 1.2rem;
+        }
+
+        .station-info h5 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .station-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .player-main-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background-color: var(--light-bg);
+            border-radius: var(--radius);
+        }
+
+        .playback-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
         }
 
         .control-btn {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background-color: #f0f0f0;
             border: none;
+            background-color: var(--primary-blue);
+            color: var(--primary-white);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: #2d8f47;
-            transition: all 0.2s ease;
         }
 
         .control-btn:hover {
-            background-color: #2d8f47;
-            color: white;
+            background-color: var(--primary-gold);
+            color: var(--primary-blue);
             transform: scale(1.05);
         }
 
-        .control-btn.play-pause {
+        .play-btn {
             width: 60px;
             height: 60px;
-            background-color: #2d8f47;
-            color: white;
             font-size: 1.5rem;
         }
 
-        .control-btn.play-pause:hover {
-            background-color: #1a6b2c;
-        }
-
-        .player-volume {
+        .volume-control {
             display: flex;
             align-items: center;
-            gap: 10px;
-            flex: 1;
-            justify-content: flex-end;
-            min-width: 200px;
+            gap: 1rem;
+            width: 200px;
+        }
+
+        .volume-control i {
+            color: var(--primary-blue);
         }
 
         .volume-slider {
-            width: 100px;
+            width: 100%;
+            -webkit-appearance: none;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
         }
 
-        /* Loading Spinner */
-        .loading-spinner {
-            display: none;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .spinner {
-            width: 40px;
-            height: 40px;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #2d8f47;
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
+            background: var(--primary-blue);
+            cursor: pointer;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .progress-container {
+            margin-top: 1.5rem;
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .logo {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .search-container {
-                margin-top: 10px;
-            }
-
-            .stations-list {
-                grid-template-columns: 1fr;
-            }
-
-            .player-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-
-            .now-playing, .player-controls, .player-volume {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .player-volume {
-                justify-content: center;
-            }
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #2d8f47;
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .progress-info {
             display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--primary-gold);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Gurbani Text Display */
+        .gurbani-section {
+            margin-bottom: 2rem;
+        }
+
+        .gurbani-container {
+            background-color: var(--primary-white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+        }
+
+        .gurbani-header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
-            z-index: 1000;
-            transform: translateX(150%);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--light-bg);
+            padding-bottom: 1rem;
+        }
+
+        .gurbani-header h3 {
+            color: var(--primary-blue);
+            font-size: 1.4rem;
+        }
+
+        .language-toggle {
+            display: flex;
+            background-color: var(--light-bg);
+            border-radius: 50px;
+            padding: 4px;
+        }
+
+        .lang-btn {
+            padding: 0.5rem 1.2rem;
+            border: none;
+            background: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .lang-btn.active {
+            background-color: var(--primary-blue);
+            color: var(--primary-white);
+        }
+
+        .gurbani-text {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1rem;
+            background-color: var(--light-bg);
+            border-radius: var(--radius);
+            line-height: 2;
+            text-align: center;
+        }
+
+        .gurmukhi-text {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-blue);
+        }
+
+        .translation-text {
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            font-style: italic;
+            border-top: 1px dashed #ccc;
+            padding-top: 1.5rem;
+        }
+
+        /* Features Grid */
+        .features-section h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-blue);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--primary-white);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
             transition: transform 0.3s ease;
         }
 
-        .notification.show {
-            transform: translateX(0);
+        .feature-card:hover {
+            transform: translateY(-10px);
         }
 
-        /* Backend Simulation UI */
-        .backend-panel {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            border-left: 5px solid #4a6fa5;
-        }
-
-        .backend-title {
-            color: #4a6fa5;
-            margin-bottom: 15px;
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background-color: rgba(0, 51, 102, 0.1);
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--primary-blue);
+            font-size: 1.8rem;
         }
 
-        .backend-controls {
+        .feature-card h3 {
+            margin-bottom: 1rem;
+            color: var(--primary-blue);
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+        }
+
+        /* Footer Player */
+        .footer-player {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--primary-blue);
+            color: var(--primary-white);
+            padding: 1rem 2rem;
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
         }
 
-        .backend-btn {
-            background-color: #4a6fa5;
-            color: white;
+        .now-playing {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 200px;
+        }
+
+        .now-playing img {
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .mini-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .mini-btn {
+            background: none;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            color: var(--primary-white);
+            font-size: 1.2rem;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: background-color 0.3s;
+            transition: color 0.3s ease;
         }
 
-        .backend-btn:hover {
-            background-color: #3a5a80;
+        .mini-btn:hover {
+            color: var(--primary-gold);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .station-buttons {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            }
+            
+            .player-main-controls {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .volume-control {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .header-container {
+                flex-wrap: wrap;
+            }
+            
+            .hero h2 {
+                font-size: 2rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .gurbani-text {
+                font-size: 1.3rem;
+            }
+            
+            .footer-player {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .now-playing {
+                min-width: auto;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .station-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero {
+                padding: 2rem 1rem;
+            }
+            
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+            
+            .gurbani-text {
+                font-size: 1.1rem;
+                padding: 0.5rem;
+            }
+            
+            .feature-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-2 {
+            margin-top: 2rem;
+        }
+
+        .mb-2 {
+            margin-bottom: 2rem;
         }
     </style>
 </head>
 <body>
-    <!-- Header with Search Bar -->
+    <!-- Header -->
     <header>
-        <div class="header-content">
+        <div class="header-container">
             <div class="logo">
-                <div class="logo-icon">
-                    <i class="fas fa-pray"></i>
-                </div>
-                <div class="logo-text">
-                    <h1>Gurbani Radio</h1>
-                    <p>Streaming Spiritual Wisdom 24/7</p>
-                </div>
+                <i class="fas fa-pray"></i>
+                <h1>Gurbani<span>Radio</span></h1>
             </div>
-        </div>
-        <div class="search-container">
-            <i class="fas fa-search search-icon"></i>
-            <input type="text" class="search-bar" id="searchBar" placeholder="Search for Gurbani radio stations, kirtan, or katha...">
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">Home</a></li>
+                    <li><a href="#">Live Radio</a></li>
+                    <li><a href="#">Nitnem</a></li>
+                    <li><a href="#">Gurbani</a></li>
+                    <li><a href="#">Schedule</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
         </div>
     </header>
 
-    <!-- Main Content with Radio Stations -->
-    <main>
-        <div class="stations-container">
-            <div class="section-title">
-                <i class="fas fa-broadcast-tower"></i>
-                <h2>Gurbani Radio Stations</h2>
-            </div>
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <h2>Stream Gurbani Anytime, Anywhere</h2>
+            <p>Experience seamless spiritual connection with live Kirtan, Nitnem Banis, and Gurbani from around the world. Our unique multi-source aggregation brings you the best of Sikh spiritual streams.</p>
+            <a href="#player" class="cta-button">Start Listening Now</a>
+        </section>
 
-            <div class="loading-spinner" id="loadingSpinner">
-                <div class="spinner"></div>
-                <p>Loading radio stations...</p>
-            </div>
-
-            <div class="stations-list" id="stationsList">
-                <!-- Radio stations will be loaded here by JavaScript -->
-            </div>
-
-            <!-- Backend Simulation Panel -->
-            <div class="backend-panel">
-                <h3 class="backend-title">
-                    <i class="fas fa-server"></i>
-                    Backend Simulation Controls
-                </h3>
-                <p style="margin-bottom: 15px; color: #666;">This panel simulates backend API interactions. In a real application, these would be handled by a server.</p>
-                <div class="backend-controls">
-                    <button class="backend-btn" id="simulateLoad">
-                        <i class="fas fa-download"></i> Simulate API Load
-                    </button>
-                    <button class="backend-btn" id="simulateError">
-                        <i class="fas fa-exclamation-triangle"></i> Simulate API Error
-                    </button>
-                    <button class="backend-btn" id="addStation">
-                        <i class="fas fa-plus"></i> Add Random Station
-                    </button>
-                    <button class="backend-btn" id="resetStations">
-                        <i class="fas fa-redo"></i> Reset Stations
-                    </button>
+        <!-- Audio Player Section -->
+        <section id="player" class="audio-player-section">
+            <div class="player-container">
+                <div class="player-header">
+                    <h3>Live Gurbani Radio</h3>
+                    <div class="station-indicator">Now Playing: <span id="current-station">Harmandir Sahib</span></div>
                 </div>
-                <div style="margin-top: 15px; font-size: 0.9rem; color: #888;">
-                    <i class="fas fa-info-circle"></i> Current API Status: <span id="apiStatus" style="color: #2d8f47; font-weight: bold;">Ready</span>
+                
+                <div class="player-controls">
+                    <!-- Station Selector -->
+                    <div class="station-selector">
+                        <h4>Select a Radio Station</h4>
+                        <div class="station-buttons" id="station-buttons">
+                            <!-- Stations will be loaded by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Main Player Controls -->
+                    <div class="player-main-controls">
+                        <div class="playback-controls">
+                            <button class="control-btn" id="prev-btn">
+                                <i class="fas fa-step-backward"></i>
+                            </button>
+                            <button class="control-btn play-btn" id="play-btn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="control-btn" id="next-btn">
+                                <i class="fas fa-step-forward"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="volume-control">
+                            <i class="fas fa-volume-up"></i>
+                            <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                        </div>
+                    </div>
+                    
+                    <!-- Progress Bar -->
+                    <div class="progress-container">
+                        <div class="progress-info">
+                            <span id="current-time">0:00</span>
+                            <span id="duration">0:00</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress" id="progress"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- Gurbani Text Display -->
+        <section class="gurbani-section">
+            <div class="gurbani-container">
+                <div class="gurbani-header">
+                    <h3>Now Playing: Shabad Text</h3>
+                    <div class="language-toggle">
+                        <button class="lang-btn active" id="gurmukhi-btn">Gurmukhi</button>
+                        <button class="lang-btn" id="english-btn">Translation</button>
+                        <button class="lang-btn" id="hindi-btn">Transliteration</button>
+                    </div>
+                </div>
+                
+                <div class="gurbani-text">
+                    <div class="gurmukhi-text" id="gurmukhi-text">
+                        ਗੁਰੂ ਸਤਿਗੁਰ ਪ੍ਰਸਾਦਿ ਪਰਾਪਤਿ ਹੋਈ ॥<br>
+                        ਨਾਮੁ ਨਿਧਾਨੁ ਸਤਿ ਪੁਰਖ ਕੀ ਦੇਈ ॥<br>
+                        ਜਿਨਿ ਕੀਨੇ ਥਾਕ ਨ ਕਦੇ ਬਿਨਾਸੁ ॥<br>
+                        ਸੋ ਪ੍ਰਭੁ ਸਦਾ ਸਰਣਾਗਤਿ ਦਾਸੁ ॥
+                    </div>
+                    <div class="translation-text hidden" id="english-text">
+                        By Guru's Grace, it is obtained.<br>
+                        The Naam, the Treasure, is given by the True Primal Being.<br>
+                        The One who created the universe never dies.<br>
+                        That God is always the Shelter of His servants.
+                    </div>
+                    <div class="translation-text hidden" id="hindi-text">
+                        गुरु सतिगुर प्रसादि प्रापति होई ॥<br>
+                        नामु निधानु सति पुरख की देई ॥<br>
+                        जिनि कीने थाक न कदे बिनासु ॥<br>
+                        सो प्रभु सदा सरणागति दासु ॥
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features-section">
+            <h2>Unique Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe-americas"></i>
+                    </div>
+                    <h3>Global Streams</h3>
+                    <p>Access live Gurbani from major Gurdwaras worldwide in one unified interface.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3>Synchronized Text</h3>
+                    <p>Follow along with real-time Gurmukhi text and translations as you listen.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Nitnem Reminders</h3>
+                    <p>Set custom alerts for daily Nitnem Banis with adjustable timing options.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Sangat Chat</h3>
+                    <p>Connect with listeners worldwide through our respectful community chat.</p>
+                </div>
+            </div>
+        </section>
     </main>
 
-    <!-- Footer with Player Controls -->
-    <footer>
-        <div class="player-container">
-            <div class="now-playing">
-                <div class="now-playing-icon">
-                    <i class="fas fa-play"></i>
-                </div>
-                <div class="now-playing-info">
-                    <h3 id="currentStationName">Select a Radio Station</h3>
-                    <p id="currentStationDesc">Click on any station above to start playing</p>
-                </div>
-            </div>
-
-            <div class="player-controls">
-                <button class="control-btn" id="prevBtn" title="Previous">
-                    <i class="fas fa-step-backward"></i>
-                </button>
-                <button class="control-btn play-pause" id="playPauseBtn" title="Play/Pause">
-                    <i class="fas fa-play" id="playIcon"></i>
-                </button>
-                <button class="control-btn" id="nextBtn" title="Next">
-                    <i class="fas fa-step-forward"></i>
-                </button>
-            </div>
-
-            <div class="player-volume">
-                <i class="fas fa-volume-down"></i>
-                <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
-                <i class="fas fa-volume-up"></i>
+    <!-- Fixed Footer Player -->
+    <div class="footer-player">
+        <div class="now-playing">
+            <i class="fas fa-broadcast-tower"></i>
+            <div>
+                <div id="mini-title">Harmandir Sahib Live Kirtan</div>
+                <div id="mini-artist">Sri Darbar Sahib, Amritsar</div>
             </div>
         </div>
-    </footer>
-
-    <!-- Notification -->
-    <div class="notification" id="notification">
-        <i class="fas fa-info-circle"></i>
-        <span id="notificationText">Notification message here</span>
+        
+        <div class="mini-controls">
+            <button class="mini-btn" id="mini-prev">
+                <i class="fas fa-step-backward"></i>
+            </button>
+            <button class="mini-btn" id="mini-play">
+                <i class="fas fa-play"></i>
+            </button>
+            <button class="mini-btn" id="mini-next">
+                <i class="fas fa-step-forward"></i>
+            </button>
+        </div>
     </div>
 
+    <!-- JavaScript -->
     <script>
-        // Backend simulation - In a real app, this would be an API server
-        class RadioBackend {
-            constructor() {
-                // Simulate database of radio stations
-                this.stations = [
-                    {
-                        id: 1,
-                        name: "Gurbani Sangeet Radio",
-                        description: "24/7 live kirtan from Harmandir Sahib",
-                        frequency: "98.5 FM",
-                        status: "live",
-                        streamUrl: "https://live.sgpc.net:8442/; nocache=889869",
-                        icon: "fas fa-music"
-                    },
-                    {
-                        id: 2,
-                        name: "Katha Channel",
-                        description: "Gurbani katha and explanations",
-                        frequency: "101.2 FM",
-                        status: "live",
-                        streamUrl: "https://example.com/stream2",
-                        icon: "fas fa-book-open"
-                    },
-                    {
-                        id: 3,
-                        name: "Nitnem Radio",
-                        description: "Daily prayers and nitnem",
-                        frequency: "89.7 FM",
-                        status: "live",
-                        streamUrl: "https://example.com/stream3",
-                        icon: "fas fa-praying-hands"
-                    },
-                    {
-                        id: 4,
-                        name: "Sikh History Channel",
-                        description: "Sikh history and philosophy",
-                        frequency: "103.5 FM",
-                        status: "offline",
-                        streamUrl: "https://example.com/stream4",
-                        icon: "fas fa-landmark"
-                    },
-                    {
-                        id: 5,
-                        name: "Raagmala Radio",
-                        description: "Traditional raag-based kirtan",
-                        frequency: "96.3 FM",
-                        status: "live",
-                        streamUrl: "https://example.com/stream5",
-                        icon: "fas fa-sliders-h"
-                    },
-                    {
-                        id: 6,
-                        name: "Panjabi Virsa",
-                        description: "Cultural programs and discussions",
-                        frequency: "94.1 FM",
-                        status: "live",
-                        streamUrl: "https://example.com/stream6",
-                        icon: "fas fa-globe-asia"
-                    },
-                    {
-                        id: 7,
-                        name: "Akhand Path Channel",
-                        description: "Continuous recitation of Guru Granth Sahib",
-                        frequency: "107.9 FM",
-                        status: "live",
-                        streamUrl: "https://example.com/stream7",
-                        icon: "fas fa-book-reader"
-                    },
-                    {
-                        id: 8,
-                        name: "Youth Sikh Radio",
-                        description: "Programs for Sikh youth",
-                        frequency: "92.7 FM",
-                        status: "offline",
-                        streamUrl: "https://example.com/stream8",
-                        icon: "fas fa-users"
-                    },
-                    {
-                        id: 9,
-                        name: "Gurmat Sangeet",
-                        description: "Traditional Gurmat sangeet",
-                        frequency: "99.9 FM",
-                        status: "live",
-                        streamUrl: "https://example.com/stream9",
-                        icon: "fas fa-guitar"
-                    },
-                    {
-                        id: 10,
-                        name: "Sahaj Path",
-                        description: "Slow-paced Gurbani recitation",
-                        frequency: "105.5 FM",
-                        status: "live",
-                        streamUrl: "https://example.com/stream10",
-                        icon: "fas fa-spa"
-                    }
-                ];
-                
-                this.currentStationIndex = 0;
-                this.isPlaying = false;
-                this.audioContext = null;
-                this.apiStatus = "Ready";
-                this.simulatedLatency = 800; // ms
+        // Station data with stream URLs (use actual streams in production)
+        const stations = [
+            {
+                id: 1,
+                name: "Harmandir Sahib",
+                location: "Amritsar, India",
+                streamUrl: "https://stream.url/harmandir-sahib",
+                type: "Live Kirtan",
+                icon: "fas fa-landmark"
+            },
+            {
+                id: 2,
+                name: "SikhNet Radio",
+                location: "Global Stream",
+                streamUrl: "https://stream.url/sikhnet-radio",
+                type: "24/7 Gurbani",
+                icon: "fas fa-globe"
+            },
+            {
+                id: 3,
+                name: "Gurdwara Bangla Sahib",
+                location: "Delhi, India",
+                streamUrl: "https://stream.url/bangla-sahib",
+                type: "Live Path",
+                icon: "fas fa-mosque"
+            },
+            {
+                id: 4,
+                name: "Akhand Kirtani Jatha",
+                location: "Global",
+                streamUrl: "https://stream.url/akj-radio",
+                type: "Kirtan & Katha",
+                icon: "fas fa-users"
+            },
+            {
+                id: 5,
+                name: "Nitnem Radio",
+                location: "Online",
+                streamUrl: "https://stream.url/nitnem-radio",
+                type: "Banis Only",
+                icon: "fas fa-book-open"
+            },
+            {
+                id: 6,
+                name: "Basics of Sikhi",
+                location: "UK Stream",
+                streamUrl: "https://stream.url/basics-of-sikhi",
+                type: "Katha & Kirtan",
+                icon: "fas fa-graduation-cap"
             }
+        ];
 
-            // Simulate API call to get stations
-            async getStations() {
-                await this.simulateLatency();
-                return {
-                    success: true,
-                    data: this.stations,
-                    message: "Stations loaded successfully"
-                };
-            }
+        // Audio player state
+        let currentStationIndex = 0;
+        let isPlaying = false;
+        let audioElement = null;
+        let progressInterval = null;
+        let currentVolume = 0.7;
 
-            // Simulate API call to play a station
-            async playStation(stationId) {
-                await this.simulateLatency();
-                const station = this.stations.find(s => s.id === stationId);
-                
-                if (!station) {
-                    return {
-                        success: false,
-                        message: "Station not found"
-                    };
-                }
-                
-                if (station.status === "offline") {
-                    return {
-                        success: false,
-                        message: "Station is currently offline"
-                    };
-                }
-                
-                return {
-                    success: true,
-                    data: station,
-                    message: `Now playing: ${station.name}`
-                };
-            }
+        // DOM Elements
+        const stationButtonsContainer = document.getElementById('station-buttons');
+        const currentStationSpan = document.getElementById('current-station');
+        const playBtn = document.getElementById('play-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const volumeSlider = document.getElementById('volume-slider');
+        const progressBar = document.getElementById('progress');
+        const currentTimeSpan = document.getElementById('current-time');
+        const durationSpan = document.getElementById('duration');
+        const miniPlayBtn = document.getElementById('mini-play');
+        const miniPrevBtn = document.getElementById('mini-prev');
+        const miniNextBtn = document.getElementById('mini-next');
+        const miniTitle = document.getElementById('mini-title');
+        const miniArtist = document.getElementById('mini-artist');
 
-            // Simulate API call to add a station
-            async addStation(station) {
-                await this.simulateLatency();
-                const newId = this.stations.length > 0 ? 
-                    Math.max(...this.stations.map(s => s.id)) + 1 : 1;
-                
-                const newStation = {
-                    ...station,
-                    id: newId
-                };
-                
-                this.stations.push(newStation);
-                
-                return {
-                    success: true,
-                    data: newStation,
-                    message: "Station added successfully"
-                };
-            }
+        // Language toggle elements
+        const gurmukhiBtn = document.getElementById('gurmukhi-btn');
+        const englishBtn = document.getElementById('english-btn');
+        const hindiBtn = document.getElementById('hindi-btn');
+        const gurmukhiText = document.getElementById('gurmukhi-text');
+        const englishText = document.getElementById('english-text');
+        const hindiText = document.getElementById('hindi-text');
 
-            // Simulate latency for API calls
-            async simulateLatency() {
-                return new Promise(resolve => {
-                    setTimeout(() => resolve(), this.simulatedLatency);
-                });
-            }
-
-            // Simulate an API error
-            async simulateError() {
-                await this.simulateLatency();
-                return {
-                    success: false,
-                    message: "Server error: Unable to process request"
-                };
-            }
-
-            // Get next station
-            getNextStation() {
-                this.currentStationIndex = (this.currentStationIndex + 1) % this.stations.length;
-                return this.stations[this.currentStationIndex];
-            }
-
-            // Get previous station
-            getPrevStation() {
-                this.currentStationIndex = this.currentStationIndex === 0 ? 
-                    this.stations.length - 1 : this.currentStationIndex - 1;
-                return this.stations[this.currentStationIndex];
-            }
-
-            // Search stations
-            searchStations(query) {
-                if (!query) return this.stations;
-                
-                const lowerQuery = query.toLowerCase();
-                return this.stations.filter(station => 
-                    station.name.toLowerCase().includes(lowerQuery) ||
-                    station.description.toLowerCase().includes(lowerQuery) ||
-                    station.frequency.toLowerCase().includes(lowerQuery)
-                );
-            }
-        }
-
-        // Frontend Application
-        class RadioApp {
-            constructor() {
-                this.backend = new RadioBackend();
-                this.currentStation = null;
-                this.isPlaying = false;
-                this.volume = 70;
-                
-                // Initialize the app
-                this.init();
-            }
-
-            init() {
-                // DOM elements
-                this.stationsList = document.getElementById('stationsList');
-                this.loadingSpinner = document.getElementById('loadingSpinner');
-                this.searchBar = document.getElementById('searchBar');
-                this.playPauseBtn = document.getElementById('playPauseBtn');
-                this.prevBtn = document.getElementById('prevBtn');
-                this.nextBtn = document.getElementById('nextBtn');
-                this.volumeSlider = document.getElementById('volumeSlider');
-                this.currentStationName = document.getElementById('currentStationName');
-                this.currentStationDesc = document.getElementById('currentStationDesc');
-                this.notification = document.getElementById('notification');
-                this.notificationText = document.getElementById('notificationText');
-                this.playIcon = document.getElementById('playIcon');
-                this.apiStatusElement = document.getElementById('apiStatus');
-                
-                // Backend simulation buttons
-                this.simulateLoadBtn = document.getElementById('simulateLoad');
-                this.simulateErrorBtn = document.getElementById('simulateError');
-                this.addStationBtn = document.getElementById('addStation');
-                this.resetStationsBtn = document.getElementById('resetStations');
-                
-                // Set initial volume
-                this.volumeSlider.value = this.volume;
-                
-                // Load stations
-                this.loadStations();
-                
-                // Set up event listeners
-                this.setupEventListeners();
-                
-                // Show welcome notification
-                this.showNotification("Welcome to Gurbani Radio! Select a station to begin streaming.", "success");
-            }
-
-            setupEventListeners() {
-                // Search functionality
-                this.searchBar.addEventListener('input', (e) => {
-                    this.filterStations(e.target.value);
-                });
-
-                // Player controls
-                this.playPauseBtn.addEventListener('click', () => this.togglePlay());
-                this.prevBtn.addEventListener('click', () => this.playPrevious());
-                this.nextBtn.addEventListener('click', () => this.playNext());
-                this.volumeSlider.addEventListener('input', (e) => {
-                    this.volume = e.target.value;
-                    this.showNotification(`Volume set to ${this.volume}%`, "info");
-                });
-
-                // Backend simulation controls
-                this.simulateLoadBtn.addEventListener('click', () => this.simulateApiLoad());
-                this.simulateErrorBtn.addEventListener('click', () => this.simulateApiError());
-                this.addStationBtn.addEventListener('click', () => this.addRandomStation());
-                this.resetStationsBtn.addEventListener('click', () => this.resetStations());
-            }
-
-            async loadStations() {
-                this.showLoading(true);
-                this.updateApiStatus("Loading stations...");
-                
-                // Simulate API call to backend
-                const response = await this.backend.getStations();
-                
-                if (response.success) {
-                    this.renderStations(response.data);
-                    this.showNotification(response.message, "success");
-                } else {
-                    this.showNotification(response.message, "error");
-                }
-                
-                this.showLoading(false);
-                this.updateApiStatus("Ready");
-            }
-
-            renderStations(stations) {
-                this.stationsList.innerHTML = '';
-                
-                if (stations.length === 0) {
-                    this.stationsList.innerHTML = `
-                        <div style="text-align: center; padding: 40px; color: #666; grid-column: 1 / -1;">
-                            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.5;"></i>
-                            <h3>No stations found</h3>
-                            <p>Try a different search term</p>
-                        </div>
-                    `;
-                    return;
-                }
-                
-                stations.forEach(station => {
-                    const stationElement = document.createElement('div');
-                    stationElement.className = `station-card ${this.currentStation && this.currentStation.id === station.id ? 'active' : ''}`;
-                    stationElement.innerHTML = `
-                        <div class="station-icon">
-                            <i class="${station.icon}"></i>
-                        </div>
-                        <div class="station-info">
-                            <div class="station-name">${station.name}</div>
-                            <div class="station-desc">${station.description}</div>
-                            <div>
-                                <span class="station-status ${station.status === 'live' ? 'status-live' : 'status-offline'}">
-                                    <i class="fas fa-circle" style="font-size: 0.6rem;"></i> ${station.status === 'live' ? 'LIVE' : 'OFFLINE'}
-                                </span>
-                                <span style="margin-left: 10px; color: #888; font-size: 0.9rem;">
-                                    ${station.frequency}
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                    
-                    stationElement.addEventListener('click', () => this.selectStation(station.id));
-                    this.stationsList.appendChild(stationElement);
-                });
-            }
-
-            async selectStation(stationId) {
-                this.showLoading(true);
-                this.updateApiStatus("Connecting to station...");
-                
-                // Simulate API call to backend
-                const response = await this.backend.playStation(stationId);
-                
-                if (response.success) {
-                    this.currentStation = response.data;
-                    this.isPlaying = true;
-                    this.updatePlayer();
-                    this.highlightSelectedStation(stationId);
-                    this.showNotification(response.message, "success");
-                } else {
-                    this.showNotification(response.message, "error");
-                }
-                
-                this.showLoading(false);
-                this.updateApiStatus("Ready");
-            }
-
-            updatePlayer() {
-                if (this.currentStation) {
-                    this.currentStationName.textContent = this.currentStation.name;
-                    this.currentStationDesc.textContent = `${this.currentStation.description} • ${this.currentStation.frequency}`;
-                    
-                    // Update play/pause button
-                    this.playIcon.className = this.isPlaying ? 'fas fa-pause' : 'fas fa-play';
-                    
-                    // Update play/pause button style
-                    if (this.isPlaying) {
-                        this.playPauseBtn.style.backgroundColor = '#d32f2f';
-                        this.playPasteBtnTitle = "Pause";
-                    } else {
-                        this.playPauseBtn.style.backgroundColor = '#2d8f47';
-                        this.playPasteBtnTitle = "Play";
-                    }
-                }
-            }
-
-            highlightSelectedStation(stationId) {
-                // Remove active class from all stations
-                document.querySelectorAll('.station-card').forEach(card => {
-                    card.classList.remove('active');
-                });
-                
-                // Add active class to selected station
-                document.querySelectorAll('.station-card').forEach(card => {
-                    if (card.querySelector('.station-name').textContent === 
-                        this.currentStation.name) {
-                        card.classList.add('active');
-                    }
-                });
-            }
-
-            togglePlay() {
-                if (!this.currentStation) {
-                    this.showNotification("Please select a station first", "warning");
-                    return;
-                }
-                
-                this.isPlaying = !this.isPlaying;
-                this.updatePlayer();
-                
-                const action = this.isPlaying ? "Playing" : "Paused";
-                this.showNotification(`${action}: ${this.currentStation.name}`, "info");
-            }
-
-            async playPrevious() {
-                if (!this.currentStation) {
-                    this.showNotification("Please select a station first", "warning");
-                    return;
-                }
-                
-                const prevStation = this.backend.getPrevStation();
-                await this.selectStation(prevStation.id);
-            }
-
-            async playNext() {
-                if (!this.currentStation) {
-                    this.showNotification("Please select a station first", "warning");
-                    return;
-                }
-                
-                const nextStation = this.backend.getNextStation();
-                await this.selectStation(nextStation.id);
-            }
-
-            filterStations(query) {
-                const filteredStations = this.backend.searchStations(query);
-                this.renderStations(filteredStations);
-                
-                if (query) {
-                    this.showNotification(`Found ${filteredStations.length} station(s) for "${query}"`, "info");
-                }
-            }
-
-            showLoading(show) {
-                this.loadingSpinner.style.display = show ? 'block' : 'none';
-                this.stationsList.style.display = show ? 'none' : 'grid';
-            }
-
-            showNotification(message, type = "info") {
-                this.notificationText.textContent = message;
-                
-                // Set color based on type
-                if (type === "success") {
-                    this.notification.style.backgroundColor = "#2d8f47";
-                } else if (type === "error") {
-                    this.notification.style.backgroundColor = "#d32f2f";
-                } else if (type === "warning") {
-                    this.notification.style.backgroundColor = "#ff9800";
-                } else {
-                    this.notification.style.backgroundColor = "#4a6fa5";
-                }
-                
-                // Show notification
-                this.notification.classList.add('show');
-                
-                // Hide after 3 seconds
-                setTimeout(() => {
-                    this.notification.classList.remove('show');
-                }, 3000);
-            }
-
-            updateApiStatus(status) {
-                this.apiStatus = status;
-                this.apiStatusElement.textContent = status;
-                
-                // Color code the status
-                if (status === "Ready") {
-                    this.apiStatusElement.style.color = "#2d8f47";
-                } else if (status.includes("Loading") || status.includes("Connecting")) {
-                    this.apiStatusElement.style.color = "#ff9800";
-                } else if (status.includes("Error")) {
-                    this.apiStatusElement.style.color = "#d32f2f";
-                } else {
-                    this.apiStatusElement.style.color = "#4a6fa5";
-                }
-            }
-
-            // Backend simulation methods
-            async simulateApiLoad() {
-                this.showLoading(true);
-                this.updateApiStatus("Simulating API load...");
-                
-                // Simulate a longer API call
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                
-                this.showLoading(false);
-                this.updateApiStatus("Ready");
-                this.showNotification("Simulated API load complete. In a real app, this would fetch data from a server.", "info");
-            }
-
-            async simulateApiError() {
-                this.updateApiStatus("Simulating API error...");
-                
-                // Simulate API error
-                const response = await this.backend.simulateError();
-                
-                this.updateApiStatus("Error simulated");
-                this.showNotification(response.message, "error");
-                
-                // Reset status after delay
-                setTimeout(() => {
-                    this.updateApiStatus("Ready");
-                }, 2000);
-            }
-
-            async addRandomStation() {
-                this.updateApiStatus("Adding new station...");
-                
-                // Generate random station data
-                const stationsPool = [
-                    { name: "Seva Radio", description: "Community service and seva updates", frequency: "102.3 FM", icon: "fas fa-hands-helping" },
-                    { name: "Rehat Maryada Channel", description: "Sikh code of conduct discussions", frequency: "95.7 FM", icon: "fas fa-balance-scale" },
-                    { name: "Guru Nanak Dev Ji Radio", description: "Teachings of Guru Nanak Dev Ji", frequency: "106.1 FM", icon: "fas fa-user-friends" },
-                    { name: "Kirtan Darbar", description: "Live kirtan from global darbars", frequency: "88.9 FM", icon: "fas fa-microphone-alt" },
-                    { name: "Sikh Warriors Channel", description: "History of Sikh warriors", frequency: "104.7 FM", icon: "fas fa-shield-alt" }
-                ];
-                
-                const randomStation = stationsPool[Math.floor(Math.random() * stationsPool.length)];
-                randomStation.status = Math.random() > 0.3 ? "live" : "offline";
-                
-                // Add station via backend
-                const response = await this.backend.addStation(randomStation);
-                
-                if (response.success) {
-                    // Refresh the station list
-                    this.filterStations(this.searchBar.value);
-                    this.showNotification(response.message, "success");
-                }
-                
-                this.updateApiStatus("Ready");
-            }
-
-            async resetStations() {
-                this.updateApiStatus("Resetting stations...");
-                
-                // Reset backend to initial state
-                this.backend = new RadioBackend();
-                this.currentStation = null;
-                this.isPlaying = false;
-                
-                // Reload stations
-                await this.loadStations();
-                this.updatePlayer();
-                
-                this.updateApiStatus("Ready");
-                this.showNotification("All stations have been reset to default", "success");
-            }
-        }
-
-        // Initialize the application when the page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            const app = new RadioApp();
+        // Initialize stations
+        function initializeStations() {
+            stationButtonsContainer.innerHTML = '';
             
-            // Make app available globally for debugging
-            window.radioApp = app;
+            stations.forEach((station, index) => {
+                const stationBtn = document.createElement('button');
+                stationBtn.className = `station-btn ${index === currentStationIndex ? 'active' : ''}`;
+                stationBtn.innerHTML = `
+                    <div class="station-icon">
+                        <i class="${station.icon}"></i>
+                    </div>
+                    <div class="station-info">
+                        <h5>${station.name}</h5>
+                        <p>${station.location} • ${station.type}</p>
+                    </div>
+                `;
+                
+                stationBtn.addEventListener('click', () => {
+                    selectStation(index);
+                });
+                
+                stationButtonsContainer.appendChild(stationBtn);
+            });
+            
+            updateStationInfo();
+        }
+
+        // Select a station
+        function selectStation(index) {
+            // Update active button
+            document.querySelectorAll('.station-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelectorAll('.station-btn')[index].classList.add('active');
+            
+            // Update current station
+            currentStationIndex = index;
+            
+            // Update station info
+            updateStationInfo();
+            
+            // Play the station
+            playStation();
+        }
+
+        // Update station information display
+        function updateStationInfo() {
+            const station = stations[currentStationIndex];
+            currentStationSpan.textContent = station.name;
+            miniTitle.textContent = `${station.name} ${station.type}`;
+            miniArtist.textContent = station.location;
+        }
+
+        // Play the current station
+        function playStation() {
+            // In a real implementation, you would load the actual stream URL
+            // For this demo, we'll simulate playing
+            
+            // Stop previous audio if exists
+            if (audioElement) {
+                audioElement.pause();
+                audioElement = null;
+            }
+            
+            // Create a fake audio element for demo purposes
+            // In production, use: audioElement = new Audio(station.streamUrl);
+            audioElement = {
+                paused: false,
+                currentTime: 0,
+                duration: 3600, // 1 hour for demo
+                volume: currentVolume,
+                play: function() {
+                    this.paused = false;
+                    isPlaying = true;
+                    updatePlayButtons();
+                    startProgressSimulation();
+                },
+                pause: function() {
+                    this.paused = true;
+                    isPlaying = false;
+                    updatePlayButtons();
+                    stopProgressSimulation();
+                }
+            };
+            
+            // Start playing
+            isPlaying = true;
+            audioElement.play();
+            
+            // Update UI
+            updatePlayButtons();
+        }
+
+        // Toggle play/pause
+        function togglePlayPause() {
+            if (!audioElement) {
+                playStation();
+                return;
+            }
+            
+            if (isPlaying) {
+                audioElement.pause();
+            } else {
+                audioElement.play();
+            }
+        }
+
+        // Update play/pause buttons
+        function updatePlayButtons() {
+            const playIcon = isPlaying ? 'fa-pause' : 'fa-play';
+            playBtn.innerHTML = `<i class="fas ${playIcon}"></i>`;
+            miniPlayBtn.innerHTML = `<i class="fas ${playIcon}"></i>`;
+        }
+
+        // Go to previous station
+        function prevStation() {
+            currentStationIndex = (currentStationIndex - 1 + stations.length) % stations.length;
+            selectStation(currentStationIndex);
+        }
+
+        // Go to next station
+        function nextStation() {
+            currentStationIndex = (currentStationIndex + 1) % stations.length;
+            selectStation(currentStationIndex);
+        }
+
+        // Update volume
+        function updateVolume() {
+            currentVolume = volumeSlider.value / 100;
+            if (audioElement) {
+                audioElement.volume = currentVolume;
+            }
+        }
+
+        // Simulate progress for demo
+        function startProgressSimulation() {
+            stopProgressSimulation();
+            
+            let currentTime = 0;
+            const duration = 3600; // 1 hour in seconds
+            
+            progressInterval = setInterval(() => {
+                if (!isPlaying) return;
+                
+                currentTime += 1;
+                if (currentTime > duration) currentTime = 0;
+                
+                // Update progress bar
+                const progressPercent = (currentTime / duration) * 100;
+                progressBar.style.width = `${progressPercent}%`;
+                
+                // Update time displays
+                currentTimeSpan.textContent = formatTime(currentTime);
+                durationSpan.textContent = formatTime(duration);
+            }, 1000);
+        }
+
+        // Stop progress simulation
+        function stopProgressSimulation() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+        }
+
+        // Format time as MM:SS
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        // Language toggle functionality
+        function setupLanguageToggle() {
+            gurmukhiBtn.addEventListener('click', () => {
+                setActiveLanguage('gurmukhi');
+            });
+            
+            englishBtn.addEventListener('click', () => {
+                setActiveLanguage('english');
+            });
+            
+            hindiBtn.addEventListener('click', () => {
+                setActiveLanguage('hindi');
+            });
+        }
+
+        // Set active language display
+        function setActiveLanguage(lang) {
+            // Update button states
+            gurmukhiBtn.classList.remove('active');
+            englishBtn.classList.remove('active');
+            hindiBtn.classList.remove('active');
+            
+            // Hide all text
+            gurmukhiText.classList.add('hidden');
+            englishText.classList.add('hidden');
+            hindiText.classList.add('hidden');
+            
+            // Show selected text and activate button
+            if (lang === 'gurmukhi') {
+                gurmukhiBtn.classList.add('active');
+                gurmukhiText.classList.remove('hidden');
+            } else if (lang === 'english') {
+                englishBtn.classList.add('active');
+                englishText.classList.remove('hidden');
+            } else if (lang === 'hindi') {
+                hindiBtn.classList.add('active');
+                hindiText.classList.remove('hidden');
+            }
+        }
+
+        // Mobile menu toggle
+        function setupMobileMenu() {
+            const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+            const navUl = document.querySelector('nav ul');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                navUl.style.display = navUl.style.display === 'flex' ? 'none' : 'flex';
+            });
+            
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    navUl.style.display = 'flex';
+                } else {
+                    navUl.style.display = 'none';
+                }
+            });
+        }
+
+        // Event Listeners
+        playBtn.addEventListener('click', togglePlayPause);
+        miniPlayBtn.addEventListener('click', togglePlayPause);
+        
+        prevBtn.addEventListener('click', prevStation);
+        miniPrevBtn.addEventListener('click', prevStation);
+        
+        nextBtn.addEventListener('click', nextStation);
+        miniNextBtn.addEventListener('click', nextStation);
+        
+        volumeSlider.addEventListener('input', updateVolume);
+        
+        // Progress bar click to seek
+        document.querySelector('.progress-bar').addEventListener('click', (e) => {
+            if (!audioElement) return;
+            
+            const progressBarWidth = e.target.clientWidth;
+            const clickPosition = e.offsetX;
+            const percent = clickPosition / progressBarWidth;
+            
+            // In a real implementation, set audio.currentTime = percent * audio.duration;
+            // For demo, we'll just update the progress bar
+            progressBar.style.width = `${percent * 100}%`;
+            
+            // Update time display
+            const newTime = percent * 3600; // 3600 is our demo duration
+            currentTimeSpan.textContent = formatTime(newTime);
         });
+
+        // Initialize the app
+        function initApp() {
+            initializeStations();
+            setupLanguageToggle();
+            setupMobileMenu();
+            
+            // Start with first station
+            selectStation(0);
+            
+            // Set initial volume
+            updateVolume();
+        }
+
+        // Start the app when page loads
+        document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
 </html>
